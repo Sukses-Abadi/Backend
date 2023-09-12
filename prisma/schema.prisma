@@ -70,7 +70,6 @@ model Review {
 model Cart {
   id              Int           @id @default(autoincrement())
   user_id         Int
-  product_id      Int
   shipping_cost   Int
   total_amount    Int
   address_id      Int?
@@ -93,7 +92,7 @@ model BankAccount {
   account_holder String
   bank_name      String?
   account_number String  @unique
-  admin_id       Int?    @unique
+  admin_id       Int?
   admin          Admin?  @relation(fields: [admin_id], references: [id])
   orders         Order[]
   carts          Cart[]
@@ -117,7 +116,8 @@ model Order {
 }
 
 enum order_status {
-  payment_recieved
+  waiting_payment
+  payment_received
   payment_rejected
   being_shipped
   complete
