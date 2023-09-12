@@ -1,1 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id          Int          @id @unique
+  username    String       @unique
+  password    String
+  bankAccount BankAccount?
+}
+
+model Product {
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+  SKU               String            @unique
+  description       String?
+  slug              String?
+  keyword           String?
+  created_at        DateTime
+  updated_at        DateTime
+  created_by        Int
+  updated_by        DateTime
+  discount          String?
+  productDetails    ProductDetails?
+  cart              Cart[]
+  productGalleries  ProductGallery[]
+  cartProducts      CartProduct[]
+  productCategories ProductCategory[]
+  reviews           Review[]
+  Category          Category?         @relation(fields: [categoryId], references: [id])
+  categoryId        Int?
+  OrderProduct      OrderProduct[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  username   String    @unique
+  first_name String
+  last_name  String
+  email      String    @unique
+  age        Int
+  photo      String?
+  password   String
+  address    Address[]
+  Phone      String?
+  review     Int
+  edited_at  DateTime?
+  created_at DateTime
+  carts      Cart[]
+  reviews    Review[]
+  Order      Order[]
+}
+
+model Review {
+  id          Int     @id @default(autoincrement())
+  product_id  Int     @unique
+  user_id     Int
+  review_text String
+  rating      Int
+  image       String?
+  product     Product @relation(fields: [product_id], references: [id])
+  user        User    @relation(fields: [user_id], references: [id])
+}
+
+model Cart {
+  id              Int           @id @default(autoincrement())
+  user_id         Int
+  product_id      Int
+  shipping_cost   Int
+  total_amount    Int
+  address_id      Int?
+  bank_account_id Int?
+  user            User          @relation(fields: [user_id], references: [id])
+  product         Product       @relation(fields: [product_id], references: [id])
+  address         Address?      @relation(fields: [address_id], references: [id])
+  bankAccount     BankAccount?  @relation(fields: [bank_account_id], references: [id])
+  CartProduct     CartProduct[]
+}
+
+model Category {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  products        Product[]
+  ProductCategory ProductCategory[]
+}
+
+model BankAccount {
+  id             Int     @id @default(autoincrement())
+  account_holder String
+  bank_name      String?
+  account_number String  @unique
+  admin_id       Int?    @unique
+  admin          Admin?  @relation(fields: [admin_id], references: [id])
+  orders         Order[]
+  carts          Cart[]
+}
+
+model Order {
+  id              Int            @id @default(autoincrement())
+  user_id         Int
+  total_price     Int
+  order_date      DateTime
+  payment_receipt String
+  status          order_status
+  shipping_cost   Int
+  tracking_number String?
+  address_id      Int?
+  bank_account_id Int?
+  user            User           @relation(fields: [user_id], references: [id])
+  address         Address?       @relation(fields: [address_id], references: [id])
+  bankAccount     BankAccount?   @relation(fields: [bank_account_id], references: [id])
+  orderProducts   OrderProduct[]
+}
+
+enum order_status {
+  payment_recieved
+  payment_rejected
+  being_shipped
+  complete
+}
+
+model ProductCategory {
+  id          Int      @id @default(autoincrement())
+  product_id  Int
+  category_id Int
+  product     Product  @relation(fields: [product_id], references: [id])
+  category    Category @relation(fields: [category_id], references: [id])
+}
+
+model OrderProduct {
+  id         Int     @id @default(autoincrement())
+  product_id Int
+  order_id   Int
+  quantity   Int
+  price      Int
+  product    Product @relation(fields: [product_id], references: [id])
+  order      Order   @relation(fields: [order_id], references: [id])
+}
+
+model ProductDetails {
+  id         Int     @id
+  product_id Int     @unique
+  color      String?
+  size       String
+  stock      String
+  price      Int
+  product    Product @relation(fields: [product_id], references: [id])
+}
+
+model ProductGallery {
+  id         Int     @id
+  photo      String
+  product_id Int
+  product    Product @relation(fields: [product_id], references: [id])
+}
+
+model CartProduct {
+  id         Int     @id
+  product_id Int     @unique
+  cart_id    Int
+  quantity   Int
+  price      Int
+  product    Product @relation(fields: [product_id], references: [id])
+  cart       Cart    @relation(fields: [cart_id], references: [id])
+}
+
+model Address {
+  id       Int     @id @default(autoincrement())
+  street   String
+  name     String
+  city_id  Int     @unique
+  zip_code Int
+  user_id  Int
+  user     User?   @relation(fields: [user_id], references: [id])
+  city     City    @relation(fields: [city_id], references: [id])
+  Cart     Cart[]
+  Order    Order[]
+}
+
+model City {
+  id            Int       @id @default(autoincrement())
+  name          String
+  shipping_cost Int
+  addresses     Address[]
+}
