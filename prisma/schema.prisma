@@ -22,12 +22,12 @@ model Product {
   name              String            @unique
   SKU               String            @unique
   description       String?
-  slug              String?
+  slug              String            @unique
   keyword           String?
   created_at        DateTime          @default(now())
   updated_at        DateTime          @default(now())
   discount          String?
-  productDetails    ProductDetails?
+  productDetails    ProductDetails[]
   productGalleries  ProductGallery[]
   cartProducts      CartProduct[]
   productCategories ProductCategory[]
@@ -104,7 +104,7 @@ model Order {
   total_price     Int
   order_date      DateTime
   payment_receipt String
-  status          order_status
+  status          OrderStatus
   shipping_cost   Int
   tracking_number String?
   address_id      Int?
@@ -115,7 +115,7 @@ model Order {
   orderProducts   OrderProduct[]
 }
 
-enum order_status {
+enum OrderStatus {
   waiting_payment
   payment_received
   payment_rejected
@@ -143,7 +143,7 @@ model OrderProduct {
 
 model ProductDetails {
   id         Int     @id
-  product_id Int     @unique
+  product_id Int
   color      String?
   size       String
   stock      String
