@@ -18,21 +18,24 @@ model Admin {
 }
 
 model Product {
-  id                Int               @id @default(autoincrement())
-  name              String            @unique
-  SKU               String            @unique
-  description       String?
-  slug              String            @unique
-  keyword           String?
-  created_at        DateTime          @default(now())
-  updated_at        DateTime          @default(now())
-  discount          String?
-  productDetails    ProductDetails[]
-  productGalleries  ProductGallery[]
-  cartProducts      CartProduct[]
-  productCategories ProductCategory[]
-  reviews           Review[]
-  OrderProduct      OrderProduct[]
+  id               Int              @id @default(autoincrement())
+  name             String           @unique
+  SKU              String           @unique
+  description      String?
+  slug             String           @unique
+  keyword          String?
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @default(now())
+  discount         String?
+  category_id      Int
+  sub_category_id  Int
+  productDetails   ProductDetails[]
+  productGalleries ProductGallery[]
+  cartProducts     CartProduct[]
+  Category         Category         @relation(fields: [category_id], references: [id])
+  SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id])
+  reviews          Review[]
+  OrderProduct     OrderProduct[]
 }
 
 model User {
@@ -49,7 +52,7 @@ model User {
   review     Int
   edited_at  DateTime  @default(now())
   created_at DateTime  @default(now())
-  carts      Cart[]
+  cart       Cart?
   reviews    Review[]
   Order      Order[]
 }
@@ -69,7 +72,7 @@ model Review {
 
 model Cart {
   id              Int           @id @default(autoincrement())
-  user_id         Int
+  user_id         Int           @unique
   shipping_cost   Int
   total_amount    Int
   address_id      Int?
@@ -81,10 +84,10 @@ model Cart {
 }
 
 model Category {
-  id              Int               @id @default(autoincrement())
-  name            String
-  SubCategory     SubCategory[]
-  ProductCategory ProductCategory[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  SubCategory SubCategory[]
+  Product     Product[]
 }
 
 model BankAccount {
@@ -123,13 +126,13 @@ enum OrderStatus {
   complete
 }
 
-model ProductCategory {
-  id          Int      @id @default(autoincrement())
-  product_id  Int
-  category_id Int
-  product     Product  @relation(fields: [product_id], references: [id])
-  category    Category @relation(fields: [category_id], references: [id])
-}
+// model ProductCategory {
+//   id          Int      @id @default(autoincrement())
+//   product_id  Int
+//   category_id Int
+//   product     Product  @relation(fields: [product_id], references: [id])
+//   category    Category @relation(fields: [category_id], references: [id])
+// }
 
 model OrderProduct {
   id         Int     @id @default(autoincrement())
@@ -189,8 +192,9 @@ model City {
 }
 
 model SubCategory {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   category_id Int
-  Category    Category @relation(fields: [category_id], references: [id])
+  Category    Category  @relation(fields: [category_id], references: [id])
+  Product     Product[]
 }
