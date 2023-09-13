@@ -27,6 +27,7 @@ model Product {
   created_at       DateTime         @default(now())
   updated_at       DateTime         @default(now())
   discount         String?
+  weight           String?
   category_id      Int
   sub_category_id  Int
   productDetails   ProductDetails[]
@@ -141,7 +142,7 @@ model ProductDetails {
   product_id Int
   color      String?
   size       String
-  stock      String
+  stock      Int
   price      Int
   product    Product @relation(fields: [product_id], references: [id])
 }
