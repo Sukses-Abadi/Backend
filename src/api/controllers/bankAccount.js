@@ -69,7 +69,11 @@ const updateBankAccount = async (req, res, next) => {
       where: {
         id: Number(id),
       },
-      data: data,
+      data: {
+        account_holder: data.account_holder,
+        bank_name: data.bank_name,
+        account_number: data.account_number,
+      },
     });
 
     return res.status(200).json(
@@ -103,4 +107,9 @@ const deleteBankAccount = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { getBankAccount, createBankAccount, updateBankAccount, deleteBankAccount };
+module.exports = {
+  getBankAccount,
+  createBankAccount,
+  updateBankAccount,
+  deleteBankAccount,
+};
