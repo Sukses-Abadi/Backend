@@ -4,12 +4,12 @@ const { successResponse } = require("../../lib/response");
 
 const getAdmin = async (req, res, next) => {
   try {
-    const result = await prisma.admin.findMany();
+    const data = await prisma.admin.findMany();
 
     return res.status(200).json(
       successResponse({
         message: "Get Admin success",
-        data: result,
+        data: data,
       })
     );
   } catch (error) {
@@ -19,10 +19,10 @@ const getAdmin = async (req, res, next) => {
 
 const createAdmin = async (req, res, next) => {
   try {
-    const data = req.body;
+    const { username, password } = req.body;
     const existingAdmin = await prisma.admin.findUnique({
       where: {
-        username: data.username,
+        username: username,
       },
     });
     if (existingAdmin) {
@@ -30,7 +30,10 @@ const createAdmin = async (req, res, next) => {
     }
 
     const result = await prisma.admin.create({
-      data: data,
+      data: {
+        username,
+        password,
+      },
     });
 
     return res.status(201).json(
@@ -46,11 +49,11 @@ const createAdmin = async (req, res, next) => {
 
 const updateAdmin = async (req, res, next) => {
   try {
-    const data = req.body;
+    const { username, password } = req.body;
     const { id } = req.params;
     const existingUsername = await prisma.admin.findUnique({
       where: {
-        username: data.username,
+        username: username,
       },
     });
     if (existingUsername) {
@@ -61,7 +64,7 @@ const updateAdmin = async (req, res, next) => {
       where: {
         id: Number(id),
       },
-      data: data,
+      data: { username, password },
     });
 
     return res.status(200).json(
