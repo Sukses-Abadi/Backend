@@ -25,7 +25,11 @@ const createProduct = async (req, res) => {
         sub_category_id,
       },
     });
-    res.json(product);
+    return res.json({
+      status: "success",
+      message: "All products are presented",
+      data: product,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -35,7 +39,11 @@ const createProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany();
-    res.json(products);
+    return res.json({
+      status: "success",
+      message: "All products are presented",
+      data: products,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -48,10 +56,14 @@ const getSingleProduct = async (req, res) => {
     const product = await prisma.product.findUnique({
       where: { id: parseInt(id) },
     });
-    res.json(product);
+    return res.json({
+      status: "success",
+      message: "Product is created successfully",
+      data: product,
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -99,7 +111,11 @@ const updateProduct = async (req, res) => {
       where: { id: parseInt(id) },
       data: dataToUpdate,
     });
-    res.json(updatedProduct);
+    return res.json({
+      status: "success",
+      message: "Product is updated successfully",
+      data: updatedProduct,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -109,11 +125,17 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.product.delete({ where: { id: parseInt(id) } });
-    res.json({ message: "Product deleted successfully" });
+    const product = await prisma.product.delete({
+      where: { id: parseInt(id) },
+    });
+    return res.json({
+      status: "success",
+      message: "Product is delete successfully",
+      data: product,
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
