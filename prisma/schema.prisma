@@ -83,7 +83,7 @@ model Cart {
 model Category {
   id              Int               @id @default(autoincrement())
   name            String
-  description     String?
+  SubCategory     SubCategory[]
   ProductCategory ProductCategory[]
 }
 
@@ -186,4 +186,11 @@ model City {
   name          String
   shipping_cost Int
   addresses     Address[]
+}
+
+model SubCategory {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category_id Int
+  Category    Category @relation(fields: [category_id], references: [id])
 }
