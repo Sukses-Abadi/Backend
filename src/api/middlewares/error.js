@@ -1,11 +1,12 @@
-/* eslint-disable no-unused-vars */
-const NotFoundError = require('../../exceptions/NotFoundError')
-const { errorRes } = require('../../lib/response')
+const CustomAPIError = require("./custom-error");
 
-exports.notFound = (req, res, next) => {
-  next(new NotFoundError())
-}
+const errorHandlerMiddleware = (err, req, res, next) => {
+  if (err instanceof CustomAPIError) {
+    console.log("error: ", err);
+    return res.status(err.statusCode).json(err.message);
+  }
+  console.log(err);
+  return res.status(500).json("Something went wrong");
+};
 
-exports.error = (err, req, res, next) => {
-  return errorRes(res, err)
-}
+module.exports = errorHandlerMiddleware;
