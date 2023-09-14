@@ -27,7 +27,7 @@ model Product {
   created_at       DateTime         @default(now())
   updated_at       DateTime         @default(now())
   discount         String?
-  weight           String?
+  weight           Int              @default(100)
   category_id      Int
   sub_category_id  Int
   productDetails   ProductDetails[]

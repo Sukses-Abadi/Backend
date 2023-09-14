@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-
-const { notFound, error } = require("./api/middlewares/error");
+require("express-async-errors");
+const { notFound, errorhandler } = require("./api/middlewares/error");
 const routes = require("./routes");
+const errorHandlerMiddleware = require("./api/middlewares/error");
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
  * routes
  */
 app.use(routes);
-app.use(notFound);
-app.use(error);
+
+app.use(errorHandlerMiddleware);
 
 module.exports = app;
