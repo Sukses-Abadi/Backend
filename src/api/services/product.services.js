@@ -150,34 +150,47 @@ const deleteFullProduct = async (id) => {
   };
 };
 
+/**
+ * Fetches products based on a query and price filter.
+ * @param {Object} query - An object containing properties like id, name, SKU, maxp, minp, page, and skip.
+ * @returns {Array} - An array of products fetched from the database based on the provided query and price filter.
+ */
 const fetchProductByQueryAndPriceFilter = async (query) => {
-  // console.log(query);
-  const { id, name, SKU, maxp, minp } = query;
-  const product = await prisma.product.findMany({
-    where: {
-      OR: [
-        { name: { contains: name?.toLowerCase() } },
-        { SKU: SKU?.toLowerCase() },
-      ],
-    },
+  const { id, name, SKU, maxPrice, minPrice, skip, page } = query;
+
+  const queryObject = {
+    id: id ? Number(id) : undefined,
+    SKU,
+    name: name ? { contains: name, mode: "insensitive" } : undefined,
+    page,
+  };
+
+  const pageNumber = Number(page) || 1;
+  const limit = Number(skip) || 5;
+  const offset = (pageNumber - 1) * limit;
+
+  const products = await prisma.product.findMany({
+    skip: offset,
+    take: limit,
+    where: queryObject,
     include: {
       productGalleries: true,
       productDetails: {
         where: {
           price: {
-            gte: +minp || 0, // Greater than or equal to minPrice (default to 0 if not provided)
-            lte: +maxp || 99999999, // Less than or equal to maxPrice (default to a high value if not provided)
+            gte: +minPrice || 0,
+            lte: +maxPrice || 99999999,
           },
         },
       },
     },
   });
 
-  if (!product) {
-    throw new CustomAPIError(`No product found with query: ${query}`, 404);
-  }
+  const filteredProducts = products.filter(
+    (product) => product.productDetails.length > 0
+  );
 
-  return product;
+  return filteredProducts.length > 0 ? filteredProducts : null;
 };
 
 module.exports = {

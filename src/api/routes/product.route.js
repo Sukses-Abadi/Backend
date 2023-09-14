@@ -14,7 +14,7 @@ const {
 const router = require("express").Router();
 
 router.get("/products", getAllProducts);
-router.get("/products/:id", getProductByQueryAndPriceFilter);
+router.get("/products/search", getProductByQueryAndPriceFilter);
 // router.get("/products/search/", getProductByQueryAndPriceFilter);
 
 router.delete("/cms/products/:id", deleteProduct);
