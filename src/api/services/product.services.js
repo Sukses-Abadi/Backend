@@ -48,6 +48,10 @@ const postFullProduct = async (data) => {
       productGalleries: { create: product_galleries },
       productDetails: { create: product_details },
     },
+    include: {
+      productGalleries: true,
+      productDetails: true,
+    },
   });
   // console.log(product);
   if (!product) {
@@ -156,13 +160,25 @@ const deleteFullProduct = async (id) => {
  * @returns {Array} - An array of products fetched from the database based on the provided query and price filter.
  */
 const fetchProductByQueryAndPriceFilter = async (query) => {
-  const { id, name, SKU, maxPrice, minPrice, skip, page } = query;
+  const {
+    id,
+    name,
+    SKU,
+    maxPrice,
+    minPrice,
+    skip,
+    page,
+    sub_category_id,
+    category_id,
+  } = query;
 
   const queryObject = {
     id: id ? Number(id) : undefined,
     SKU,
     name: name ? { contains: name, mode: "insensitive" } : undefined,
-    page,
+    page: page ? Number(page) : undefined,
+    sub_category_id: sub_category_id ? Number(sub_category_id) : undefined,
+    category_id: category_id ? Number(category_id) : undefined,
   };
 
   const pageNumber = Number(page) || 1;
