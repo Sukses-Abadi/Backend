@@ -4,7 +4,7 @@ const {
   getSingleProductCMS,
   createProduct,
   updateProduct,
-} = require("../controllers/cms.product.controller");
+} = require("../controllers/cms/cms.product.controller");
 const {
   getAllProducts,
   getSingleProduct,
