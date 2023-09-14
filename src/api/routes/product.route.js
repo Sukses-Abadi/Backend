@@ -1,23 +1,23 @@
 const {
+  deleteProduct,
   getAllProductsCMS,
   getSingleProductCMS,
   createProduct,
   updateProduct,
-} = require("../controllers/cms.product");
+} = require("../controllers/cms.product.controller");
 const {
   getAllProducts,
   getSingleProduct,
-
-  deleteProduct,
-} = require("../controllers/product");
+  getProductByQueryAndPriceFilter,
+} = require("../controllers/product.controller");
 
 const router = require("express").Router();
 
 router.get("/products", getAllProducts);
-router.get("/products/:id", getSingleProduct);
-// router.put("/products/:id", updateProduct);
-router.delete("/products/:id", deleteProduct);
+router.get("/products/:id", getProductByQueryAndPriceFilter);
+// router.get("/products/search/", getProductByQueryAndPriceFilter);
 
+router.delete("/cms/products/:id", deleteProduct);
 router.put("/cms/products/:id", updateProduct);
 router.post("/cms/products", createProduct);
 router.get("/cms/products", getAllProductsCMS);

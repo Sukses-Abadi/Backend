@@ -4,7 +4,8 @@ const {
   fetchSingleProduct,
   postFullProduct,
   putUpdateProduct,
-} = require("../services/productServices");
+  deleteFullProduct,
+} = require("../services/product.services");
 
 const getAllProductsCMS = async (req, res) => {
   try {
@@ -47,11 +48,26 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { id } = req.params;
   const product = await putUpdateProduct(id, req.body);
-  return res.json({ product: product });
+  return res.json({
+    status: "success",
+    message: "product is updated successfully",
+    data: product,
+  });
+};
+
+const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+  const deletedProduct = await deleteFullProduct(id);
+  return res.json({
+    status: "success",
+    message: "product is deleted successfully",
+    data: deletedProduct,
+  });
 };
 module.exports = {
   getAllProductsCMS,
   getSingleProductCMS,
   createProduct,
   updateProduct,
+  deleteProduct,
 };
