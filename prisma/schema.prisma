@@ -73,6 +73,7 @@ model Cart {
   id              Int           @id @default(autoincrement())
   user_id         Int           @unique
   shipping_cost   Int?
+  shipping_method String?
   total_price     Int           @default(0)
   courier         Courier?
   address_id      Int?
@@ -113,6 +114,7 @@ model Order {
   total_price     Int
   shipping_cost   Int
   total_payment   Int
+  shipping_method String
   order_date      DateTime
   payment_receipt String
   status          OrderStatus
