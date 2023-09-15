@@ -86,7 +86,7 @@ const putUpdateProduct = async (id, data) => {
     detailsToUpdate = product.productDetails;
   }
 
-  console.log(productGalleriesToUpdate);
+  // console.log(productGalleriesToUpdate);
   await prisma.product.update({
     where: { id: +id },
     data: {

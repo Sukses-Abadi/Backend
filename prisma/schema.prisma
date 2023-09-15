@@ -74,7 +74,7 @@ model Cart {
   id              Int           @id @default(autoincrement())
   user_id         Int           @unique
   shipping_cost   Int?
-  total_price     Int
+  total_price     Int           @default(0)
   courier         Courier?
   address_id      Int?
   bank_account_id Int?
