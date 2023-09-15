@@ -6,8 +6,8 @@ const {
 
 const router = require("express").Router();
 
-router.get("/users", getAllUsersCMS);
-router.get("/users/:id", getSingleUserCMS);
-router.delete("/users/:id", deleteUserCMS);
+router.get("/", getAllUsersCMS);
+router.get("/:id", getSingleUserCMS);
+router.delete("/:id", deleteUserCMS);
 
 module.exports = router;

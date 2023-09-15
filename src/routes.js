@@ -15,14 +15,14 @@ const upload = require("./lib/multer");
  * api routes
  */
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
-router.use("/api", crudProduct);
-router.use("/api", userRoute);
 router.use('/api/cms', adminRoute)
 router.use('/api', bankAccountRoute)
+router.use("/api/products", crudProduct);
+router.use("/api/user", userRoute);
 
 // router.use("/api", crudSubCategory);
-router.use("/api/cms", crudCategory);
-router.use("/api/cms", crudSubCategory);
-router.use("/api/cms", crudProductCMS);
-router.use("/api/cms", crudUserCMS);
+router.use("/api/cms/category", crudCategory);
+router.use("/api/cms/subcategory", crudSubCategory);
+router.use("/api/cms/products", crudProductCMS);
+router.use("/api/cms/users", crudUserCMS);
 module.exports = router;
