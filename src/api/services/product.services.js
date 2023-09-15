@@ -176,7 +176,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     id: id ? Number(id) : undefined,
     SKU,
     name: name ? { contains: name, mode: "insensitive" } : undefined,
-    page: page ? Number(page) : undefined,
+
     sub_category_id: sub_category_id ? Number(sub_category_id) : undefined,
     category_id: category_id ? Number(category_id) : undefined,
   };

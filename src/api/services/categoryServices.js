@@ -3,22 +3,18 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const findAll = async (params) => {
-  try {
-    const filterOptions = {
-      where: {},
-    };
+  const filterOptions = {
+    where: {},
+  };
 
-    const { name } = params;
+  const { name } = params;
 
-    if (name) {
-      filterOptions.where.name = name;
-    }
-
-    const categories = prisma.category.findMany(filterOptions);
-    return categories;
-  } catch (error) {
-    throw error;
+  if (name) {
+    filterOptions.where.name = name;
   }
+
+  const categories = await prisma.category.findMany(filterOptions);
+  return categories;
 };
 
 const findOne = async (params) => {
