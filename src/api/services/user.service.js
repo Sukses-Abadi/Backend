@@ -40,10 +40,6 @@ const postUser = async (data) => {
     },
   });
 
-  if (!user) {
-    throw new CustomAPIError(`no user with id of ${id}`, 400);
-  }
-
   return user;
 };
 

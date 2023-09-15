@@ -6,7 +6,7 @@ const {
   putUpdateProduct,
   deleteFullProduct,
   fetchSingleProductById,
-} = require("../../services/product.services");
+} = require("../../services/product.service");
 
 const getAllProductsCMS = async (req, res) => {
   try {

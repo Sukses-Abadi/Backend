@@ -2,7 +2,7 @@ const {
   fetchAllProducts,
   fetchProductByQueryAndPriceFilter,
   fetchSingleProductById,
-} = require("../services/product.services");
+} = require("../services/product.service");
 const CustomAPIError = require("../middlewares/custom-error");
 
 const getAllProducts = async (req, res) => {
