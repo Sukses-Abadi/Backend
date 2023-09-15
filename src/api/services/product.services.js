@@ -182,7 +182,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   };
 
   const pageNumber = Number(page) || 1;
-  const limit = Number(skip) || 5;
+  const limit = Number(skip) || 2;
   const offset = (pageNumber - 1) * limit;
 
   const products = await prisma.product.findMany({
@@ -205,8 +205,12 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   const filteredProducts = products.filter(
     (product) => product.productDetails.length > 0
   );
-
-  return filteredProducts.length > 0 ? filteredProducts : null;
+  const response = {
+    products: filteredProducts.length > 0 ? filteredProducts : null,
+    page: pageNumber,
+    limit: limit,
+  };
+  return response;
 };
 
 module.exports = {
