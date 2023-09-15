@@ -21,6 +21,7 @@ const fetchSingleProductById = async (id) => {
   return product;
 };
 const postFullProduct = async (data) => {
+  // console.log(data);
   let {
     name,
     SKU,
@@ -35,7 +36,7 @@ const postFullProduct = async (data) => {
   console.log(data);
 
   slug = slugify(name);
-  console.log(slug);
+  // console.log(slug);
   const product = await prisma.product.create({
     data: {
       name,
@@ -133,17 +134,25 @@ const deleteFullProduct = async (id) => {
     throw new CustomAPIError(`No product with id of ${id}`, 400);
   }
 
-  // Extract gallery and detail IDs
   const galleryIdsToDelete = product.productGalleries.map(
     (gallery) => gallery.id
   );
   const detailIdsToDelete = product.productDetails.map((detail) => detail.id);
+  await prisma.productGallery.deleteMany({
+    where: { product_id: +id },
+  });
 
+  // Delete ProductDetails first
+  await prisma.productDetails.deleteMany({
+    where: { product_id: +id },
+  });
+
+  // Delete Product
   await prisma.product.delete({
     where: { id: +id },
     include: {
-      productGalleries: true, // Include deleted galleries in the response
-      productDetails: true, // Include deleted details in the response
+      productGalleries: true,
+      productDetails: true,
     },
   });
 

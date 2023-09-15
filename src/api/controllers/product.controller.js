@@ -1,47 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
 const {
   fetchAllProducts,
-  fetchSingleProduct,
   fetchProductByQueryAndPriceFilter,
   fetchSingleProductById,
 } = require("../services/product.services");
 const CustomAPIError = require("../middlewares/custom-error");
-
-const prisma = new PrismaClient();
-
-// CRUD APIs for Product
-// const createProduct = async (req, res) => {
-//   const {
-//     name,
-//     SKU,
-//     description,
-//     slug,
-//     keyword,
-//     category_id,
-//     sub_category_id,
-//   } = req.body;
-//   try {
-//     const product = await prisma.product.create({
-//       data: {
-//         name,
-//         SKU,
-//         description,
-//         slug,
-//         keyword,
-//         category_id,
-//         sub_category_id,
-//       },
-//     });
-//     return res.json({
-//       status: "success",
-//       message: "All products are presented",
-//       data: product,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 
 const getAllProducts = async (req, res) => {
   try {
