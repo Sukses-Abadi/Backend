@@ -32,7 +32,6 @@ model Product {
   sub_category_id  Int
   productDetails   ProductDetails[]
   productGalleries ProductGallery[]
-  cartProducts     CartProduct[]
   Category         Category         @relation(fields: [category_id], references: [id])
   SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id])
   reviews          Review[]
@@ -152,13 +151,14 @@ model OrderProduct {
 }
 
 model ProductDetails {
-  id         Int     @id @default(autoincrement())
-  product_id Int
-  color      String?
-  size       String
-  stock      Int
-  price      Int
-  product    Product @relation(fields: [product_id], references: [id])
+  id          Int           @id @default(autoincrement())
+  product_id  Int
+  color       String?
+  size        String
+  stock       Int
+  price       Int
+  product     Product       @relation(fields: [product_id], references: [id])
+  CartProduct CartProduct[]
 }
 
 model ProductGallery {
@@ -169,13 +169,13 @@ model ProductGallery {
 }
 
 model CartProduct {
-  id         Int     @id @default(autoincrement())
-  product_id Int     @unique
-  cart_id    Int
-  quantity   Int
-  price      Int
-  product    Product @relation(fields: [product_id], references: [id])
-  cart       Cart    @relation(fields: [cart_id], references: [id])
+  id                 Int            @id @default(autoincrement())
+  product_details_id Int
+  cart_id            Int
+  quantity           Int
+  price              Int
+  ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id])
+  cart               Cart           @relation(fields: [cart_id], references: [id])
 }
 
 model Address {
@@ -192,10 +192,9 @@ model Address {
 }
 
 model City {
-  id            Int       @id @default(autoincrement())
-  name          String
-  shipping_cost Int
-  addresses     Address[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  addresses Address[]
 }
 
 model SubCategory {
