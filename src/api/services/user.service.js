@@ -82,6 +82,15 @@ const getUser = async (data) => {
 const putUser = async (pathParams, params) => {
   try {
     const { id } = pathParams;
+
+    const user = await prisma.user.findUnique({
+      where: { id: +id },
+    });
+
+    if (!user) {
+      throw new CustomAPIError(`no user with id of ${id}`, 400);
+    }
+
     const {
       username,
       first_name,
@@ -95,22 +104,26 @@ const putUser = async (pathParams, params) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = prisma.user.update({
+    await prisma.user.update({
       where: {
         id: +id,
       },
       data: {
-        username,
-        first_name,
-        last_name,
-        email,
-        age,
-        photo,
-        password: hashedPassword,
-        phone,
+        username: username || user.username,
+        first_name: first_name || user.first_name,
+        last_name: last_name || user.last_name,
+        email: email || user.email,
+        age: age || user.age,
+        photo: photo || user.photo,
+        password: hashedPassword || user.password,
+        phone: phone || user.phone,
       },
     });
-    return user;
+
+    const updateUser = await prisma.user.findUnique({
+      where: { id: +id },
+    });
+    return updateUser;
   } catch (error) {
     throw error;
   }
@@ -120,13 +133,23 @@ const destroyUser = async (params) => {
   try {
     const { id } = params;
 
-    const user = await prisma.user.delete({
+    const user = await prisma.user.findUnique({
+      where: { id: +id },
+    });
+
+    if (!user) {
+      throw new CustomAPIError(`no user with id of ${id}`, 400);
+    }
+
+    await prisma.user.delete({
       where: {
         id: +id,
       },
     });
 
-    return user;
+    return {
+      deletedUser: user,
+    };
   } catch (error) {
     throw error;
   }
