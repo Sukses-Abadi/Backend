@@ -17,8 +17,8 @@ const fetchBankAccount = async (params) => {
   return result;
 };
 
-const postBankAccount = async (params, payload) => {
-  const { id } = params;
+const postBankAccount = async (user, payload) => {
+  const { id } = user;
 
   const existingBankAccount = await prisma.bankAccount.findUnique({
     where: {
@@ -27,7 +27,7 @@ const postBankAccount = async (params, payload) => {
   });
 
   if (existingBankAccount) {
-    throw new CustomAPIError("Bank account already exist!", 400);
+    throw new CustomAPIError("Account number already exist!", 400);
   }
 
   const result = await prisma.bankAccount.create({
@@ -43,42 +43,51 @@ const postBankAccount = async (params, payload) => {
 };
 
 const putBankAccount = async (params, payload) => {
-  const data = payload;
   const { id } = params;
-  const accNum = data.account_number;
-  const existingAccNum = await prisma.bankAccount.findUnique({
+
+  const existingBankAccount = await prisma.bankAccount.findUnique({
     where: {
-      account_number: accNum,
+      account_number: payload.account_number,
     },
   });
-  if (existingAccNum) {
-    throw new CustomAPIError("Account Number already exist", 400);
+
+  if (existingBankAccount) {
+    throw new CustomAPIError("Account number already exist", 400);
   }
 
   const result = await prisma.bankAccount.update({
     where: {
-      id: Number(id),
+      id: +id,
     },
     data: {
-      account_holder: data.account_holder,
-      bank_name: data.bank_name,
-      account_number: data.account_number,
+      account_holder: payload.account_holder,
+      bank_name: payload.bank_name,
+      account_number: payload.account_number,
     },
   });
+
+  return result;
 };
 
 const destroyBankAccount = async (params) => {
   const { id } = params;
-
-  if (!id) {
-    throw new CustomAPIError("Id not found!", 404);
-  }
-
-  await prisma.bankAccount.delete({
+  const bankAccount = await prisma.bankAccount.findUnique({
     where: {
-      id: Number(id),
+      id: +id,
     },
   });
+
+  if (!bankAccount) {
+    throw new CustomAPIError(`No bank account with id ${id}`, 400);
+  }
+
+  const result = await prisma.bankAccount.delete({
+    where: {
+      id: +id,
+    },
+  });
+
+  return result;
 };
 
 module.exports = {

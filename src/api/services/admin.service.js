@@ -54,7 +54,7 @@ const putAdmin = async (params, payload) => {
   });
 
   if (!admin) {
-    throw new CustomAPIError(`No admin with id of ${id}`, 400);
+    throw new CustomAPIError(`No admin with id ${id}`, 400);
   }
 
   if (admin.username !== username) {
@@ -91,7 +91,7 @@ const destroyAdmin = async (params) => {
   });
 
   if (!admin) {
-    throw new CustomAPIError(`No admin with id of ${id}`, 400);
+    throw new CustomAPIError(`No admin with id ${id}`, 400);
   }
 
   const result = await prisma.admin.delete({
