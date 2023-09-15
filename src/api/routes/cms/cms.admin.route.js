@@ -13,6 +13,6 @@ router.post("/login", login);
 
 router.use(verifyTokenAdmin);
 router.put("/admin/:id", updateAdmin);
-// router.delete("/admin/:id", deleteAdmin);
+router.delete("/admin/:id", deleteAdmin);
 
 module.exports = router;
