@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-const adminRoute = require("./api/routes/adminRoutes");
-const bankAccountRoute = require("./api/routes/bankAccountRoutes");
+const adminRoute = require('./api/routes/cms/cms.admin.route')
+const bankAccountRoute = require('./api/routes/bankAccount.route')
 
 const crudProduct = require("./api/routes/product.route");
 const userRoute = require("./api/routes/user.route");
@@ -17,8 +17,8 @@ const upload = require("./lib/multer");
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
 router.use("/api", crudProduct);
 router.use("/api", userRoute);
-router.use("/api", adminRoute);
-router.use("/api", bankAccountRoute);
+router.use('/api/cms', adminRoute)
+router.use('/api', bankAccountRoute)
 
 // router.use("/api", crudSubCategory);
 router.use("/api/cms", crudCategory);

@@ -4,11 +4,11 @@ const CustomAPIError = require("./custom-error");
 
 const verifyTokenUser = (req, res, next) => {
   const token = req.headers.authorization;
-  // console.log(req.headers.authorization);
+
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
-  // console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
   try {
     const decodedToken = verifyToken(token);
     const { id, username } = decodedToken;

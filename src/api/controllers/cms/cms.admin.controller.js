@@ -1,0 +1,67 @@
+const {
+  loginAdmin,
+  fetchAllAdmin,
+  postAdmin,
+  putAdmin,
+  destroyAdmin,
+} = require("../../services/admin.service");
+
+const login = async (req, res) => {
+  const result = await loginAdmin(req.body);
+
+  return res.json({
+    status: "success",
+    message: "Admin credential matched! Here is your token",
+    data: result,
+  });
+};
+
+const getAllAdmin = async (req, res) => {
+  const result = await fetchAllAdmin();
+
+  return res.json({
+    status: "success",
+    message: "Get Admin success",
+    data: result,
+  });
+};
+
+const createAdmin = async (req, res) => {
+  const result = await postAdmin(req.body);
+  const { id, username } = result;
+
+  return res.status(201).json({
+    status: "success",
+    message: "Admin is created",
+    data: { id, username },
+  });
+};
+
+const updateAdmin = async (req, res) => {
+  const result = await putAdmin(req.params, req.body);
+  const { id, username } = result;
+
+  return res.json({
+    status: "success",
+    message: `Admin Id ${result.id} is updated`,
+    data: { id, username },
+  });
+};
+
+const deleteAdmin = async (req, res) => {
+  const result = await destroyAdmin(req.params);
+
+  return res.json({
+    status: "success",
+    message: `Admin Id ${result.id} is deleted`,
+    data: result,
+  });
+};
+
+module.exports = {
+  login,
+  getAllAdmin,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
+};
