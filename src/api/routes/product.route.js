@@ -14,6 +14,6 @@ const {
 const router = require("express").Router();
 
 router.get("/products", getProductByQueryAndPriceFilter);
-router.get("/products/:id", getSingleProduct);
+router.get("/products/:slug", getSingleProduct);
 
 module.exports = router;

@@ -7,9 +7,9 @@ const fetchAllProducts = async () => {
   return products;
 };
 
-const fetchSingleProductById = async (id) => {
+const fetchSingleProductBySlug = async (slug) => {
   const product = await prisma.product.findUnique({
-    where: { id: +id },
+    where: { slug: slug },
     include: {
       productDetails: true,
     },
@@ -21,7 +21,6 @@ const fetchSingleProductById = async (id) => {
   return product;
 };
 const postFullProduct = async (data) => {
-  // console.log(data);
   let {
     name,
     SKU,
@@ -33,8 +32,19 @@ const postFullProduct = async (data) => {
     product_galleries,
     product_details,
   } = data;
-  console.log(data);
 
+  const existingProduct = await prisma.product.findFirst({
+    where: {
+      OR: [
+        { name: { equals: name, mode: "insensitive" } },
+        { SKU: { equals: SKU, mode: "insensitive" } },
+      ],
+    },
+  });
+  console.log(existingProduct);
+  if (existingProduct) {
+    throw new CustomAPIError(`The product duplicate on name or SKU`, 400);
+  }
   slug = slugify(name);
   // console.log(slug);
   const product = await prisma.product.create({
@@ -56,7 +66,7 @@ const postFullProduct = async (data) => {
   });
   // console.log(product);
   if (!product) {
-    throw new CustomAPIError(`no product with id of ${id}`, 400);
+    throw new CustomAPIError(`Product creation is failed`, 400);
   }
   return product;
 };
@@ -224,7 +234,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
 
 module.exports = {
   fetchAllProducts,
-  fetchSingleProductById,
+  fetchSingleProductBySlug,
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,

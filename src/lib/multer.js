@@ -6,9 +6,7 @@ const createUploadsFolder = () => {
 
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath);
-    console.log("Uploads folder created successfully.");
-  } else {
-    console.log("Uploads folder already exists.");
+    // console.log("Uploads folder created successfully.");
   }
 };
 createUploadsFolder();

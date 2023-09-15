@@ -1,8 +1,12 @@
+const CustomAPIError = require("../middlewares/custom-error");
 const categoryServices = require("../services/category.service");
 
 const getAllCategory = async (req, res) => {
   try {
     const categories = await categoryServices.findAll(req.query);
+    if (!categories) {
+      throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
+    }
     res.status(200).json({
       message: "Get All Categories",
       data: categories,
@@ -15,6 +19,9 @@ const getAllCategory = async (req, res) => {
 const getOneCategory = async (req, res) => {
   try {
     const categories = await categoryServices.findOne(req.params);
+    if (!categories) {
+      throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
+    }
     res.status(200).json({
       message: "Get Categories",
       data: categories,
@@ -27,6 +34,9 @@ const getOneCategory = async (req, res) => {
 const newCategory = async (req, res) => {
   try {
     const categories = await categoryServices.create(req.body);
+    if (!categories) {
+      throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
+    }
     res.status(201).json({
       message: "Create New Category Succesfully",
       data: categories,
@@ -38,10 +48,17 @@ const newCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    const categories = await categoryServices.update(req.params, req.body);
+    const categories = await categoryServices.findOne(req.params);
+    if (!categories) {
+      throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
+    }
+    const updatedCategories = await categoryServices.update(
+      req.params,
+      req.body
+    );
     res.status(200).json({
       message: "Update Category Succesfully",
-      data: categories,
+      data: updatedCategories,
     });
   } catch (error) {}
 };
