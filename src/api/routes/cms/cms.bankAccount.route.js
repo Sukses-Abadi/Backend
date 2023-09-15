@@ -1,15 +1,17 @@
 const {
-  getBankAccount,
+  getAllBankAccount,
   createBankAccount,
   updateBankAccount,
   deleteBankAccount,
 } = require("../../controllers/cms/cms.bankAccount.controller");
+const { verifyTokenAdmin } = require("../../middlewares/verifyTokenMiddleware");
 
 const router = require("express").Router();
 
-router.get("/cms/bank-account", getBankAccount);
-router.post("/cms/bank-account", createBankAccount);
-router.put("/cms/bank-account/:id", updateBankAccount);
-router.delete("/cms/bank-account/:id", deleteBankAccount);
+router.use(verifyTokenAdmin);
+router.get("/", getAllBankAccount);
+router.post("/", createBankAccount);
+router.put("/:id", updateBankAccount);
+router.delete("/:id", deleteBankAccount);
 
 module.exports = router;

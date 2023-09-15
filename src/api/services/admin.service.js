@@ -20,11 +20,6 @@ const loginAdmin = async (payload) => {
   return token;
 };
 
-const fetchAllAdmin = async () => {
-  const result = await prisma.admin.findMany();
-  return result;
-};
-
 const postAdmin = async (payload) => {
   const { username, password } = payload;
   const existingAdmin = await prisma.admin.findUnique({
@@ -110,7 +105,6 @@ const destroyAdmin = async (params) => {
 
 module.exports = {
   loginAdmin,
-  fetchAllAdmin,
   postAdmin,
   putAdmin,
   destroyAdmin,

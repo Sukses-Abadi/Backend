@@ -1,7 +1,7 @@
-const { getBankAccount } = require("../controllers/bankAccount.controller");
+const { getAllBankAccount } = require("../controllers/bankAccount.controller");
 
 const router = require("express").Router();
 
-router.get("/bank-account", getBankAccount);
+router.get("/", getAllBankAccount);
 
 module.exports = router;

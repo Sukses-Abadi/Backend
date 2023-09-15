@@ -1,6 +1,6 @@
 const { fetchBankAccount } = require("../services/bankAccount.service");
 
-const getBankAccount = async (req, res) => {
+const getAllBankAccount = async (req, res) => {
   try {
     const result = await fetchBankAccount();
     res.json({
@@ -14,5 +14,5 @@ const getBankAccount = async (req, res) => {
 };
 
 module.exports = {
-  getBankAccount,
+  getAllBankAccount,
 };

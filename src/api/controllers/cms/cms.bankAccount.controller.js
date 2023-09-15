@@ -5,21 +5,17 @@ const {
   destroyBankAccount,
 } = require("../../services/bankAccount.service");
 
-const getBankAccount = async (req, res) => {
-  try {
-    const result = await fetchBankAccount();
-    res.json({
-      status: "success",
-      message: "Get Bank Account success",
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+const getAllBankAccount = async (req, res) => {
+  const result = await fetchBankAccount(req.user);
+  res.json({
+    status: "success",
+    message: "Get Bank Account success",
+    data: result,
+  });
 };
 
 const createBankAccount = async (req, res) => {
-  const result = await postBankAccount(req.body);
+  const result = await postBankAccount(req.user, req.body);
 
   res.status(201).json({
     status: "success",
@@ -49,7 +45,7 @@ const deleteBankAccount = async (req, res) => {
 };
 
 module.exports = {
-  getBankAccount,
+  getAllBankAccount,
   createBankAccount,
   updateBankAccount,
   deleteBankAccount,

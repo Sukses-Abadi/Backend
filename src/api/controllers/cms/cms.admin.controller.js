@@ -1,6 +1,5 @@
 const {
   loginAdmin,
-  fetchAllAdmin,
   postAdmin,
   putAdmin,
   destroyAdmin,
@@ -12,16 +11,6 @@ const login = async (req, res) => {
   return res.json({
     status: "success",
     message: "Admin credential matched! Here is your token",
-    data: result,
-  });
-};
-
-const getAllAdmin = async (req, res) => {
-  const result = await fetchAllAdmin();
-
-  return res.json({
-    status: "success",
-    message: "Get Admin success",
     data: result,
   });
 };
@@ -60,7 +49,6 @@ const deleteAdmin = async (req, res) => {
 
 module.exports = {
   login,
-  getAllAdmin,
   createAdmin,
   updateAdmin,
   deleteAdmin,

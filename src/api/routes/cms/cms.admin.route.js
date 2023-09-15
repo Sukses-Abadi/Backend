@@ -1,6 +1,5 @@
 const {
   login,
-  getAllAdmin,
   createAdmin,
   updateAdmin,
   deleteAdmin,
@@ -10,9 +9,10 @@ const { verifyTokenAdmin } = require("../../middlewares/verifyTokenMiddleware");
 const router = require("express").Router();
 
 router.post("/register", createAdmin);
-router.get("/login", login);
-router.get("/admin", verifyTokenAdmin, getAllAdmin);
-router.put("/admin/:id", verifyTokenAdmin, updateAdmin);
-router.delete("/admin/:id", verifyTokenAdmin, deleteAdmin);
+router.post("/login", login);
+
+router.use(verifyTokenAdmin);
+router.put("/admin/:id", updateAdmin);
+// router.delete("/admin/:id", deleteAdmin);
 
 module.exports = router;

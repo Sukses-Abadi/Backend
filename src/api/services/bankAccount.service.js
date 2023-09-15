@@ -1,43 +1,45 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
 
-const fetchBankAccount = async () => {
-  try {
-    const result = await prisma.bankAccount.findMany();
+const fetchBankAccount = async (params) => {
+  if (params) {
+    const { id } = params;
+    const result = await prisma.bankAccount.findMany({
+      where: {
+        admin_id: id,
+      },
+    });
+
     return result;
-  } catch (error) {
-    console.log(error);
   }
+
+  const result = await prisma.bankAccount.findMany();
+  return result;
 };
 
 const postBankAccount = async (params, payload) => {
-  const data = payload;
   const { id } = params;
-  const getId = await prisma.admin.findMany();
-  const adminId = getId[0].id;
 
-  console.log(getId);
-
-  const existingAccNumber = await prisma.bankAccount.findUnique({
+  const existingBankAccount = await prisma.bankAccount.findUnique({
     where: {
-      account_number: data.account_number,
+      account_number: payload.account_number,
     },
   });
 
-  if (existingAccNumber) {
-    throw new CustomAPIError("Account number already exist!", 400);
+  if (existingBankAccount) {
+    throw new CustomAPIError("Bank account already exist!", 400);
   }
 
-  //   const result = await prisma.bankAccount.create({
-  //     data: {
-  //       account_holder: data.account_holder,
-  //       bank_name: data.bank_name,
-  //       account_number: data.account_number,
-  //       admin_id: adminId,
-  //     },
-  //   });
+  const result = await prisma.bankAccount.create({
+    data: {
+      account_holder: payload.account_holder,
+      bank_name: payload.bank_name,
+      account_number: payload.account_number,
+      admin_id: id,
+    },
+  });
 
-  //   return result;
+  return result;
 };
 
 const putBankAccount = async (params, payload) => {
