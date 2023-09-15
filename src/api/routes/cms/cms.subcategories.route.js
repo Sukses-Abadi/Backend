@@ -2,10 +2,10 @@ const controllers = require("../../controllers/subCategory");
 
 const router = require("express").Router();
 
-router.get("/subcategory", controllers.getAllSubCategory);
-router.get("/subcategory/:id", controllers.getOneSubCategory);
-router.post("/subcategory", controllers.newSubCategory);
-router.put("/subcategory/:id", controllers.updateSubCategory);
-router.delete("/subcategory/:id", controllers.deleteSubCategory);
+router.get("/", controllers.getAllSubCategory);
+router.get("/:id", controllers.getOneSubCategory);
+router.post("/", controllers.newSubCategory);
+router.put("/:id", controllers.updateSubCategory);
+router.delete("/:id", controllers.deleteSubCategory);
 
 module.exports = router;

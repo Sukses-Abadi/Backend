@@ -42,9 +42,6 @@ const newSubCategory = async (req, res) => {
 };
 
 const updateSubCategory = async (req, res) => {
-  if (!req.body) {
-    throw new CustomAPIError(`please provide all the required parameters`, 400);
-  }
   try {
     const categories = await subCategoryServices.update(req.params, req.body);
     if (!categories) {

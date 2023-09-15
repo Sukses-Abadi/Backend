@@ -7,48 +7,40 @@ const fetchAllProducts = async () => {
   return products;
 };
 
-const fetchSingleProductBySlug = async (slug) => {
-  const product = await prisma.product.findUnique({
-    where: { slug: slug },
-    include: {
-      productDetails: true,
-    },
-  });
-  // console.log(product);
-  if (!product) {
-    throw new CustomAPIError(`no product with id of ${id}`, 400);
+const fetchSingleProductBySlugOrId = async (data) => {
+  let product;
+
+  // Check if the input is numeric, assuming it's an ID
+  if (!isNaN(data)) {
+    product = await prisma.product.findUnique({
+      where: {
+        id: +data, // Convert data to a number
+      },
+      include: {
+        productDetails: true,
+      },
+    });
+  } else {
+    // It's not numeric, so treat it as a slug
+    product = await prisma.product.findUnique({
+      where: {
+        slug: data,
+      },
+      include: {
+        productDetails: true,
+      },
+    });
   }
+
+  if (!product) {
+    throw new CustomAPIError(`No product found with slug or id: ${data}`, 400);
+  }
+
   return product;
 };
 const postFullProduct = async (data) => {
-  let {
-    name,
-    SKU,
-    description,
-    slug,
-    keyword,
-    category_id,
-    sub_category_id,
-    product_galleries,
-    product_details,
-  } = data;
-
-  const existingProduct = await prisma.product.findFirst({
-    where: {
-      OR: [
-        { name: { equals: name, mode: "insensitive" } },
-        { SKU: { equals: SKU, mode: "insensitive" } },
-      ],
-    },
-  });
-  console.log(existingProduct);
-  if (existingProduct) {
-    throw new CustomAPIError(`The product duplicate on name or SKU`, 400);
-  }
-  slug = slugify(name);
-  // console.log(slug);
-  const product = await prisma.product.create({
-    data: {
+  try {
+    let {
       name,
       SKU,
       description,
@@ -56,19 +48,37 @@ const postFullProduct = async (data) => {
       keyword,
       category_id,
       sub_category_id,
-      productGalleries: { create: product_galleries },
-      productDetails: { create: product_details },
-    },
-    include: {
-      productGalleries: true,
-      productDetails: true,
-    },
-  });
-  // console.log(product);
-  if (!product) {
-    throw new CustomAPIError(`Product creation is failed`, 400);
+      product_galleries,
+      product_details,
+    } = data;
+
+    slug = slugify(name);
+    // console.log(slug);
+    const product = await prisma.product.create({
+      data: {
+        name,
+        SKU,
+        description,
+        slug,
+        keyword,
+        category_id,
+        sub_category_id,
+        productGalleries: { create: product_galleries },
+        productDetails: { create: product_details },
+      },
+      include: {
+        productGalleries: true,
+        productDetails: true,
+      },
+    });
+    // console.log(product);
+    if (!product) {
+      throw new CustomAPIError(`Product creation is failed`, 400);
+    }
+    return product;
+  } catch (error) {
+    throw new CustomAPIError(`${error.name} `, 400);
   }
-  return product;
 };
 
 const putUpdateProduct = async (id, data) => {
@@ -234,7 +244,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
 
 module.exports = {
   fetchAllProducts,
-  fetchSingleProductBySlug,
+  fetchSingleProductBySlugOrId,
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,

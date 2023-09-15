@@ -13,7 +13,7 @@ const {
 
 const router = require("express").Router();
 
-router.get("/products", getProductByQueryAndPriceFilter);
-router.get("/products/:slug", getSingleProduct);
+router.get("/", getProductByQueryAndPriceFilter);
+router.get("/:slug", getSingleProduct);
 
 module.exports = router;

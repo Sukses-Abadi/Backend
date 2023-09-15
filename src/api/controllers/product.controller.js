@@ -1,7 +1,7 @@
 const {
   fetchAllProducts,
   fetchProductByQueryAndPriceFilter,
-  fetchSingleProductBySlug,
+  fetchSingleProductBySlugOrId,
 } = require("../services/product.service");
 const CustomAPIError = require("../middlewares/custom-error");
 
@@ -21,8 +21,7 @@ const getAllProducts = async (req, res) => {
 
 const getSingleProduct = async (req, res) => {
   const { slug } = req.params;
-
-  const product = await fetchSingleProductBySlug(slug);
+  const product = await fetchSingleProductBySlugOrId(slug);
   if (!product) {
     throw new CustomAPIError("error fetching product", 404);
   }
