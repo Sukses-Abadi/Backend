@@ -30,8 +30,11 @@ const addToCart = async (params) => {
           quantity: existingCartItem.quantity + quantity,
         },
       });
-
-      return updatedCartItem;
+      const userCart = await prisma.cart.findUnique({
+        where: { user_id: user_id },
+        include: { CartProduct: true },
+      });
+      return userCart;
     } else {
       // Add a new item to the cart
       const newCartItem = await prisma.cartProduct.create({
@@ -43,7 +46,11 @@ const addToCart = async (params) => {
         },
       });
 
-      return newCartItem;
+      const userCart = await prisma.cart.findUnique({
+        where: { user_id: user_id },
+        include: { CartProduct: { include: { product: true } } },
+      });
+      return userCart;
     }
   } catch (error) {
     throw new CustomAPIError(
