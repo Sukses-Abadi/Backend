@@ -1,11 +1,11 @@
-const CustomAPIError = require("../middlewares/custom-error");
+const CustomAPIError = require("../../middlewares/custom-error");
 const {
   fetchAllProducts,
   fetchSingleProduct,
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,
-} = require("../services/product.services");
+} = require("../../services/product.services");
 
 const getAllProductsCMS = async (req, res) => {
   try {

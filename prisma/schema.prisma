@@ -50,7 +50,6 @@ model User {
   password   String
   address    Address[]
   phone      String?
-  review     Int
   edited_at  DateTime  @default(now())
   created_at DateTime  @default(now())
   cart       Cart?
