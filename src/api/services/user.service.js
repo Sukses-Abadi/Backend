@@ -79,9 +79,64 @@ const getUser = async (data) => {
   return token;
 };
 
+const putUser = async (pathParams, params) => {
+  try {
+    const { id } = pathParams;
+    const {
+      username,
+      first_name,
+      last_name,
+      email,
+      age,
+      photo,
+      password,
+      phone,
+    } = params;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = prisma.user.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        username,
+        first_name,
+        last_name,
+        email,
+        age,
+        photo,
+        password: hashedPassword,
+        phone,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const destroyUser = async (params) => {
+  try {
+    const { id } = params;
+
+    const user = await prisma.user.delete({
+      where: {
+        id: +id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   fetchAllUsers,
   fetchSingleUsersById,
   postUser,
   getUser,
+  putUser,
+  destroyUser,
 };
