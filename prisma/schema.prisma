@@ -179,7 +179,7 @@ model Address {
 model City {
   id            Int       @id @default(autoincrement())
   name          String
-  shipping_cost Int
+  shipping_cost Int?
   addresses     Address[]
 }
 
