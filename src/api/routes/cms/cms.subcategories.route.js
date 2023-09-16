@@ -1,4 +1,4 @@
-const controllers = require("../../controllers/subCategory");
+const controllers = require("../../controllers/cms/cms.subCategory.controller");
 
 const router = require("express").Router();
 
