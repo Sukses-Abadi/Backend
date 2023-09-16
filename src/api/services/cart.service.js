@@ -1,5 +1,33 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
+let updateTotalPayment = async (userId) => {
+  try {
+    const cart = await prisma.cart.findUnique({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (!cart) {
+      throw new Error(`Cart not found for user with ID ${userId}`);
+    }
+
+    const totalPayment = (cart.total_price || 0) + (cart.shipping_cost || 0);
+
+    const updatedCart = await prisma.cart.update({
+      where: {
+        user_id: userId,
+      },
+      data: {
+        total_payment: totalPayment,
+      },
+    });
+
+    return updatedCart;
+  } catch (error) {
+    throw new Error(`Unable to update total payment: ${error.message}`);
+  }
+};
 
 const fetchCart = async (user_id) => {
   try {
@@ -167,6 +195,8 @@ const updateUserCart = async (params) => {
         await checkAndUpdateStock(product.id, quantity); //
         await updateCartTotalPrice(user_id);
         await updateCartTotalWeight(user_id);
+        await updateTotalPayment(user_id);
+
         return updatedCartItem;
       } else {
         // If the product_details_id is not in the cart, create a new cart item
@@ -190,6 +220,7 @@ const updateUserCart = async (params) => {
 
         await updateCartTotalPrice(user_id);
         await updateCartTotalWeight(user_id);
+        await updateTotalPayment(user_id);
         return newCartItem;
       }
     } catch (error) {
@@ -213,7 +244,7 @@ const updateUserCart = async (params) => {
         courier,
       });
     }
-
+    await updateTotalPayment(user_id);
     const updatedUserCart = await prisma.cart.findUnique({
       where: { user_id: user_id },
       include: { CartProduct: true },
@@ -227,12 +258,18 @@ const updateUserCart = async (params) => {
 
 const deleteCartProduct = async (params) => {
   const { cart_product_id, id } = params;
-  console.log(params);
-  await prisma.cartProduct.delete({
-    where: {
-      id: cart_product_id,
-    },
-  });
+  try {
+    await prisma.cartProduct.delete({
+      where: {
+        id: cart_product_id,
+      },
+    });
+  } catch (error) {
+    throw new CustomAPIError(
+      `Error adding product to cart: ${error.message}`,
+      400
+    );
+  }
 
   const updatedUserCart = await prisma.cart.findFirst({
     where: { user_id: id },

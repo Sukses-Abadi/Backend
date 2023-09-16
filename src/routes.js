@@ -4,10 +4,6 @@ const adminRoute = require("./api/routes/cms/cms.admin.route");
 const bankAccountRoute = require("./api/routes/bankAccount.route");
 const bankAccountCmsRoute = require("./api/routes/cms/cms.bankAccount.route");
 
-const adminRoute = require("./api/routes/cms/cms.admin.route");
-const bankAccountRoute = require("./api/routes/bankAccount.route");
-const bankAccountCmsRoute = require("./api/routes/cms/cms.bankAccount.route");
-
 const crudCity = require("./api/routes/city.route");
 
 const crudProduct = require("./api/routes/product.route");
