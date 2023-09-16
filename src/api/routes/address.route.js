@@ -1,12 +1,11 @@
 const controllers = require("../controllers/address");
-// const { route } = require("./address.route");
-
+const { verifyTokenUser } = require("../middlewares/verifyTokenMiddleware");
 const router = require("express").Router();
 
-router.get("/user/address", controllers.getAllAddress);
-router.get("/user/:id/address", controllers.getOneAddress);
-router.post("/user/:id/address", controllers.newAddress);
-router.put("/user/:id/address", controllers.updateAddress);
-router.delete("/user/:id/address", controllers.deleteAddress);
+router.get("/", controllers.getAllAddress);
+router.get("/", controllers.getOneAddress);
+router.post("/", controllers.newAddress);
+router.put("/", verifyTokenUser, controllers.updateAddress);
+router.delete("/", controllers.deleteAddress);
 
 module.exports = router;

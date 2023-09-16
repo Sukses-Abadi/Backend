@@ -38,7 +38,8 @@ const newAddress = async (req, res) => {
 
 const updateAddress = async (req, res) => {
   try {
-    const address = await addressServices.update(req.params, req.body);
+    console.log(req.user);
+    const address = await addressServices.update(+req.user.id, req.body);
     res.status(200).json({
       message: "Update Address Succesfully",
       data: address,
