@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const CustomAPIError = require("../middlewares/custom-error");
 
 const prisma = new PrismaClient();
 
@@ -39,7 +40,7 @@ const findAll = async (params) => {
     //     },
     //   },
     // });
-    const categories = prisma.subCategory.findMany(params);
+    const categories = await prisma.subCategory.findMany(params);
     return categories;
   } catch (error) {
     throw error;
@@ -49,8 +50,13 @@ const findAll = async (params) => {
 const findOne = async (params) => {
   try {
     const { id } = params;
-
-    const categories = prisma.subCategory.findUnique({
+    if (!id) {
+      throw new CustomAPIError(
+        "Invalid please provide all of the required fields",
+        400
+      );
+    }
+    const categories = await prisma.subCategory.findUnique({
       where: {
         id: +id,
       },
@@ -65,8 +71,13 @@ const findOne = async (params) => {
 const create = async (params) => {
   try {
     const { name, category_id } = params;
-
-    const categories = prisma.subCategory.create({
+    if (!name || !category_id) {
+      throw new CustomAPIError(
+        "Invalid please provide all of the required fields",
+        400
+      );
+    }
+    const categories = await prisma.subCategory.create({
       data: {
         name: name,
         category_id: +category_id,
@@ -79,31 +90,49 @@ const create = async (params) => {
 };
 
 const update = async (pathParams, params) => {
-  try {
-    const { id } = pathParams;
-    const { name, category_id } = params;
-
-    const categories = prisma.subCategory.update({
-      where: {
-        id: +id,
-      },
-      data: {
-        name: name,
-        category_id: +category_id,
-      },
-    });
-
-    return categories;
-  } catch (error) {
-    console.log(error);
+  const { id } = pathParams;
+  const { name, category_id } = params;
+  if (!id || !name || !category_id) {
+    throw new CustomAPIError(
+      "Invalid please provide all of the required fields",
+      400
+    );
   }
+  const existingCategory = await prisma.subCategory.findUnique({
+    where: { id: +id },
+  });
+  if (!existingCategory) {
+    throw new CustomAPIError(`No sub category with id of ${id}`, 400);
+  }
+  const updatedCategory = await prisma.subCategory.update({
+    where: {
+      id: +id,
+    },
+    data: {
+      name: name,
+      category_id: +category_id,
+    },
+  });
+
+  return updatedCategory;
 };
 
 const destroy = async (params) => {
   try {
     const { id } = params;
-
-    const categories = prisma.subCategory.delete({
+    if (!id) {
+      throw new CustomAPIError(
+        "Invalid please provide all of the required fields",
+        400
+      );
+    }
+    const existingCategory = await prisma.subCategory.findUnique({
+      where: { id: +id },
+    });
+    if (!existingCategory) {
+      throw new CustomAPIError(`No sub category with id of ${id}`, 400);
+    }
+    const categories = await prisma.subCategory.delete({
       where: {
         id: +id,
       },

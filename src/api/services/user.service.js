@@ -4,13 +4,24 @@ const CustomAPIError = require("../middlewares/custom-error");
 const { generateToken } = require("../../lib/jwt");
 
 const fetchAllUsers = async () => {
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({
+    include: {
+      cart: true,
+      Order: true,
+      reviews: true,
+    },
+  });
   return users;
 };
 
 const fetchSingleUsersById = async (id) => {
   const user = await prisma.user.findUnique({
     where: { id: +id },
+    include: {
+      cart: true,
+      Order: true,
+      reviews: true,
+    },
   });
 
   if (!user) {
@@ -20,14 +31,24 @@ const fetchSingleUsersById = async (id) => {
 };
 
 const postUser = async (data) => {
-  console.log(data);
   let { username, first_name, last_name, email, age, photo, password, phone } =
     data;
+
+  // Check if the username or email already exists
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [{ username: username }, { email: email }],
+    },
+  });
+
+  if (existingUser) {
+    throw new CustomAPIError("Username or email already exists", 400);
+  }
 
   // hash the password using bcrypt
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
+  const createdUser = await prisma.user.create({
     data: {
       username,
       first_name,
@@ -38,13 +59,25 @@ const postUser = async (data) => {
       password: hashedPassword, // Use the hashed password here
       phone,
     },
+    // include: {
+    //   cart: true,
+    //   Order: true,
+    //   reviews: true,
+    // },
   });
 
-  if (!user) {
-    throw new CustomAPIError(`no user with id of ${id}`, 400);
-  }
+  // await prisma.cart.create({ data: { user_id: createdUser.id } });
 
-  return user;
+  // const userFull = await prisma.user.findUnique({
+  //   where: { id: createdUser.id },
+  //   include: {
+  //     cart: true,
+  //     Order: true,
+  //     reviews: true,
+  //   },
+  // });
+
+  return createdUser;
 };
 
 const getUser = async (data) => {
@@ -130,6 +163,7 @@ const putUser = async (pathParams, params) => {
 };
 
 const destroyUser = async (params) => {
+  console.log(params);
   try {
     const { id } = params;
 
@@ -140,6 +174,8 @@ const destroyUser = async (params) => {
     if (!user) {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
+
+    await prisma.cart.delete({ where: { user_id: user.id } });
 
     await prisma.user.delete({
       where: {

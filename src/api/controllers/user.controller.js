@@ -3,6 +3,7 @@ const {
   getUser,
   putUser,
   destroyUser,
+  fetchAllUsers,
 } = require("../services/user.service");
 
 const registerUser = async (req, res) => {
@@ -24,7 +25,7 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const user = await putUser(req.params, req.body);
+  const user = await putUser(req.user, req.body);
   return res.json({
     status: "success",
     message: "User is updated successfully",
@@ -33,7 +34,7 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const user = await destroyUser(req.params);
+  const user = await destroyUser(req.user);
   return res.json({
     status: "success",
     message: "User is deleted successfully",

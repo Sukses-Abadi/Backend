@@ -1,11 +1,12 @@
 const CustomAPIError = require("../../middlewares/custom-error");
 const {
   fetchAllProducts,
-  fetchSingleProduct,
+
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,
-} = require("../../services/product.services");
+  fetchSingleProductById,
+} = require("../../services/product.service");
 
 const getAllProductsCMS = async (req, res) => {
   try {
@@ -24,7 +25,7 @@ const getAllProductsCMS = async (req, res) => {
 const getSingleProductCMS = async (req, res) => {
   const { id } = req.params;
   // try {
-  const product = await fetchSingleProduct(id);
+  const product = await fetchSingleProductById(id);
   if (!product) {
     throw new CustomAPIError("Couldn't get product", 404);
   }

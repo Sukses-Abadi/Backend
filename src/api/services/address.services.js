@@ -53,16 +53,16 @@ const create = async (params) => {
 
 const update = async (pathParams, params) => {
   try {
-    const { id } = pathParams;
+    const { user_id } = pathParams; //req.user
 
     const user = await prisma.address.findUnique({
-      where: { id: +id },
+      where: { user_id: +user_id },
     });
 
     if (!user) {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
-    const { street, name, city_id, zip_code, user_id } = params;
+    const { street, name, city_id, zip_code } = params;
 
     const address = await prisma.address.update({
       where: {
@@ -73,15 +73,14 @@ const update = async (pathParams, params) => {
         name: name || user.name,
         city_id: +city_id || user.city_id,
         zip_code: +zip_code || user.zip_code,
-        user_id: +user_id || user.user_id,
       },
     });
 
-    if (!address) {
-      throw new CustomAPIError(`no user with id of ${id}`, 400);
+    if (!user_id) {
+      throw new CustomAPIError(`no address with id user of ${user_id}`, 400);
     }
     const updateAddress = await prisma.address.findUnique({
-      where: { id: +id },
+      where: { user_id: +user_id },
     });
     return updateAddress;
   } catch (error) {

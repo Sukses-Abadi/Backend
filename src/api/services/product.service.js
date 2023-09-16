@@ -7,37 +7,40 @@ const fetchAllProducts = async () => {
   return products;
 };
 
-const fetchSingleProductById = async (id) => {
-  const product = await prisma.product.findUnique({
-    where: { id: +id },
-    include: {
-      productDetails: true,
-    },
-  });
-  // console.log(product);
-  if (!product) {
-    throw new CustomAPIError(`no product with id of ${id}`, 400);
+const fetchSingleProductBySlugOrId = async (data) => {
+  let product;
+
+  // Check if the input is numeric, assuming it's an ID
+  if (!isNaN(data)) {
+    product = await prisma.product.findUnique({
+      where: {
+        id: +data, // Convert data to a number
+      },
+      include: {
+        productDetails: true,
+      },
+    });
+  } else {
+    // It's not numeric, so treat it as a slug
+    product = await prisma.product.findUnique({
+      where: {
+        slug: data,
+      },
+      include: {
+        productDetails: true,
+      },
+    });
   }
+
+  if (!product) {
+    throw new CustomAPIError(`No product found with slug or id: ${data}`, 400);
+  }
+
   return product;
 };
 const postFullProduct = async (data) => {
-  let {
-    name,
-    SKU,
-    description,
-    slug,
-    keyword,
-    category_id,
-    sub_category_id,
-    product_galleries,
-    product_details,
-  } = data;
-  console.log(data);
-
-  slug = slugify(name);
-  console.log(slug);
-  const product = await prisma.product.create({
-    data: {
+  try {
+    let {
       name,
       SKU,
       description,
@@ -45,19 +48,37 @@ const postFullProduct = async (data) => {
       keyword,
       category_id,
       sub_category_id,
-      productGalleries: { create: product_galleries },
-      productDetails: { create: product_details },
-    },
-    include: {
-      productGalleries: true,
-      productDetails: true,
-    },
-  });
-  // console.log(product);
-  if (!product) {
-    throw new CustomAPIError(`no product with id of ${id}`, 400);
+      product_galleries,
+      product_details,
+    } = data;
+
+    slug = slugify(name);
+    // console.log(slug);
+    const product = await prisma.product.create({
+      data: {
+        name,
+        SKU,
+        description,
+        slug,
+        keyword,
+        category_id,
+        sub_category_id,
+        productGalleries: { create: product_galleries },
+        productDetails: { create: product_details },
+      },
+      include: {
+        productGalleries: true,
+        productDetails: true,
+      },
+    });
+    // console.log(product);
+    if (!product) {
+      throw new CustomAPIError(`Product creation is failed`, 400);
+    }
+    return product;
+  } catch (error) {
+    throw new CustomAPIError(`${error.name} `, 400);
   }
-  return product;
 };
 
 const putUpdateProduct = async (id, data) => {
@@ -85,7 +106,7 @@ const putUpdateProduct = async (id, data) => {
     detailsToUpdate = product.productDetails;
   }
 
-  console.log(productGalleriesToUpdate);
+  // console.log(productGalleriesToUpdate);
   await prisma.product.update({
     where: { id: +id },
     data: {
@@ -133,17 +154,25 @@ const deleteFullProduct = async (id) => {
     throw new CustomAPIError(`No product with id of ${id}`, 400);
   }
 
-  // Extract gallery and detail IDs
   const galleryIdsToDelete = product.productGalleries.map(
     (gallery) => gallery.id
   );
   const detailIdsToDelete = product.productDetails.map((detail) => detail.id);
+  await prisma.productGallery.deleteMany({
+    where: { product_id: +id },
+  });
 
+  // Delete ProductDetails first
+  await prisma.productDetails.deleteMany({
+    where: { product_id: +id },
+  });
+
+  // Delete Product
   await prisma.product.delete({
     where: { id: +id },
     include: {
-      productGalleries: true, // Include deleted galleries in the response
-      productDetails: true, // Include deleted details in the response
+      productGalleries: true,
+      productDetails: true,
     },
   });
 
@@ -176,13 +205,13 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     id: id ? Number(id) : undefined,
     SKU,
     name: name ? { contains: name, mode: "insensitive" } : undefined,
-    page: page ? Number(page) : undefined,
+
     sub_category_id: sub_category_id ? Number(sub_category_id) : undefined,
     category_id: category_id ? Number(category_id) : undefined,
   };
 
   const pageNumber = Number(page) || 1;
-  const limit = Number(skip) || 5;
+  const limit = Number(skip) || 2;
   const offset = (pageNumber - 1) * limit;
 
   const products = await prisma.product.findMany({
@@ -205,13 +234,17 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   const filteredProducts = products.filter(
     (product) => product.productDetails.length > 0
   );
-
-  return filteredProducts.length > 0 ? filteredProducts : null;
+  const response = {
+    products: filteredProducts.length > 0 ? filteredProducts : null,
+    page: pageNumber,
+    limit: limit,
+  };
+  return response;
 };
 
 module.exports = {
   fetchAllProducts,
-  fetchSingleProductById,
+  fetchSingleProductBySlugOrId,
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,

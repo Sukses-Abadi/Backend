@@ -4,12 +4,12 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/user.controller");
-
+const { verifyTokenUser } = require("../middlewares/verifyTokenMiddleware");
 const router = require("express").Router();
 
 router.post("/register", registerUser);
-router.get("/login", loginUser);
-router.put("/user/:id", updateUser);
-router.delete("/user/:id", deleteUser);
+router.post("/login", loginUser);
+router.put("/", verifyTokenUser, updateUser);
+router.delete("/", verifyTokenUser, deleteUser);
 
 module.exports = router;

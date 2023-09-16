@@ -32,7 +32,6 @@ model Product {
   sub_category_id  Int
   productDetails   ProductDetails[]
   productGalleries ProductGallery[]
-  cartProducts     CartProduct[]
   Category         Category         @relation(fields: [category_id], references: [id])
   SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id])
   reviews          Review[]
@@ -73,8 +72,10 @@ model Review {
 model Cart {
   id              Int           @id @default(autoincrement())
   user_id         Int           @unique
-  shipping_cost   Int
-  total_amount    Int
+  shipping_cost   Int?
+  shipping_method String?
+  total_price     Int           @default(0)
+  courier         Courier?
   address_id      Int?
   bank_account_id Int?
   user            User          @relation(fields: [user_id], references: [id])
@@ -91,31 +92,46 @@ model Category {
 }
 
 model BankAccount {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   account_holder String
-  bank_name      String?
-  account_number String  @unique
+  bank_name      BankName
+  account_number String   @unique
   admin_id       Int?
-  admin          Admin?  @relation(fields: [admin_id], references: [id])
+  admin          Admin?   @relation(fields: [admin_id], references: [id])
   orders         Order[]
   carts          Cart[]
+}
+
+enum BankName {
+  BCA
+  BRI
+  MANDIRI
 }
 
 model Order {
   id              Int            @id @default(autoincrement())
   user_id         Int
   total_price     Int
+  shipping_cost   Int
+  total_payment   Int
+  shipping_method String
   order_date      DateTime
   payment_receipt String
   status          OrderStatus
-  shipping_cost   Int
   tracking_number String?
-  address_id      Int?
-  bank_account_id Int?
+  address_id      Int
+  bank_account_id Int
+  courier         Courier
   user            User           @relation(fields: [user_id], references: [id])
-  address         Address?       @relation(fields: [address_id], references: [id])
-  bankAccount     BankAccount?   @relation(fields: [bank_account_id], references: [id])
+  address         Address        @relation(fields: [address_id], references: [id])
+  bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id])
   orderProducts   OrderProduct[]
+}
+
+enum Courier {
+  jne
+  pos
+  tiki
 }
 
 enum OrderStatus {
@@ -137,13 +153,14 @@ model OrderProduct {
 }
 
 model ProductDetails {
-  id         Int     @id @default(autoincrement())
-  product_id Int
-  color      String?
-  size       String
-  stock      Int
-  price      Int
-  product    Product @relation(fields: [product_id], references: [id])
+  id          Int           @id @default(autoincrement())
+  product_id  Int
+  color       String?
+  size        String
+  stock       Int
+  price       Int
+  product     Product       @relation(fields: [product_id], references: [id])
+  CartProduct CartProduct[]
 }
 
 model ProductGallery {
@@ -154,13 +171,13 @@ model ProductGallery {
 }
 
 model CartProduct {
-  id         Int     @id @default(autoincrement())
-  product_id Int     @unique
-  cart_id    Int
-  quantity   Int
-  price      Int
-  product    Product @relation(fields: [product_id], references: [id])
-  cart       Cart    @relation(fields: [cart_id], references: [id])
+  id                 Int            @id @default(autoincrement())
+  product_details_id Int
+  cart_id            Int
+  quantity           Int
+  price              Int
+  ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id])
+  cart               Cart           @relation(fields: [cart_id], references: [id])
 }
 
 model Address {
@@ -177,10 +194,9 @@ model Address {
 }
 
 model City {
-  id            Int       @id @default(autoincrement())
-  name          String
-  shipping_cost Int?
-  addresses     Address[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  addresses Address[]
 }
 
 model SubCategory {
