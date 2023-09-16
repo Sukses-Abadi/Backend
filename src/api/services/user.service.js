@@ -1,5 +1,5 @@
 const prisma = require("../../lib/prisma");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const CustomAPIError = require("../middlewares/custom-error");
 const { generateToken } = require("../../lib/jwt");
 

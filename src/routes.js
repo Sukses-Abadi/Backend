@@ -3,6 +3,7 @@ const router = require("express").Router();
 const crudProduct = require("./api/routes/product.route");
 const userRoute = require("./api/routes/user.route");
 
+const crudCity = require("./api/routes/city.route");
 const crudAddress = require("./api/routes/address.route");
 
 const crudCategory = require("./api/routes/cms/cms.categories.route");
@@ -19,6 +20,7 @@ router.post("/api/uploads", upload.array("file", 5), uploadFile);
 router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);
 router.use("/api/address", crudAddress);
+router.use("/api/city", crudCity);
 
 // router.use("/api", crudSubCategory);
 router.use("/api/cms/category", crudCategory);

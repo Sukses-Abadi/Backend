@@ -51,12 +51,10 @@ const create = async (params) => {
   }
 };
 
-const update = async (pathParams, params) => {
+const update = async (user_id, params) => {
   try {
-    const { user_id } = pathParams; //req.user
-
-    const user = await prisma.address.findUnique({
-      where: { user_id: +user_id },
+    const user = await prisma.user.findUnique({
+      where: { user_id: user_id },
     });
 
     if (!user) {
