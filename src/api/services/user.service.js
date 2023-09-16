@@ -59,14 +59,14 @@ const postUser = async (data) => {
       password: hashedPassword, // Use the hashed password here
       phone,
     },
-    // include: {
-    //   cart: true,
-    //   Order: true,
-    //   reviews: true,
-    // },
+    include: {
+      cart: true,
+      Order: true,
+      reviews: true,
+    },
   });
 
-  // await prisma.cart.create({ data: { user_id: createdUser.id } });
+  await prisma.cart.create({ data: { user_id: createdUser.id } });
 
   // const userFull = await prisma.user.findUnique({
   //   where: { id: createdUser.id },

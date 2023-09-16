@@ -4,7 +4,7 @@ const getAllAddress = async (req, res) => {
   try {
     const address = await addressServices.findAll(+req.user.id);
     res.status(200).json({
-      message: "Get All Address Succesfully",
+      message: "Get All Address succesfully",
       data: address,
     });
   } catch (error) {
