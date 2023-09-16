@@ -1,57 +1,68 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
 
+const fetchCart = async (user_id) => {
+  try {
+    const userCart = await prisma.cart.findUnique({
+      where: { user_id: user_id },
+      include: { CartProduct: true },
+    });
+    return userCart;
+  } catch (error) {
+    throw new CustomAPIError(
+      `Error fetching user's cart: ${error.message}`,
+      400
+    );
+  }
+};
+
 const addToCart = async (params) => {
   const { product_details_id, user_id, quantity } = params;
-  console.log(product_details_id, user_id, quantity);
-  const product = await prisma.productDetails.findFirst({
-    where: { id: product_details_id },
-    include: { product: true },
-  });
-  console.log(product);
+
   try {
-    // Check if the product is already in the cart
-    const existingCartItem = await prisma.cartProduct.findFirst({
-      where: {
-        product_id: product.product.id,
-        cart: {
-          user_id: user_id,
-        },
+    const user = await prisma.user.findUnique({
+      where: { id: user_id },
+      include: { cart: true },
+    });
+    console.log(user);
+    // Check if the product exists
+    const product_details = await prisma.productDetails.findUnique({
+      where: { id: product_details_id },
+      include: { product: true },
+    });
+    console.log(product_details);
+    if (!product_details) {
+      throw new CustomAPIErrorError("Product not found");
+    }
+
+    // Create a new item in the cart
+    const newCartItem = await prisma.cartProduct.create({
+      data: {
+        product_details_id: product_details_id, // Assuming you want to add the first product detail
+        cart_id: user.cart.user_id, // get the data from user.cart
+        quantity,
+        price: product_details.price * quantity, // Calculate the total price based on quantity
       },
     });
 
-    if (existingCartItem) {
-      // Update the quantity if the product is already in the cart
-      const updatedCartItem = await prisma.cartProduct.update({
-        where: {
-          id: existingCartItem.id,
-        },
-        data: {
-          quantity: existingCartItem.quantity + quantity,
-        },
-      });
-      const userCart = await prisma.cart.findUnique({
-        where: { user_id: user_id },
-        include: { CartProduct: true },
-      });
-      return userCart;
-    } else {
-      // Add a new item to the cart
-      const newCartItem = await prisma.cartProduct.create({
-        data: {
-          product: { connect: { id: product.product.id } },
-          cart: { connect: { user_id: user_id } },
-          quantity,
-          price: product.price, // Assuming the product has a price field
-        },
-      });
+    // Update the total_price in the cart
+    const cartProducts = await prisma.cartProduct.findMany({
+      where: { cart_id: user_id },
+      include: {
+        ProductDetails: true,
+      },
+    });
 
-      const userCart = await prisma.cart.findUnique({
-        where: { user_id: user_id },
-        include: { CartProduct: { include: { product: true } } },
-      });
-      return userCart;
-    }
+    const total_price = cartProducts.reduce((acc, item) => {
+      return acc + item.price;
+    }, 0);
+
+    await prisma.cart.update({
+      where: { user_id: user_id },
+      data: { total_price },
+    });
+
+    return newCartItem;
   } catch (error) {
     throw new CustomAPIError(
       `Error adding product to cart: ${error.message}`,
@@ -59,4 +70,4 @@ const addToCart = async (params) => {
     );
   }
 };
-module.exports = addToCart;
+module.exports = { addToCart, fetchCart };
