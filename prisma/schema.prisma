@@ -32,8 +32,8 @@ model Product {
   sub_category_id  Int
   productDetails   ProductDetails[]
   productGalleries ProductGallery[]
-  Category         Category         @relation(fields: [category_id], references: [id])
-  SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id])
+  Category         Category         @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   reviews          Review[]
   OrderProduct     OrderProduct[]
 }
@@ -65,8 +65,8 @@ model Review {
   image       String?
   edited_at   DateTime @default(now())
   created_at  DateTime @default(now())
-  product     Product  @relation(fields: [product_id], references: [id])
-  user        User     @relation(fields: [user_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Cart {
@@ -78,9 +78,9 @@ model Cart {
   courier         Courier?
   address_id      Int?
   bank_account_id Int?
-  user            User          @relation(fields: [user_id], references: [id])
-  address         Address?      @relation(fields: [address_id], references: [id])
-  bankAccount     BankAccount?  @relation(fields: [bank_account_id], references: [id])
+  user            User          @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  address         Address?      @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  bankAccount     BankAccount?  @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   CartProduct     CartProduct[]
 }
 
@@ -97,15 +97,19 @@ model BankAccount {
   bank_name      BankName
   account_number String   @unique
   admin_id       Int?
-  admin          Admin?   @relation(fields: [admin_id], references: [id])
+  admin          Admin?   @relation(fields: [admin_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orders         Order[]
   carts          Cart[]
 }
 
 enum BankName {
+  BSI
   BCA
+  BNI
   BRI
-  MANDIRI
+  Mandiri
+  Permata
+  SeaBank
 }
 
 model Order {
@@ -122,9 +126,9 @@ model Order {
   address_id      Int
   bank_account_id Int
   courier         Courier
-  user            User           @relation(fields: [user_id], references: [id])
-  address         Address        @relation(fields: [address_id], references: [id])
-  bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id])
+  user            User           @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  address         Address        @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderProducts   OrderProduct[]
 }
 
@@ -148,8 +152,8 @@ model OrderProduct {
   order_id   Int
   quantity   Int
   price      Int
-  product    Product @relation(fields: [product_id], references: [id])
-  order      Order   @relation(fields: [order_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  order      Order   @relation(fields: [order_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model ProductDetails {
@@ -159,7 +163,7 @@ model ProductDetails {
   size        String
   stock       Int
   price       Int
-  product     Product       @relation(fields: [product_id], references: [id])
+  product     Product       @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   CartProduct CartProduct[]
 }
 
@@ -167,7 +171,7 @@ model ProductGallery {
   id         Int     @id @default(autoincrement())
   photo      String
   product_id Int
-  product    Product @relation(fields: [product_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model CartProduct {
@@ -176,8 +180,8 @@ model CartProduct {
   cart_id            Int
   quantity           Int
   price              Int
-  ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id])
-  cart               Cart           @relation(fields: [cart_id], references: [id])
+  ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  cart               Cart           @relation(fields: [cart_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Address {
@@ -187,8 +191,8 @@ model Address {
   city_id  Int
   zip_code Int
   user_id  Int
-  user     User?   @relation(fields: [user_id], references: [id])
-  city     City    @relation(fields: [city_id], references: [id])
+  user     User?   @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  city     City    @relation(fields: [city_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   Cart     Cart[]
   Order    Order[]
 }
@@ -203,6 +207,6 @@ model SubCategory {
   id          Int       @id @default(autoincrement())
   name        String
   category_id Int
-  Category    Category  @relation(fields: [category_id], references: [id])
+  Category    Category  @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   Product     Product[]
 }
