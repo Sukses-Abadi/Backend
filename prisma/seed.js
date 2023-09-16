@@ -855,24 +855,6 @@ async function main() {
         account_number: "2345678901",
         admin_id: 2,
       },
-      {
-        account_holder: "Admin 3",
-        bank_name: "SeaBank",
-        account_number: "8765432109",
-        admin_id: 3,
-      },
-      {
-        account_holder: "Admin 3",
-        bank_name: "BSI",
-        account_number: "2109876543",
-        admin_id: 3,
-      },
-      {
-        account_holder: "Admin 3",
-        bank_name: "BCA",
-        account_number: "6543210987",
-        admin_id: 3,
-      },
     ],
   });
   console.log("Seed data created successfully");

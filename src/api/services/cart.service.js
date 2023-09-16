@@ -53,7 +53,6 @@ const updateUserCart = async (params) => {
     bank_account_id,
     courier,
     shipping_method,
-
   } = params;
   if (quantity < 1) {
     throw new CustomAPIError("Quantity must be greater than 0 ", 400);
@@ -83,8 +82,12 @@ const updateUserCart = async (params) => {
   };
 
   let updateCartTotalPrice = async (user_id) => {
+    const user = await prisma.user.findUnique({
+      where: { id: user_id },
+      include: { cart: true },
+    });
     const cartProducts = await prisma.cartProduct.findMany({
-      where: { cart_id: user_id },
+      where: { cart_id: user.cart.id },
       include: {
         ProductDetails: true,
       },
@@ -161,7 +164,6 @@ const updateUserCart = async (params) => {
   // If the product_details_id is already in the cart, update quantity and checkstock
   const addItemToCart = async (product_details_id, user_id, quantity) => {
     try {
-
       await prisma.$transaction(async (tx) => {
         // Code running in a transaction...
 
@@ -181,7 +183,6 @@ const updateUserCart = async (params) => {
         );
 
         if (existingCartItem) {
-          console.log(product.price);
           const updatedCartItem = await prisma.cartProduct.update({
             where: {
               id: existingCartItem.id,
@@ -222,7 +223,7 @@ const updateUserCart = async (params) => {
               product_details_id,
               cart_id: user.cart.id,
               quantity,
-              price: product_details.price * quantity,
+              price: product_details.price,
             },
           });
 
@@ -232,7 +233,6 @@ const updateUserCart = async (params) => {
           return newCartItem;
         }
       });
-
     } catch (error) {
       throw new CustomAPIError(
         `Error adding product to cart: ${error.message}`,
@@ -246,7 +246,6 @@ const updateUserCart = async (params) => {
 
   // check params to update
   try {
-
     if (
       address_id ||
       shipping_cost ||
