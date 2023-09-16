@@ -53,6 +53,7 @@ const updateUserCart = async (params) => {
     bank_account_id,
     courier,
     shipping_method,
+
   } = params;
   if (quantity < 1) {
     throw new CustomAPIError("Quantity must be greater than 0 ", 400);
@@ -160,6 +161,7 @@ const updateUserCart = async (params) => {
   // If the product_details_id is already in the cart, update quantity and checkstock
   const addItemToCart = async (product_details_id, user_id, quantity) => {
     try {
+
       await prisma.$transaction(async (tx) => {
         // Code running in a transaction...
 
@@ -230,6 +232,7 @@ const updateUserCart = async (params) => {
           return newCartItem;
         }
       });
+
     } catch (error) {
       throw new CustomAPIError(
         `Error adding product to cart: ${error.message}`,
@@ -243,6 +246,7 @@ const updateUserCart = async (params) => {
 
   // check params to update
   try {
+
     if (
       address_id ||
       shipping_cost ||

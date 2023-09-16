@@ -25,6 +25,7 @@ const updateCart = async (req, res) => {
     bank_account_id: req.body.bank_account_id,
     courier: req.body.courier || JNE,
     shipping_method: req.body.shipping_method,
+
   };
   const cart = await updateUserCart(params);
   return res.json({
