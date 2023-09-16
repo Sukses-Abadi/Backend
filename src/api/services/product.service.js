@@ -4,6 +4,7 @@ const CustomAPIError = require("../middlewares/custom-error");
 
 const fetchAllProducts = async () => {
   const products = await prisma.product.findMany();
+  console.log(products);
   return products;
 };
 
@@ -53,7 +54,7 @@ const postFullProduct = async (data) => {
     } = data;
 
     slug = slugify(name);
-    // console.log(slug);
+
     const product = await prisma.product.create({
       data: {
         name,
@@ -71,7 +72,7 @@ const postFullProduct = async (data) => {
         productDetails: true,
       },
     });
-    // console.log(product);
+
     if (!product) {
       throw new CustomAPIError(`Product creation is failed`, 400);
     }
@@ -82,14 +83,13 @@ const postFullProduct = async (data) => {
 };
 
 const putUpdateProduct = async (id, data) => {
-  // console.log(id, data);
   const product = await prisma.product.findUnique({
     where: { id: +id },
     include: { productGalleries: true, productDetails: true },
   });
 
   if (!product) {
-    throw new CustomAPIError(`no product with id of ${id}`, 400);
+    throw new CustomAPIError(`No product with id of ${id}`, 400);
   }
 
   let productGalleriesToUpdate;
@@ -106,7 +106,6 @@ const putUpdateProduct = async (id, data) => {
     detailsToUpdate = product.productDetails;
   }
 
-  // console.log(productGalleriesToUpdate);
   await prisma.product.update({
     where: { id: +id },
     data: {
@@ -154,19 +153,6 @@ const deleteFullProduct = async (id) => {
     throw new CustomAPIError(`No product with id of ${id}`, 400);
   }
 
-  const galleryIdsToDelete = product.productGalleries.map(
-    (gallery) => gallery.id
-  );
-  const detailIdsToDelete = product.productDetails.map((detail) => detail.id);
-  await prisma.productGallery.deleteMany({
-    where: { product_id: +id },
-  });
-
-  // Delete ProductDetails first
-  await prisma.productDetails.deleteMany({
-    where: { product_id: +id },
-  });
-
   // Delete Product
   await prisma.product.delete({
     where: { id: +id },
@@ -178,8 +164,6 @@ const deleteFullProduct = async (id) => {
 
   return {
     deletedProduct: product,
-    deletedGalleries: galleryIdsToDelete,
-    deletedDetails: detailIdsToDelete,
   };
 };
 

@@ -36,8 +36,8 @@ router.use("/api/bank-accounts", crudBank);
 
 router.use(verifyTokenAdmin);
 router.use("/api/cms/category", crudCategory);
-router.use("/api/cms/subcategory", crudSubCategory); //BELUM DICEK
-router.use("/api/cms/products", crudProductCMS); //BELUM DICEK
+router.use("/api/cms/subcategory", crudSubCategory);
+router.use("/api/cms/products", crudProductCMS);
 router.use("/api/cms/users", crudUserCMS);
 router.use("/api/cms/bank-accounts", crudBankCMS);
 

@@ -5,6 +5,7 @@ const getAllSubCategory = async (req, res) => {
   try {
     const categories = await subCategoryServices.findAll(req.query);
     res.status(200).json({
+      status: "success",
       message: "Get All Sub Categories",
       data: categories,
     });
@@ -20,7 +21,8 @@ const getOneSubCategory = async (req, res) => {
       throw new CustomAPIError(`No sub category with id ${req.params.id}`, 400);
     }
     res.status(200).json({
-      message: "Get Sub Categories",
+      status: "success",
+      message: "Get Sub Category",
       data: categories,
     });
   } catch (error) {
@@ -33,6 +35,7 @@ const newSubCategory = async (req, res) => {
     const categories = await subCategoryServices.create(req.body);
 
     res.status(201).json({
+      status: "success",
       message: "Create New Sub Category Succesfully",
       data: categories,
     });
@@ -44,10 +47,9 @@ const newSubCategory = async (req, res) => {
 const updateSubCategory = async (req, res) => {
   try {
     const categories = await subCategoryServices.update(req.params, req.body);
-    if (!categories) {
-      throw new CustomAPIError(`No sub category with id ${req.params.id}`, 400);
-    }
+
     res.status(200).json({
+      status: "success",
       message: "Update Sub Category Succesfully",
       data: categories,
     });
@@ -58,10 +60,9 @@ const updateSubCategory = async (req, res) => {
 
 const deleteSubCategory = async (req, res) => {
   const categories = await subCategoryServices.destroy(req.params);
-  if (!categories) {
-    throw new CustomAPIError(`No sub category with id ${req.params.id}`, 400);
-  }
+
   res.status(200).json({
+    status: "success",
     message: "Delete Sub Category Succesfully",
     data: categories,
   });
