@@ -3,7 +3,7 @@ const prisma = require("../../lib/prisma");
 const CustomAPIError = require("./custom-error");
 
 const verifyTokenUser = (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.headers.authorization.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
