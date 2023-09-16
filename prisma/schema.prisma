@@ -17,7 +17,7 @@ model Admin {
   city_id     Int?          @unique
   address     String?
   bankAccount BankAccount[]
-  City        City?         @relation(fields: [cityId], references: [id])
+  City        City?         @relation(fields: [cityId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   cityId      Int?
 }
 
@@ -32,11 +32,11 @@ model Product {
   updated_at       DateTime         @default(now())
   discount         String?
   weight           Int              @default(100)
-  category_id      Int
+  category_id      Int?
   sub_category_id  Int
   productDetails   ProductDetails[]
   productGalleries ProductGallery[]
-  Category         Category         @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Category         Category?        @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   reviews          Review[]
 }
@@ -126,7 +126,7 @@ model Order {
   total_weight    Int
   shipping_method String
   order_date      DateTime
-  payment_receipt String
+  payment_receipt String?
   status          OrderStatus
   tracking_number String?
   address_id      Int
@@ -169,7 +169,7 @@ model ProductDetails {
   size         String
   stock        Int
   price        Int
-  product      Product        @relation(fields: [product_id], references: [id])
+  product      Product        @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   CartProduct  CartProduct[]
   OrderProduct OrderProduct[]
 }

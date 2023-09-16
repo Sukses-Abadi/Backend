@@ -82,21 +82,23 @@ const updateUserCart = async (params) => {
   };
 
   let updateCartTotalPrice = async (user_id) => {
-    const user = await prisma.user.findUnique({
-      where: { id: user_id },
-      include: { cart: true },
+    const cart = await prisma.cart.findUnique({
+      where: {
+        user_id: user_id,
+      },
     });
+
     const cartProducts = await prisma.cartProduct.findMany({
-      where: { cart_id: user.cart.id },
+      where: { cart_id: cart.id },
       include: {
         ProductDetails: true,
       },
     });
-
+    console.log(cartProducts);
     const total_price = cartProducts.reduce((acc, item) => {
       return acc + item.price * item.quantity;
     }, 0);
-
+    console.log(total_price);
     await prisma.cart.update({
       where: { user_id },
       data: { total_price },
@@ -183,6 +185,7 @@ const updateUserCart = async (params) => {
         );
 
         if (existingCartItem) {
+          console.log(product.price);
           const updatedCartItem = await prisma.cartProduct.update({
             where: {
               id: existingCartItem.id,
