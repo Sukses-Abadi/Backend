@@ -12,8 +12,8 @@ const crudProductCMS = require("./api/routes/cms/cms.product.route");
 const crudUserCMS = require("./api/routes/cms/cms.user.route");
 const uploadFile = require("./lib/upload");
 const upload = require("./lib/multer");
-const crudCategoryWeb = require("./api/routes/categories.route");
-const crudSubCategoryWeb = require("./api/routes/subcategories.route");
+// const crudCategoryWeb = require("./api/routes/categories.route");
+// const crudSubCategoryWeb = require("./api/routes/subcategories.route");
 const crudAddressWeb = require("./api/routes/address.route");
 
 /**

@@ -1,28 +1,19 @@
 const { PrismaClient } = require("@prisma/client");
-const { use } = require("express/lib/router");
 
 const prisma = new PrismaClient();
 
-const findAll = async (params) => {
-  try {
-    const address = await prisma.address.findMany();
-    return address;
-  } catch (error) {
-    throw error;
-  }
-};
+const CustomAPIError = require("../middlewares/custom-error");
 
-const findOne = async (params) => {
+const findAll = async (user_id) => {
   try {
-    const { id } = params;
-    const address = await prisma.address.findUnique({
+    const address = await prisma.address.findMany({
       where: {
-        id: +id,
+        user_id: user_id,
       },
     });
 
-    if (!address) {
-      throw new CustomAPIError(`no User with id of ${id}`, 400);
+    if (!address[0]) {
+      throw new CustomAPIError(`No User Address with id of ${user_id}`, 400);
     }
 
     return address;
@@ -31,9 +22,13 @@ const findOne = async (params) => {
   }
 };
 
-const create = async (params) => {
+const create = async (user_id, params) => {
   try {
-    const { street, name, city_id, zip_code, user_id } = params;
+    const user = await prisma.user.findUnique({
+      where: { id: user_id },
+    });
+
+    const { street, name, city_id, zip_code } = params;
 
     const address = await prisma.address.create({
       data: {
@@ -41,7 +36,7 @@ const create = async (params) => {
         name,
         city_id: +city_id,
         zip_code: +zip_code,
-        user_id: +user_id,
+        user_id: user.id,
       },
     });
 
@@ -53,54 +48,50 @@ const create = async (params) => {
 
 const update = async (user_id, params) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { user_id: user_id },
+    const address = await prisma.address.findUnique({
+      where: { id: params.id },
     });
 
-    if (!user) {
-      throw new CustomAPIError(`no user with id of ${id}`, 400);
+    if (!address[0]) {
+      throw new CustomAPIError(`no user with id of ${user_id}`, 400);
     }
     const { street, name, city_id, zip_code } = params;
 
-    const address = await prisma.address.update({
+    await prisma.address.update({
       where: {
-        id: +id,
+        id: address.id,
       },
       data: {
-        street: street || user.street,
-        name: name || user.name,
-        city_id: +city_id || user.city_id,
-        zip_code: +zip_code || user.zip_code,
+        street: street || address.street,
+        name: name || address.name,
+        city_id: +city_id || address.city_id,
+        zip_code: +zip_code || address.zip_code,
       },
     });
 
-    if (!user_id) {
-      throw new CustomAPIError(`no address with id user of ${user_id}`, 400);
-    }
     const updateAddress = await prisma.address.findUnique({
-      where: { user_id: +user_id },
+      where: { id: params.id },
     });
+
     return updateAddress;
   } catch (error) {
     throw error;
   }
 };
 
-const destroy = async (params) => {
+const destroy = async (user_id, params) => {
   try {
-    const { id } = params;
-
     const address = await prisma.address.findUnique({
-      where: { id: +id },
+      where: { id: params.id },
     });
 
-    if (!address) {
-      throw new CustomAPIError(`no user with id of ${id}`, 400);
+    if (!address[0]) {
+      throw new CustomAPIError(`no address with id of ${id}`, 400);
     }
 
     await prisma.address.delete({
       where: {
-        id: +id,
+        id: address.id,
       },
     });
     return {
@@ -113,7 +104,6 @@ const destroy = async (params) => {
 
 module.exports = {
   findAll,
-  findOne,
   create,
   update,
   destroy,

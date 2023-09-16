@@ -2,7 +2,7 @@ const addressServices = require("../services/address.services");
 
 const getAllAddress = async (req, res) => {
   try {
-    const address = await addressServices.findAll();
+    const address = await addressServices.findAll(+req.user.id);
     res.status(200).json({
       message: "Get All Address Succesfully",
       data: address,
@@ -12,21 +12,9 @@ const getAllAddress = async (req, res) => {
   }
 };
 
-const getOneAddress = async (req, res) => {
-  try {
-    const address = await addressServices.findOne(req.params);
-    res.status(200).json({
-      message: "Get Address Succesfully",
-      data: address,
-    });
-  } catch (error) {
-    throw error;
-  }
-};
-
 const newAddress = async (req, res) => {
   try {
-    const address = await addressServices.create(req.body);
+    const address = await addressServices.create(+req.user.id, req.body);
     res.status(201).json({
       message: "Create New Address Succesfully",
       data: address,
@@ -38,7 +26,6 @@ const newAddress = async (req, res) => {
 
 const updateAddress = async (req, res) => {
   try {
-    console.log(req.user);
     const address = await addressServices.update(+req.user.id, req.body);
     res.status(200).json({
       message: "Update Address Succesfully",
@@ -51,7 +38,7 @@ const updateAddress = async (req, res) => {
 
 const deleteAddress = async (req, res) => {
   try {
-    const address = await addressServices.destroy(req.params);
+    const address = await addressServices.destroy(+req.user.id, req.body);
     res.status(200).json({
       message: "Delete Address Succesfully",
       data: address,
@@ -63,7 +50,6 @@ const deleteAddress = async (req, res) => {
 
 module.exports = {
   getAllAddress,
-  getOneAddress,
   newAddress,
   updateAddress,
   deleteAddress,
