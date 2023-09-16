@@ -14,7 +14,10 @@ model Admin {
   id          Int           @id @default(autoincrement())
   username    String        @unique
   password    String
+  city_id     Int?          @unique
+  address     String?
   bankAccount BankAccount[]
+  City        City?         @relation(fields: [city_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Product {
@@ -35,7 +38,6 @@ model Product {
   Category         Category         @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   reviews          Review[]
-  OrderProduct     OrderProduct[]
 }
 
 model User {
@@ -147,24 +149,25 @@ enum OrderStatus {
 }
 
 model OrderProduct {
-  id         Int     @id @default(autoincrement())
-  product_id Int
-  order_id   Int
-  quantity   Int
-  price      Int
-  product    Product @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  order      Order   @relation(fields: [order_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id                 Int            @id @default(autoincrement())
+  product_details_id Int
+  order_id           Int
+  quantity           Int
+  price              Int
+  ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  order              Order          @relation(fields: [order_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model ProductDetails {
-  id          Int           @id @default(autoincrement())
-  product_id  Int
-  color       String?
-  size        String
-  stock       Int
-  price       Int
-  product     Product       @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  CartProduct CartProduct[]
+  id           Int            @id @default(autoincrement())
+  product_id   Int
+  color        String?
+  size         String
+  stock        Int
+  price        Int
+  product      Product        @relation(fields: [product_id], references: [id])
+  CartProduct  CartProduct[]
+  OrderProduct OrderProduct[]
 }
 
 model ProductGallery {
@@ -201,6 +204,7 @@ model City {
   id        Int       @id @default(autoincrement())
   name      String
   addresses Address[]
+  adminCity Admin[]
 }
 
 model SubCategory {
