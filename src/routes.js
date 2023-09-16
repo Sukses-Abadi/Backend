@@ -25,6 +25,7 @@ const {
  * api routes
  */
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
+
 router.use("/api/cms", adminRoute);
 router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);
@@ -35,8 +36,8 @@ router.use("/api/bank-accounts", crudBank);
 
 router.use(verifyTokenAdmin);
 router.use("/api/cms/category", crudCategory);
-router.use("/api/cms/subcategory", crudSubCategory);
-router.use("/api/cms/products", crudProductCMS);
+router.use("/api/cms/subcategory", crudSubCategory); //BELUM DICEK
+router.use("/api/cms/products", crudProductCMS); //BELUM DICEK
 router.use("/api/cms/users", crudUserCMS);
 router.use("/api/cms/bank-accounts", crudBankCMS);
 
