@@ -52,8 +52,8 @@ const update = async (user_id, params) => {
       where: { id: params.id },
     });
 
-    if (!address[0]) {
-      throw new CustomAPIError(`no user with id of ${user_id}`, 400);
+    if (!address) {
+      throw new CustomAPIError(`Address not found`, 404);
     }
     const { street, name, city_id, zip_code } = params;
 
@@ -85,7 +85,7 @@ const destroy = async (user_id, params) => {
       where: { id: params.id },
     });
 
-    if (!address[0]) {
+    if (!address) {
       throw new CustomAPIError(`no address with id of ${id}`, 400);
     }
 

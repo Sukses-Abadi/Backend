@@ -12,10 +12,9 @@ const crudProductCMS = require("./api/routes/cms/cms.product.route");
 const crudUserCMS = require("./api/routes/cms/cms.user.route");
 const uploadFile = require("./lib/upload");
 const upload = require("./lib/multer");
-// const crudCategoryWeb = require("./api/routes/categories.route");
-// const crudSubCategoryWeb = require("./api/routes/subcategories.route");
 const crudAddressWeb = require("./api/routes/address.route");
-
+const crudBank = require("./api/routes/bankAccount.route");
+const crudBankCMS = require("./api/routes/cms/cms.bankAccount.route");
 /**
  * api routes
  */
@@ -24,11 +23,10 @@ router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);
 router.use("/api/address", crudAddress);
 router.use("/api/city", crudCity);
-// router.use("/api", crudCategoryWeb);
-// router.use("/api", crudSubCategoryWeb);
 router.use("/api", crudAddressWeb);
+router.use("/api/bank-accounts", crudBank);
 
-// router.use("/api", crudSubCategory);
+router.use("/api/cms/bank-accounts", crudBankCMS);
 router.use("/api/cms/category", crudCategory);
 router.use("/api/cms/subcategory", crudSubCategory);
 router.use("/api/cms/products", crudProductCMS);

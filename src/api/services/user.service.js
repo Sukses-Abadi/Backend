@@ -163,7 +163,7 @@ const putUser = async (pathParams, params) => {
 };
 
 const destroyUser = async (params) => {
-  console.log(params);
+  // console.log(params);
   try {
     const { id } = params;
 
@@ -175,7 +175,7 @@ const destroyUser = async (params) => {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
 
-    await prisma.cart.delete({ where: { user_id: user.id } });
+    // await prisma.cart.delete({ where: { user_id: user.id } });
 
     await prisma.user.delete({
       where: {
