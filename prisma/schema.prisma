@@ -201,17 +201,10 @@ model Address {
 }
 
 model City {
-<<<<<<< HEAD
   id        Int       @id @default(autoincrement())
   name      String
   addresses Address[]
   adminCity Admin[]
-=======
-  id            Int       @id @default(autoincrement())
-  name          String
-  shipping_cost Int?
-  addresses     Address[]
->>>>>>> c2f34c5 (features/curd/address)
 }
 
 model SubCategory {
