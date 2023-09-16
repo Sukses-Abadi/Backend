@@ -1,5 +1,5 @@
-const CustomAPIError = require("../middlewares/custom-error");
-const subCategoryServices = require("../services/subcategory.service");
+const CustomAPIError = require("../../middlewares/custom-error");
+const subCategoryServices = require("../../services/subcategory.service");
 
 const getAllSubCategory = async (req, res) => {
   try {

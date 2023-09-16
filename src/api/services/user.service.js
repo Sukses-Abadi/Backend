@@ -175,8 +175,6 @@ const destroyUser = async (params) => {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
 
-    await prisma.cart.delete({ where: { user_id: user.id } });
-
     await prisma.user.delete({
       where: {
         id: +id,

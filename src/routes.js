@@ -14,21 +14,27 @@ const crudProductCMS = require("./api/routes/cms/cms.product.route");
 const crudUserCMS = require("./api/routes/cms/cms.user.route");
 const uploadFile = require("./lib/upload");
 const upload = require("./lib/multer");
+const {
+  verifyTokenAdmin,
+} = require("../src/api/middlewares/verifyTokenMiddleware");
+
 /**
  * api routes
  */
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
+
 router.use("/api/cms", adminRoute);
 router.use("/api/bank-accounts", bankAccountRoute);
-router.use("/api/cms/bank-accounts", bankAccountCmsRoute);
 router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);
 router.use("/api/city", crudCity);
 
+router.use(verifyTokenAdmin);
 // router.use("/api", crudSubCategory);
 router.use("/api/cms/category", crudCategory);
-router.use("/api/cms/subcategory", crudSubCategory);
-router.use("/api/cms/products", crudProductCMS);
+router.use("/api/cms/subcategory", crudSubCategory); //BELUM DICEK
+router.use("/api/cms/products", crudProductCMS); //BELUM DICEK
 router.use("/api/cms/users", crudUserCMS);
+router.use("/api/cms/bank-accounts", bankAccountCmsRoute);
 
 module.exports = router;

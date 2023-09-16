@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const CustomAPIError = require("../middlewares/custom-error");
 
 const prisma = new PrismaClient();
 
@@ -20,17 +21,11 @@ const findAll = async (params) => {
 const findOne = async (params) => {
   try {
     const { id } = params;
-    if (!id) {
-      throw new CustomAPIError(
-        "Invalid please provide all of the required fields",
-        400
-      );
-    }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
-      throw new CustomAPIError(`No sub category with id of ${id}`, 400);
+      throw new CustomAPIError(`No category with id ${id}`, 400);
     }
     const categories = prisma.category.findUnique({
       where: {
@@ -46,6 +41,14 @@ const findOne = async (params) => {
 const create = async (params) => {
   try {
     const { name } = params;
+
+    const existingCategory = await prisma.category.findMany({
+      where: { name: name },
+    });
+
+    if (existingCategory) {
+      throw new CustomAPIError("Category already exist!", 400);
+    }
 
     const categories = prisma.category.create({
       data: {
@@ -68,11 +71,11 @@ const update = async (pathParams, params) => {
         400
       );
     }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
-      throw new CustomAPIError(`No sub category with id of ${id}`, 400);
+      throw new CustomAPIError(`No category with id ${id}`, 400);
     }
     const categories = prisma.category.update({
       where: {
@@ -92,17 +95,11 @@ const update = async (pathParams, params) => {
 const destroy = async (params) => {
   try {
     const { id } = params;
-    if (!id) {
-      throw new CustomAPIError(
-        "Invalid please provide all of the required fields",
-        400
-      );
-    }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
-      throw new CustomAPIError(`No category with id of ${id}`, 400);
+      throw new CustomAPIError(`No category with id ${id}`, 400);
     }
     const categories = prisma.category.delete({
       where: {
