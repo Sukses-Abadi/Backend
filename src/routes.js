@@ -1,5 +1,6 @@
 const router = require("express").Router();
 
+const crudCity = require("./api/routes/city.route");
 const crudProduct = require("./api/routes/product.route");
 const userRoute = require("./api/routes/user.route");
 const crudCategory = require("./api/routes/cms/cms.categories.route");
@@ -14,10 +15,12 @@ const upload = require("./lib/multer");
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
 router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);
+router.use("/api/city", crudCity);
 
 // router.use("/api", crudSubCategory);
 router.use("/api/cms/category", crudCategory);
 router.use("/api/cms/subcategory", crudSubCategory);
 router.use("/api/cms/products", crudProductCMS);
 router.use("/api/cms/users", crudUserCMS);
+
 module.exports = router;
