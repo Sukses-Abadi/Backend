@@ -48,10 +48,10 @@ const newCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    const categories = await categoryServices.findOne(req.params);
-    if (!categories) {
-      throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
-    }
+    // const categories = await categoryServices.findOne(req.params);
+    // if (!categories) {
+    //   throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
+    // }
     const updatedCategories = await categoryServices.update(
       req.params,
       req.body

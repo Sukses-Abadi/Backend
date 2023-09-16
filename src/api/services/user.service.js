@@ -1,5 +1,5 @@
 const prisma = require("../../lib/prisma");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const CustomAPIError = require("../middlewares/custom-error");
 const { generateToken } = require("../../lib/jwt");
 
@@ -59,25 +59,25 @@ const postUser = async (data) => {
       password: hashedPassword, // Use the hashed password here
       phone,
     },
-    include: {
-      cart: true,
-      Order: true,
-      reviews: true,
-    },
+    // include: {
+    //   cart: true,
+    //   Order: true,
+    //   reviews: true,
+    // },
   });
 
-  await prisma.cart.create({ data: { user_id: createdUser.id } });
+  // await prisma.cart.create({ data: { user_id: createdUser.id } });
 
-  const userFull = await prisma.user.findUnique({
-    where: { id: createdUser.id },
-    include: {
-      cart: true,
-      Order: true,
-      reviews: true,
-    },
-  });
+  // const userFull = await prisma.user.findUnique({
+  //   where: { id: createdUser.id },
+  //   include: {
+  //     cart: true,
+  //     Order: true,
+  //     reviews: true,
+  //   },
+  // });
 
-  return userFull;
+  return createdUser;
 };
 
 const getUser = async (data) => {
@@ -163,7 +163,7 @@ const putUser = async (pathParams, params) => {
 };
 
 const destroyUser = async (params) => {
-  console.log(params);
+  // console.log(params);
   try {
     const { id } = params;
 
@@ -175,7 +175,7 @@ const destroyUser = async (params) => {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
 
-    await prisma.cart.delete({ where: { user_id: user.id } });
+    // await prisma.cart.delete({ where: { user_id: user.id } });
 
     await prisma.user.delete({
       where: {

@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
+const CustomAPIError = require("../middlewares/custom-error");
 const prisma = new PrismaClient();
 
 const findAll = async (params) => {
@@ -26,7 +26,7 @@ const findOne = async (params) => {
         400
       );
     }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
@@ -68,7 +68,7 @@ const update = async (pathParams, params) => {
         400
       );
     }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
@@ -98,7 +98,7 @@ const destroy = async (params) => {
         400
       );
     }
-    const existingCategory = await prisma.subCategory.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id: +id },
     });
     if (!existingCategory) {
