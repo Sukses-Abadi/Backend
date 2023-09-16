@@ -130,7 +130,6 @@ async function main() {
     ],
   });
 
-  // ADDITION
   await prisma.productDetails.createMany({
     data: [
       {
