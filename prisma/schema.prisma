@@ -17,7 +17,8 @@ model Admin {
   city_id     Int?          @unique
   address     String?
   bankAccount BankAccount[]
-  City        City?         @relation(fields: [city_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  City        City?         @relation(fields: [cityId], references: [id])
+  cityId      Int?
 }
 
 model Product {
@@ -77,6 +78,7 @@ model Cart {
   shipping_cost   Int?
   total_payment   Int           @default(0)
   total_weight    Int           @default(0)
+  shipping_method String?
   total_price     Int           @default(0)
   courier         Courier?
   address_id      Int?
@@ -122,6 +124,7 @@ model Order {
   total_price     Int
   total_payment   Int
   total_weight    Int
+  shipping_method String
   order_date      DateTime
   payment_receipt String
   status          OrderStatus
