@@ -41,7 +41,7 @@ const create = async (params) => {
   try {
     const { name } = params;
 
-    const existingCategory = await prisma.category.findMany({
+    const existingCategory = await prisma.category.findFirst({
       where: { name: name },
     });
 

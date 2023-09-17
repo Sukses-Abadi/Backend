@@ -3,7 +3,16 @@ const CustomAPIError = require("../middlewares/custom-error");
 const { StatusCodes } = require("http-status-codes");
 
 // Function to add a review for a product
-const createReview = async (product_id,user_id, review_text, rating, image) => {
+const createReview = async (
+  product_id,
+  user_id,
+  review_text,
+  rating,
+  image
+) => {
+  if (review_text.length === 0 || review_text === undefined) {
+    throw new CustomAPIError("Please provide a valid review text");
+  }
   try {
     const review = await prisma.review.create({
       data: {
@@ -17,13 +26,11 @@ const createReview = async (product_id,user_id, review_text, rating, image) => {
     return review;
   } catch (error) {
     throw new CustomAPIError(
-      `[createReview] Failed to create Review for Product: ${error.message}`,
-      StatusCodes.INTERNAL_SERVER_ERROR
+      `User has already reviewed the product ${product_id}`,
+      StatusCodes.BAD_REQUEST
     );
   }
 };
-
-
 
 // Function to get all reviews for a product including user data
 const getAllReviewsForProduct = async (product_id) => {
@@ -54,12 +61,9 @@ const getReviewByIdWithUser = async (id) => {
     // Convert the id to an integer
     const reviewId = parseInt(id, 10);
 
-    const review = await prisma.review.findUnique({
+    const review = await prisma.review.findMany({
       where: {
-        id: reviewId,
-      },
-      include: {
-        user: true,
+        user_id: reviewId,
       },
     });
 
@@ -73,11 +77,11 @@ const getReviewByIdWithUser = async (id) => {
 };
 
 // Function to update a review for a product
-const updateReviewForProduct = async (product_id,id, review_text, rating, image) => {
+const updateReviewForProduct = async (payload) => {
+  const { id, review_text, rating, image } = payload;
   try {
     const review = await prisma.review.update({
       where: {
-        product_id: +product_id,
         id: +id,
       },
       data: {
@@ -90,17 +94,16 @@ const updateReviewForProduct = async (product_id,id, review_text, rating, image)
   } catch (error) {
     throw new CustomAPIError(
       `[updateReviewForProduct] Failed to update Review for Product: ${error.message}`,
-      StatusCodes.INTERNAL_SERVER_ERROR
+      400
     );
   }
 };
 
 // Function to delete a review for a product
-const deleteReviewForProduct = async (product_id, id) => {
+const deleteReviewForProduct = async (id) => {
   try {
-    await prisma.review.deleteMany({
+    await prisma.review.delete({
       where: {
-        product_id: +product_id,
         id: +id,
       },
     });
@@ -111,9 +114,6 @@ const deleteReviewForProduct = async (product_id, id) => {
     );
   }
 };
-
-
-
 
 module.exports = {
   createReview,

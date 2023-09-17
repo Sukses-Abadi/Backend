@@ -33,7 +33,7 @@ router.use("/api/cart", crudCart);
 router.use("/api/address", crudAddress);
 router.use("/api/city", crudCity);
 router.use("/api/bank-accounts", crudBank);
-router.use("/api/products", reviewRoute);
+router.use("/api/review", reviewRoute);
 router.use("/api/order", crudOrder);
 
 router.use(verifyTokenAdmin);

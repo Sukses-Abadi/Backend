@@ -2,7 +2,6 @@ const {
   fetchCart,
   deleteCartProduct,
   updateUserCart,
-  deleteAllCartProduct,
   resetCartToDefault,
 } = require("../services/cart.service");
 
@@ -37,7 +36,7 @@ const updateCart = async (req, res) => {
 
 const deleteItem = async (req, res) => {
   const payload = {
-    cart_product_id: +req.body.cart_product_id,
+    orderCart_id: +req.params.id,
     id: +req.user.id,
   };
   const item = await deleteCartProduct(payload);

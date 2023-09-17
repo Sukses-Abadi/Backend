@@ -174,7 +174,6 @@ const addItemToCart = async (product_details_id, user_id, quantity) => {
       if (!product) {
         throw new Error("Product not found");
       }
-
       const user = await prisma.user.findUnique({
         where: { id: user_id },
         include: { cart: { include: { CartProduct: true } } },
@@ -283,16 +282,16 @@ const updateUserCart = async (params) => {
 };
 
 const deleteCartProduct = async (params) => {
-  const { cart_product_id, id } = params;
+  const { orderCart_id, id } = params;
   try {
     await prisma.cartProduct.delete({
       where: {
-        id: cart_product_id,
+        id: orderCart_id,
       },
     });
   } catch (error) {
     throw new CustomAPIError(
-      `Error adding product to cart: ${error.message}`,
+      `Error delete product from cart: ${error.message}`,
       400
     );
   }

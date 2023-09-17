@@ -10,6 +10,6 @@ const router = require("express").Router();
 
 router.put("/", verifyTokenUser, updateCart);
 router.get("/", verifyTokenUser, showCart);
-router.delete("/", verifyTokenUser, deleteItem);
+router.delete("/:id", verifyTokenUser, deleteItem);
 router.post("/", verifyTokenUser, resetCart);
 module.exports = router;
