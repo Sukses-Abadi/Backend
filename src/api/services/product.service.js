@@ -3,8 +3,11 @@ const slugify = require("../../lib/slugify");
 const CustomAPIError = require("../middlewares/custom-error");
 
 const fetchAllProducts = async () => {
-  const products = await prisma.product.findMany();
-  console.log(products);
+
+  const products = await prisma.product.findMany({
+    include: { productDetails: true, reviews: true },
+  });
+
   return products;
 };
 
@@ -19,6 +22,7 @@ const fetchSingleProductBySlugOrId = async (data) => {
       },
       include: {
         productDetails: true,
+        reviews: true,
       },
     });
   } else {
@@ -204,6 +208,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     where: queryObject,
     include: {
       productGalleries: true,
+      reviews: true,
       productDetails: {
         where: {
           price: {

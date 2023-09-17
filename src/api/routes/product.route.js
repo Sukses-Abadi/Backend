@@ -6,7 +6,6 @@ const {
   updateProduct,
 } = require("../controllers/cms/cms.product.controller");
 const {
-  getAllProducts,
   getSingleProduct,
   getProductByQueryAndPriceFilter,
 } = require("../controllers/product.controller");
