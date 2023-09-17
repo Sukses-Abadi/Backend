@@ -3,9 +3,7 @@ const router = require("express").Router();
 const crudProduct = require("./api/routes/product.route");
 const userRoute = require("./api/routes/user.route");
 const reviewRoute = require("./api/routes/review.route");
-
 const crudCity = require("./api/routes/city.route");
-
 const adminRoute = require("./api/routes/cms/cms.admin.route");
 const crudCategory = require("./api/routes/cms/cms.categories.route");
 const crudSubCategory = require("./api/routes/cms/cms.subcategories.route");
