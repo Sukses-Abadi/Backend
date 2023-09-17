@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const crudProduct = require("./api/routes/product.route");
 const userRoute = require("./api/routes/user.route");
+const reviewRoute = require("./api/routes/review.route"); 
 
 const crudCity = require("./api/routes/city.route");
 const crudAddress = require("./api/routes/address.route");
@@ -27,6 +28,7 @@ router.use("/api/address", crudAddress);
 router.use("/api/city", crudCity);
 router.use("/api", crudAddressWeb);
 router.use("/api/bank-accounts", crudBank);
+router.use("/api/products", reviewRoute);
 
 router.use("/api/cms/bank-accounts", crudBankCMS);
 router.use("/api/cms/category", crudCategory);
