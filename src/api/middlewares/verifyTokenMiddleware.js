@@ -24,14 +24,16 @@ const verifyTokenUser = (req, res, next) => {
 };
 
 const verifyTokenAdmin = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const token = req.headers.authorization;
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const accessToken = token.split(" ")[1];
+
   try {
-    const decodedToken = verifyToken(token);
+    const decodedToken = verifyToken(accessToken);
     const { id, username } = decodedToken;
     const CheckUser = prisma.admin.findUnique({ where: { id: id } });
     if (!CheckUser) {

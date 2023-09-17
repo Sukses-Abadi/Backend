@@ -24,17 +24,12 @@ const getAllProductsCMS = async (req, res) => {
 
 const getSingleProductCMS = async (req, res) => {
   const { id } = req.params;
-  // try {
   const product = await fetchSingleProductBySlugOrId(id);
-  if (!product) {
-    throw new CustomAPIError("Couldn't get product", 404);
-  }
   return res.json({
     status: "success",
     message: `product with id ${id} fetched`,
     data: product,
   });
-  // } catch (error) {}
 };
 
 const createProduct = async (req, res) => {
