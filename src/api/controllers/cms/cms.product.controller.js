@@ -5,7 +5,7 @@ const {
   postFullProduct,
   putUpdateProduct,
   deleteFullProduct,
-  fetchSingleProductById,
+  fetchSingleProductBySlugOrId,
 } = require("../../services/product.service");
 
 const getAllProductsCMS = async (req, res) => {
@@ -25,7 +25,7 @@ const getAllProductsCMS = async (req, res) => {
 const getSingleProductCMS = async (req, res) => {
   const { id } = req.params;
   // try {
-  const product = await fetchSingleProductById(id);
+  const product = await fetchSingleProductBySlugOrId(id);
   if (!product) {
     throw new CustomAPIError("Couldn't get product", 404);
   }
