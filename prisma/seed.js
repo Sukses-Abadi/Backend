@@ -59,6 +59,24 @@ async function main() {
     });
   });
 
+  const axios = require("axios");
+  const response = await axios.get("https://api.rajaongkir.com/starter/city", {
+    headers: {
+      key: "c7dbdb8918f7b450e0af4ed786dc6834",
+    },
+  });
+
+  const newData = response.data.rajaongkir.results;
+
+  newData.forEach(async function (item) {
+    await prisma.city.create({
+      data: {
+        id: +item.city_id,
+        name: item.city_name,
+      },
+    });
+  });
+
   const bottomCategory = await prisma.category.create({
     data: {
       name: "Bottom",
