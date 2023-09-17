@@ -18,6 +18,7 @@ const fetchSingleProductBySlugOrId = async (data) => {
       },
       include: {
         productDetails: true,
+        reviews: true,
       },
     });
   } else {

@@ -4,7 +4,7 @@ const CustomAPIError = require("../middlewares/custom-error");
 const makeOrderFromCart = async (params) => {
   const { id, username } = params;
 
-  const resetCartToDefault = async (userId) => {
+  const resetCartToDefault = async (userId, cart) => {
     try {
       await prisma.$transaction([
         prisma.cart.update({
@@ -46,7 +46,12 @@ const makeOrderFromCart = async (params) => {
       });
       return userCart;
     } catch (error) {
-      throw new Error(`Unable to reset cart: ${error.message}`);
+      console.log(`Unable to reset cart: ${error.message}`);
+      // Handle the error gracefully and provide a meaningful message to the user
+      throw new CustomAPIError(
+        "Unable to reset cart. Please try again later.",
+        500
+      );
     }
   };
 
@@ -56,10 +61,10 @@ const makeOrderFromCart = async (params) => {
       include: { CartProduct: true },
     });
     if (!cart) {
-      return new CustomAPIError(`No product is submitted`, 400);
+      throw new CustomAPIError(`No product is submitted`, 400);
     }
     if (cart.CartProduct.length <= 0) {
-      throw new CustomAPIError(`No product is submitted`, 400);
+      throw new CustomAPIError(`Nothing is in the cart`, 400);
     }
 
     const order = await prisma.order.create({
@@ -79,26 +84,35 @@ const makeOrderFromCart = async (params) => {
       include: { orderProducts: true },
     });
 
-    cart.CartProduct.map(async (product) => {
-      await prisma.orderProduct.create({
-        data: {
-          product_details_id: product.product_details_id,
-          order_id: order.id,
-          quantity: product.quantity,
-          price: product.price,
-        },
-      });
-      const prev = await prisma.productDetails.findUnique({
-        where: { id: product.product_details_id },
-      });
+    await Promise.all(
+      cart.CartProduct.map(async (product) => {
+        await prisma.orderProduct.create({
+          data: {
+            product_details_id: product.product_details_id,
+            order_id: order.id,
+            quantity: product.quantity,
+            price: product.price,
+          },
+        });
+        const prev = await prisma.productDetails.findUnique({
+          where: { id: product.product_details_id },
+        });
 
-      await prisma.productDetails.update({
-        where: { id: product.product_details_id },
-        data: { stock: prev.stock - product.quantity },
-      });
-    });
+        if (prev.stock - product.quantity < 0) {
+          throw new CustomAPIError(
+            `Insufficient stock for product ${product.product_details_id}`,
+            400
+          );
+        }
+        await prisma.productDetails.update({
+          where: { id: product.product_details_id },
+          data: { stock: prev.stock - product.quantity },
+        });
+      })
+    );
+
     // Optionally, you can update cart properties here (e.g., clear cart after successful order)
-    resetCartToDefault(id);
+    await resetCartToDefault(id, cart);
     const updatedOrder = await prisma.order.findUnique({
       where: { id: order.id },
       include: { orderProducts: true },
@@ -115,4 +129,94 @@ const fetchAllOrder = async () => {
   });
   return orders;
 };
-module.exports = { makeOrderFromCart, fetchAllOrder };
+
+const updatePaymentReceiptInOrder = async (orderId, paymentReceipt) => {
+  try {
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { payment_receipt: paymentReceipt },
+    });
+
+    return updatedOrder;
+  } catch (error) {
+    throw new CustomAPIError(
+      `Error updating payment receipt in order: ${error.message}`,
+      400
+    );
+  }
+};
+
+const updateOrderStatusAndTrackingNumber = async (payload) => {
+  const { id, tracking_number, status } = payload;
+  try {
+    const updatedOrder = await prisma.order.update({
+      where: { id: id },
+      data: {
+        status: status,
+        tracking_number: tracking_number,
+      },
+    });
+
+    return updatedOrder;
+  } catch (error) {
+    throw new CustomAPIError(
+      `Error updating order status and tracking number: ${error.message}`,
+      400
+    );
+  }
+};
+
+const deleteOrderById = async (orderId) => {
+  try {
+    // Use Prisma to delete the order by its ID
+    const deletedOrder = await prisma.order.delete({
+      where: {
+        id: orderId,
+      },
+    });
+
+    return deletedOrder;
+  } catch (error) {
+    // Handle any errors, e.g., order not found
+    throw new Error(`Error deleting order: ${error.message}`);
+  }
+};
+
+const fetchOrderByUserId = async (userId) => {
+  const orders = await prisma.order.findMany({
+    where: {
+      user_id: +userId,
+    },
+    include: {
+      orderProducts: true,
+    },
+  });
+  if (orders.length < 0) {
+    throw new CustomAPIError(`No Orders found for this user`, 400);
+  }
+  return orders;
+};
+const fetchOrderbyId = async (order_id) => {
+  const order = await prisma.order.findUnique({
+    where: {
+      id: +order_id,
+    },
+    include: {
+      orderProducts: true,
+    },
+  });
+  if (!order) {
+    throw new CustomAPIError(`No Order found`, 400);
+  }
+
+  return order;
+};
+module.exports = {
+  makeOrderFromCart,
+  fetchAllOrder,
+  updatePaymentReceiptInOrder,
+  updateOrderStatusAndTrackingNumber,
+  deleteOrderById,
+  fetchOrderByUserId,
+  fetchOrderbyId,
+};

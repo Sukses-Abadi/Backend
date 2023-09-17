@@ -16,7 +16,8 @@ const upload = require("./lib/multer");
 const crudAddressWeb = require("./api/routes/address.route");
 const crudBank = require("./api/routes/bankAccount.route");
 const crudBankCMS = require("./api/routes/cms/cms.bankAccount.route");
-const crudRouter = require("./api/routes/order.routes");
+const crudOrder = require("./api/routes/order.routes");
+const crudOrderCMS = require("./api/routes/cms/cms.order.route");
 /**
  * api routes
  */
@@ -29,11 +30,11 @@ router.use("/api/city", crudCity);
 router.use("/api", crudAddressWeb);
 router.use("/api/bank-accounts", crudBank);
 
-router.use("/api/order", crudRouter);
+router.use("/api/order", crudOrder);
 router.use("/api/cms/bank-accounts", crudBankCMS);
 router.use("/api/cms/category", crudCategory);
 router.use("/api/cms/subcategory", crudSubCategory);
 router.use("/api/cms/products", crudProductCMS);
 router.use("/api/cms/users", crudUserCMS);
-
+router.use("/api/cms/order", crudOrderCMS);
 module.exports = router;
