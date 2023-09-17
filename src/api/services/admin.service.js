@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { generateToken } = require("../../lib/jwt");
 
 const loginAdmin = async (payload) => {

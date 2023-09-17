@@ -14,7 +14,8 @@ const fetchAllUsers = async () => {
   return users;
 };
 
-const fetchSingleUsersById = async (id) => {
+const fetchSingleUsersById = async (params) => {
+  const { id } = params;
   const user = await prisma.user.findUnique({
     where: { id: +id },
     include: {
@@ -25,7 +26,7 @@ const fetchSingleUsersById = async (id) => {
   });
 
   if (!user) {
-    throw new CustomAPIError(`no User with id of ${id}`, 400);
+    throw new CustomAPIError(`No user with id ${id}`, 400);
   }
   return user;
 };
@@ -172,10 +173,8 @@ const destroyUser = async (params) => {
     });
 
     if (!user) {
-      throw new CustomAPIError(`no user with id of ${id}`, 400);
+      throw new CustomAPIError(`No user with id ${id}`, 400);
     }
-
-    // await prisma.cart.delete({ where: { user_id: user.id } });
 
     await prisma.user.delete({
       where: {
