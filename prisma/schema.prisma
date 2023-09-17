@@ -19,6 +19,8 @@ model Admin {
   bankAccount BankAccount[]
   City        City?         @relation(fields: [cityId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   cityId      Int?
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
 }
 
 model Product {
@@ -52,8 +54,8 @@ model User {
   password   String
   address    Address[]
   phone      String?
-  edited_at  DateTime  @default(now())
   created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
   cart       Cart?
   reviews    Review[]
   Order      Order[]
@@ -66,8 +68,8 @@ model Review {
   review_text String
   rating      Int
   image       String?
-  edited_at   DateTime @default(now())
   created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
   product     Product  @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   user        User     @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
@@ -83,6 +85,8 @@ model Cart {
   courier         Courier?
   address_id      Int?
   bank_account_id Int?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now())
   user            User          @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   address         Address?      @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   bankAccount     BankAccount?  @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -91,9 +95,11 @@ model Cart {
 
 model Category {
   id          Int           @id @default(autoincrement())
-  name        String
+  name        String        @unique
   SubCategory SubCategory[]
   Product     Product[]
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @default(now())
 }
 
 model BankAccount {
@@ -105,6 +111,8 @@ model BankAccount {
   admin          Admin?   @relation(fields: [admin_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orders         Order[]
   carts          Cart[]
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
 }
 
 enum BankName {
@@ -132,6 +140,8 @@ model Order {
   address_id      Int
   bank_account_id Int
   courier         Courier
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @default(now())
   user            User           @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   address         Address        @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -158,6 +168,8 @@ model OrderProduct {
   order_id           Int
   quantity           Int
   price              Int
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @default(now())
   ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   order              Order          @relation(fields: [order_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
@@ -169,16 +181,20 @@ model ProductDetails {
   size         String
   stock        Int
   price        Int
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now())
   product      Product        @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   CartProduct  CartProduct[]
   OrderProduct OrderProduct[]
 }
 
 model ProductGallery {
-  id         Int     @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   photo      String
   product_id Int
-  product    Product @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  product    Product  @relation(fields: [product_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model CartProduct {
@@ -187,21 +203,25 @@ model CartProduct {
   cart_id            Int
   quantity           Int
   price              Int
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @default(now())
   ProductDetails     ProductDetails @relation(fields: [product_details_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   cart               Cart           @relation(fields: [cart_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Address {
-  id       Int     @id @default(autoincrement())
-  street   String
-  name     String
-  city_id  Int
-  zip_code Int
-  user_id  Int
-  user     User?   @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  city     City    @relation(fields: [city_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  Cart     Cart[]
-  Order    Order[]
+  id         Int      @id @default(autoincrement())
+  street     String
+  name       String   @unique
+  city_id    Int
+  zip_code   Int
+  user_id    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  user       User?    @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  city       City     @relation(fields: [city_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Cart       Cart[]
+  Order      Order[]
 }
 
 model City {
@@ -213,8 +233,10 @@ model City {
 
 model SubCategory {
   id          Int       @id @default(autoincrement())
-  name        String
+  name        String    @unique
   category_id Int
   Category    Category  @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   Product     Product[]
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
 }
