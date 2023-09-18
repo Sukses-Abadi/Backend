@@ -212,7 +212,7 @@ model CartProduct {
 model Address {
   id         Int      @id @default(autoincrement())
   street     String
-  name       String   @unique
+  name       String
   city_id    Int
   zip_code   Int
   user_id    Int

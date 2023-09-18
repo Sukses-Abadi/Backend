@@ -3,7 +3,6 @@ const slugify = require("../../lib/slugify");
 const CustomAPIError = require("../middlewares/custom-error");
 
 const fetchAllProducts = async () => {
-
   const products = await prisma.product.findMany({
     include: { productDetails: true, reviews: true },
   });
@@ -187,28 +186,33 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     page,
     sub_category_id,
     category_id,
+    rating,
   } = query;
 
   const queryObject = {
     id: id ? Number(id) : undefined,
     SKU,
     name: name ? { contains: name, mode: "insensitive" } : undefined,
-
     sub_category_id: sub_category_id ? Number(sub_category_id) : undefined,
     category_id: category_id ? Number(category_id) : undefined,
   };
 
   const pageNumber = Number(page) || 1;
-  const limit = Number(skip) || 2;
-  const offset = (pageNumber - 1) * limit;
+  const perPage = Number(skip) || 2;
 
   const products = await prisma.product.findMany({
-    skip: offset,
-    take: limit,
+    skip: (pageNumber - 1) * perPage,
+    take: perPage,
     where: queryObject,
     include: {
       productGalleries: true,
-      reviews: true,
+      reviews: rating
+        ? {
+            where: {
+              rating: +rating,
+            },
+          }
+        : true, // Include all reviews if no rating is provided
       productDetails: {
         where: {
           price: {
@@ -223,10 +227,30 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   const filteredProducts = products.filter(
     (product) => product.productDetails.length > 0
   );
+
+  // Calculate average review rating for each product if rating is provided
+  if (rating) {
+    filteredProducts.forEach((product) => {
+      const totalRating = product.reviews.reduce(
+        (acc, review) => acc + review.rating,
+        0
+      );
+      const averageRating = totalRating / product.reviews.length;
+      product.averageRating = averageRating;
+    });
+  }
+
+  // Filter products based on average rating if rating is provided
+  const filteredByRating = rating
+    ? filteredProducts.filter((product) => product.averageRating >= +rating)
+    : filteredProducts;
+
   const response = {
-    products: filteredProducts.length > 0 ? filteredProducts : null,
-    page: pageNumber,
-    limit: limit,
+    products: filteredByRating.length > 0 ? filteredByRating : null,
+    prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+    currentPage: pageNumber,
+    nextPage: +pageNumber + 1,
+    perPage,
   };
   return response;
 };

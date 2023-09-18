@@ -18,7 +18,7 @@ const findAll = async (user_id) => {
 
     return address;
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
   }
 };
 
@@ -42,7 +42,7 @@ const create = async (user_id, params) => {
 
     return address;
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
   }
 };
 
@@ -51,10 +51,6 @@ const update = async (user_id, params) => {
     const address = await prisma.address.findUnique({
       where: { id: params.id },
     });
-
-    if (!address) {
-      throw new CustomAPIError(`Address not found`, 404);
-    }
     const { street, name, city_id, zip_code } = params;
 
     await prisma.address.update({
@@ -75,7 +71,7 @@ const update = async (user_id, params) => {
 
     return updateAddress;
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
   }
 };
 
@@ -84,11 +80,6 @@ const destroy = async (user_id, params) => {
     const address = await prisma.address.findUnique({
       where: { id: params.id },
     });
-
-    if (!address) {
-      throw new CustomAPIError(`no address with id of ${id}`, 400);
-    }
-
     await prisma.address.delete({
       where: {
         id: address.id,
@@ -98,7 +89,7 @@ const destroy = async (user_id, params) => {
       deletedAddress: address,
     };
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
   }
 };
 

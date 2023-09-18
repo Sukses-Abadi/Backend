@@ -8,221 +8,91 @@ const fetchCart = async (user_id) => {
   });
 };
 
-const updateCartData = async (user_id, payload, tx) => {
-  const cart = await tx.cart.findUnique({
-    where: { user_id: user_id },
-  });
-
-  const {
-    address_id = cart.address_id,
-    shipping_cost = cart.shipping_cost,
-    bank_account_id = cart.bank_account_id,
-    courier = cart.courier,
-    shipping_method = cart.shipping_method,
-  } = payload;
-
-  return tx.cart.update({
-    where: { id: cart.id },
-    data: {
-      user_id,
+const cartLogic = async (payload) => {
+  try {
+    const {
+      id,
       address_id,
       shipping_cost,
-      total_weight: cart.total_weight,
-      total_price: cart.total_price,
-      courier,
-      bank_account_id,
       shipping_method,
-    },
-  });
-};
+      bank_account_id,
+      product_details,
+      courier,
+    } = payload;
 
-const checkStock = async (productDetailsId, quantity, tx) => {
-  const productDetails = await tx.productDetails.findUnique({
-    where: { id: productDetailsId },
-  });
-
-  if (!productDetails) {
-    throw new CustomAPIError("Product details not found", 404);
-  }
-
-  if (productDetails.stock < quantity) {
-    throw new CustomAPIError("Insufficient stock", 400);
-  }
-
-  return productDetails;
-};
-
-const updateTotalPayment = async (userId, tx) => {
-  const cart = await tx.cart.findUnique({
-    where: { user_id: userId },
-  });
-
-  if (!cart) {
-    throw new CustomAPIError(`Cart not found for user with ID ${userId}`);
-  }
-
-  const totalPayment = (cart.total_price || 0) + (cart.shipping_cost || 0);
-
-  return tx.cart.update({
-    where: { user_id: userId },
-    data: { total_payment: totalPayment },
-  });
-};
-const updateCartDetails = async (user_id, tx) => {
-  const cart = await tx.cart.findUnique({
-    where: { user_id },
-    include: {
-      CartProduct: {
-        include: {
-          ProductDetails: {
-            include: { product: true },
-          },
-        },
-      },
-    },
-  });
-
-  if (!cart) {
-    throw new CustomAPIError(`Cart not found for user with ID ${user_id}`);
-  }
-
-  let total_price = 0;
-  let total_weight = 0;
-
-  for (const cartProduct of cart.CartProduct) {
-    const productDetails = cartProduct.ProductDetails;
-    if (productDetails && productDetails.product) {
-      total_price += productDetails.price * cartProduct.quantity;
-      total_weight += productDetails.product.weight * cartProduct.quantity;
-    }
-  }
-
-  const totalPayment = (total_price || 0) + (cart.shipping_cost || 0);
-
-  return tx.cart.update({
-    where: { user_id },
-    data: {
-      total_price,
-      total_weight,
-      total_payment: totalPayment,
-    },
-  });
-};
-
-const addItemToCart = async (product_details_id, user_id, quantity, tx) => {
-  let userCart = await tx.cart.findUnique({
-    where: {
-      user_id,
-    },
-  });
-  const product = await tx.productDetails.findUnique({
-    where: {
-      id: product_details_id,
-    },
-  });
-  if (!userCart) {
-    const newCart = await tx.cart.create({
-      data: {
-        user_id,
-      },
-    });
-    userCart = newCart;
-  }
-  if (quantity !== 0) {
-    let existingCartItem = await tx.cartProduct.findFirst({
-      where: {
-        product_details_id,
-        cart_id: userCart.id,
-      },
-    });
-
-    if (existingCartItem) {
-      const updatedCartItem = await tx.cartProduct.update({
-        where: {
-          id: existingCartItem.id,
-        },
-        data: {
-          quantity,
-        },
+    const result = await prisma.$transaction(async (tx) => {
+      // Find or create a user's cart
+      const userCart = await tx.cart.findUnique({
+        where: { user_id: id },
       });
-      if (updatedCartItem.quantity === 0) {
-        await tx.cartProduct.delete({
+      if (product_details) {
+        const { id: product_details_id, quantity, price } = product_details;
+
+        // Check if there's already a CartProduct with the same product details id
+        const existingCartProduct = await tx.cartProduct.findFirst({
           where: {
-            id: existingCartItem.id,
+            product_details_id,
+            cart_id: userCart.id,
           },
         });
+
+        if (existingCartProduct) {
+          // Update existing CartProduct
+          await tx.cartProduct.update({
+            where: { id: existingCartProduct.id },
+            data: { quantity, price },
+          });
+        } else {
+          // Create a new CartProduct
+          await tx.cartProduct.create({
+            data: {
+              product_details_id,
+              cart_id: userCart.id,
+              quantity,
+              price,
+            },
+          });
+        }
       }
-    } else {
-      await tx.cartProduct.create({
+      // Re-fetch CartProduct records for the user's cart
+      const cartProducts = await tx.cartProduct.findMany({
+        where: { cart_id: userCart.id },
+      });
+
+      // Initialize variables for total_price and total_weight
+      let total_price = 0;
+      let total_weight = 0;
+
+      // Calculate total_price and total_weight
+      for (const cartProduct of cartProducts) {
+        total_price += cartProduct.price * cartProduct.quantity;
+        total_weight += cartProduct.quantity * 100; // Assuming each item has a weight of 1
+      }
+
+      // Calculate total_payment
+      const total_payment = total_price + (shipping_cost || 0);
+
+      // Update cart details
+      await tx.cart.update({
+        where: { user_id: id },
         data: {
-          product_details_id: product.id,
-          cart_id: userCart.id,
-          quantity,
-          price: product.price,
+          address_id,
+          shipping_cost,
+          shipping_method,
+          bank_account_id,
+          total_price,
+          total_weight,
+          total_payment,
+          courier,
         },
       });
-    }
-  }
 
-  await updateCartDetails(user_id, tx);
-
-  return prisma.cart.findUnique({
-    where: { user_id: user_id },
-    include: {
-      CartProduct: true,
-    },
-  });
-};
-
-const updateUserCart = async (params) => {
-  const {
-    product_details_id,
-    user_id,
-    quantity,
-    address_id,
-    shipping_cost,
-    bank_account_id,
-    courier,
-    shipping_method,
-  } = params;
-
-  try {
-    const result = await prisma.$transaction(async (tx) => {
-      if (quantity < 1) {
-        throw new CustomAPIError("Quantity must be greater than 0 ", 400);
-      }
-
-      if (product_details_id && quantity) {
-        await addItemToCart(product_details_id, user_id, quantity, tx);
-      }
-
-      if (
-        address_id ||
-        shipping_cost ||
-        bank_account_id ||
-        courier ||
-        shipping_method
-      ) {
-        await updateCartData(
-          user_id,
-          {
-            address_id,
-            shipping_cost,
-            bank_account_id,
-            courier,
-            shipping_method,
-          },
-          tx
-        );
-      }
-
-      const updatedResult = await updateTotalPayment(user_id, tx);
-      return updatedResult;
+      // Fetch and return the updated cart
     });
 
-    return result;
+    return await fetchCart(id);
   } catch (error) {
-    console.error(`Error updating user cart: ${error.message}`);
+    console.error(error);
     throw new CustomAPIError(error.message, 500);
   }
 };
@@ -288,8 +158,8 @@ const resetCartToDefault = async (userId) => {
 };
 
 module.exports = {
-  updateUserCart,
   fetchCart,
   deleteCartProduct,
   resetCartToDefault,
+  cartLogic,
 };
