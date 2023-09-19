@@ -4,7 +4,7 @@ const CustomAPIError = require("../middlewares/custom-error");
 
 const fetchAllProducts = async () => {
   const products = await prisma.product.findMany({
-    include: { productDetails: true, reviews: true },
+    include: { productGalleries: true, productDetails: true, reviews: true },
   });
 
   return products;
@@ -182,11 +182,12 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     SKU,
     maxPrice,
     minPrice,
-    skip,
+    perPage,
     page,
     sub_category_id,
     category_id,
     rating,
+    search,
   } = query;
 
   const queryObject = {
@@ -198,10 +199,73 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   };
 
   const pageNumber = Number(page) || 1;
-  const perPage = Number(skip) || 2;
+  const limit = Number(perPage) || 2;
+  const totalItems = await prisma.product.count(); // Replace 'yourModel' with the actual model name
 
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  if (search) {
+    const products = await prisma.product.findMany({
+      skip: (pageNumber - 1) * limit,
+      take: limit,
+      where: {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { SKU: search },
+        ],
+      },
+      include: {
+        productGalleries: true,
+        reviews: rating
+          ? {
+              where: {
+                rating: +rating,
+              },
+            }
+          : true, // Include all reviews if no rating is provided
+        productDetails: {
+          where: {
+            price: {
+              gte: +minPrice || 0,
+              lte: +maxPrice || 99999999,
+            },
+          },
+        },
+      },
+    });
+    const filteredProducts = products.filter(
+      (product) => product.productDetails.length > 0
+    );
+
+    // Calculate average review rating for each product if rating is provided
+    if (rating) {
+      filteredProducts.forEach((product) => {
+        const totalRating = product.reviews.reduce(
+          (acc, review) => acc + review.rating,
+          0
+        );
+        const averageRating = totalRating / product.reviews.length;
+        product.averageRating = averageRating;
+      });
+    }
+
+    // Filter products based on average rating if rating is provided
+    const filteredByRating = rating
+      ? filteredProducts.filter((product) => product.averageRating >= +rating)
+      : filteredProducts;
+
+    const response = {
+      products: filteredByRating.length > 0 ? filteredByRating : null,
+      prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+      currentPage: pageNumber,
+      nextPage: +pageNumber + 1 >= perPage ? null : pageNumber + 1,
+      perPage: limit,
+      totalPages,
+    };
+    return response;
+  }
   const products = await prisma.product.findMany({
-    skip: (pageNumber - 1) * perPage,
+    skip: (pageNumber - 1) * limit,
     take: perPage,
     where: queryObject,
     include: {
@@ -249,8 +313,9 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     products: filteredByRating.length > 0 ? filteredByRating : null,
     prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
     currentPage: pageNumber,
-    nextPage: +pageNumber + 1,
+    nextPage: +pageNumber + 1 >= perPage ? null : pageNumber + 1,
     perPage,
+    totalPages,
   };
   return response;
 };

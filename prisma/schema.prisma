@@ -14,13 +14,12 @@ model Admin {
   id          Int           @id @default(autoincrement())
   username    String        @unique
   password    String
-  city_id     Int?          @unique
   address     String?
   bankAccount BankAccount[]
-  City        City?         @relation(fields: [cityId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  cityId      Int?
   created_at  DateTime      @default(now())
   updated_at  DateTime      @default(now())
+  City        City?         @relation(fields: [cityId], references: [id])
+  cityId      Int?
 }
 
 model Product {
