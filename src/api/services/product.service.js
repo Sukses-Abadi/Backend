@@ -32,6 +32,7 @@ const fetchSingleProductBySlugOrId = async (data) => {
       },
       include: {
         productDetails: true,
+        productGalleries: true,
       },
     });
   }
