@@ -842,14 +842,12 @@ async function main() {
         username: "admin1",
         password:
           "$2b$10$QLkE0KoIcpoXwQpTw1o94OrwDBM0XCr5Q/C2XVNx6zoexCUAPn.eG",
-        city_id: 1,
         address: "123 Admin St",
       },
       {
         username: "admin2",
         password:
           "$2b$10$ItfEtkGdU7GoB4800m3JgO7mHZ2MK.YkAGnyHNFNTJ8JFM.m9gepm",
-        city_id: 2,
         address: "456 Admin Rd",
       },
     ],

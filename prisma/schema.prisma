@@ -62,7 +62,7 @@ model User {
 
 model Review {
   id          Int      @id @default(autoincrement())
-  product_id  Int      @unique
+  product_id  Int
   user_id     Int
   review_text String
   rating      Int
