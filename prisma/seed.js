@@ -603,38 +603,6 @@ async function main() {
   await prisma.productGallery.createMany({
     data: [
       {
-        photo: "https://via.placeholder.com/300", // Placeholder image URL
-        product_id: 1,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 1,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 2,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 2,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 3,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 3,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 4,
-      },
-      {
-        photo: "https://via.placeholder.com/300",
-        product_id: 4,
-      },
-      {
         photo: "/Long-Sleeve-T-shirt-1.jpg",
         product_id: 1,
       },
