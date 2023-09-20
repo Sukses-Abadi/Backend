@@ -15,17 +15,17 @@ const upload = require("./lib/multer");
 const crudAddress = require("./api/routes/address.route");
 const crudBank = require("./api/routes/bankAccount.route");
 const crudBankCMS = require("./api/routes/cms/cms.bankAccount.route");
-const crudOrder = require("./api/routes/order.routes");
+const crudOrder = require("./api/routes/order.route");
 const crudOrderCMS = require("./api/routes/cms/cms.order.route");
 const {
   verifyTokenAdmin,
 } = require("../src/api/middlewares/verifyTokenMiddleware");
-
+const rajaOngkir = require("./api/routes/rajaongkir.route");
 /**
  * api routes
  */
 router.post("/api/uploads", upload.array("file", 5), uploadFile);
-
+router.use("/api/rajaongkir", rajaOngkir);
 router.use("/api/cms", adminRoute);
 router.use("/api/products", crudProduct);
 router.use("/api/user", userRoute);

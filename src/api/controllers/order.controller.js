@@ -1,4 +1,5 @@
 const CustomAPIError = require("../middlewares/custom-error");
+const { param } = require("../routes/product.route");
 const {
   makeOrderFromCart,
   fetchAllOrder,
@@ -11,7 +12,20 @@ const {
 
 const createOrder = async (req, res) => {
   try {
-    const result = await makeOrderFromCart(req.user);
+    // JSON.stringify(req.body);
+    const payload = {
+      id: req.user.id,
+      address_id: req.body.address_id,
+      shipping_method: req.body.shipping_method,
+      shipping_cost: req.body.shipping_cost,
+      bank_account_id: req.body.bank_account_id,
+      courier: req.body.courier,
+      product_order_attributes: req.body.product_order_attributes,
+      total_payment: req.body.total_payment,
+      total_price: req.body.total_price,
+      total_weight: req.body.total_weight,
+    };
+    const result = await makeOrderFromCart(payload);
     res.json({
       status: "success",
       message: "Order created successfully",
@@ -24,7 +38,7 @@ const createOrder = async (req, res) => {
 };
 
 const getAllOrders = async (req, res) => {
-  const result = await fetchAllOrder();
+  const result = await fetchAllOrder(req.query);
   res.json({
     status: "success",
     message: "Order fetched successfully",
@@ -80,7 +94,7 @@ const updateStatusAndTracking = async (req, res) => {
 
 const getAllOrdersByUserId = async (req, res) => {
   try {
-    const result = await fetchOrderByUserId(req.user.id);
+    const result = await fetchOrderByUserId(req.user.id, req.query);
     res.json({
       status: "success",
       message: "Orders are fetched successfully",

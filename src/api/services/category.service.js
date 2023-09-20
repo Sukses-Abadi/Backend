@@ -12,7 +12,6 @@ const findAll = async (params) => {
   if (name) {
     filterOptions.where.name = name;
   }
-
   const categories = await prisma.category.findMany(filterOptions);
   return categories;
 };
@@ -20,12 +19,6 @@ const findAll = async (params) => {
 const findOne = async (params) => {
   try {
     const { id } = params;
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: +id },
-    });
-    if (!existingCategory) {
-      throw new CustomAPIError(`No category with id ${id}`, 400);
-    }
     const categories = prisma.category.findUnique({
       where: {
         id: +id,
@@ -33,22 +26,14 @@ const findOne = async (params) => {
     });
     return categories;
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 
 const create = async (params) => {
   try {
     const { name } = params;
-
-    const existingCategory = await prisma.category.findFirst({
-      where: { name: name },
-    });
-
-    if (existingCategory) {
-      throw new CustomAPIError("Category already exist!", 400);
-    }
-
     const categories = prisma.category.create({
       data: {
         name,
@@ -56,7 +41,8 @@ const create = async (params) => {
     });
     return categories;
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
   }
 };
 
@@ -70,12 +56,7 @@ const update = async (pathParams, params) => {
         400
       );
     }
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: +id },
-    });
-    if (!existingCategory) {
-      throw new CustomAPIError(`No category with id ${id}`, 400);
-    }
+
     const categories = prisma.category.update({
       where: {
         id: +id,
@@ -87,19 +68,15 @@ const update = async (pathParams, params) => {
 
     return categories;
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 
 const destroy = async (params) => {
   try {
     const { id } = params;
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: +id },
-    });
-    if (!existingCategory) {
-      throw new CustomAPIError(`No category with id ${id}`, 400);
-    }
+
     const categories = prisma.category.delete({
       where: {
         id: +id,
@@ -107,7 +84,8 @@ const destroy = async (params) => {
     });
     return categories;
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 

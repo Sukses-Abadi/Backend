@@ -1,133 +1,173 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
-
 const makeOrderFromCart = async (params) => {
-  const { id, username } = params;
+  let {
+    id,
+    address_id,
+    shipping_method,
+    shipping_cost,
+    bank_account_id,
+    courier,
+    product_order_attributes,
+    total_weight,
+    total_price,
+    total_payment,
+  } = params;
 
-  const resetCartToDefault = async (userId, cart) => {
-    try {
-      await prisma.$transaction([
-        prisma.cart.update({
-          where: {
-            user_id: userId,
-          },
-          data: {
-            shipping_cost: null,
-            total_payment: 0,
-            total_weight: 0,
-            total_price: 0,
-            courier: null,
-            address_id: null,
-            bank_account_id: null,
-          },
-          include: {
-            user: true,
-            address: true,
-            bankAccount: true,
-            CartProduct: true, // Include CartProduct relation
-          },
-        }),
-        prisma.cartProduct.deleteMany({
-          where: {
-            cart: {
-              user_id: userId,
-            },
-          },
-        }),
-      ]);
-      const userCart = await prisma.cart.findUnique({
-        where: { user_id: userId },
-        include: {
-          user: true,
-          address: true,
-          bankAccount: true,
-          CartProduct: true,
-        },
-      });
-      return userCart;
-    } catch (error) {
-      console.log(`Unable to reset cart: ${error.message}`);
-      // Handle the error gracefully and provide a meaningful message to the user
-      throw new CustomAPIError(
-        "Unable to reset cart. Please try again later.",
-        500
-      );
-    }
-  };
-
+  if (product_order_attributes.length === 0) {
+    throw new CustomAPIError("No product is provided", 400);
+  }
   try {
-    const cart = await prisma.cart.findUnique({
-      where: { user_id: id },
-      include: { CartProduct: true },
-    });
-    if (!cart) {
-      throw new CustomAPIError(`No product is submitted`, 400);
-    }
-    if (cart.CartProduct.length <= 0) {
-      throw new CustomAPIError(`Nothing is in the cart`, 400);
-    }
-
     const order = await prisma.order.create({
       data: {
-        user_id: cart.user_id,
-        shipping_cost: cart.shipping_cost,
-        total_price: cart.total_price,
-        total_payment: cart.total_payment,
-        total_weight: cart.total_weight,
-        shipping_method: cart.shipping_method,
+        user: { connect: { id } },
+        shipping_cost: shipping_cost,
+        total_price: total_price,
+        total_payment: total_payment,
+        total_weight: total_weight,
+        shipping_method: shipping_method,
         order_date: new Date(),
-        address_id: cart.address_id,
-        bank_account_id: cart.bank_account_id,
-        courier: cart.courier,
-        status: "waiting", // Set initial status
+        address: { connect: { id: address_id } },
+        bankAccount: { connect: { id: bank_account_id } },
+        courier: courier,
+        status: "waiting",
       },
       include: { orderProducts: true },
     });
 
     await Promise.all(
-      cart.CartProduct.map(async (product) => {
+      product_order_attributes.map(async (productOrder) => {
+        const { id: product_details_id, price, quantity } = productOrder;
+
         await prisma.orderProduct.create({
           data: {
-            product_details_id: product.product_details_id,
+            product_details_id,
             order_id: order.id,
-            quantity: product.quantity,
-            price: product.price,
+            quantity,
+            price,
           },
         });
+
         const prev = await prisma.productDetails.findUnique({
-          where: { id: product.product_details_id },
+          where: { id: product_details_id },
         });
 
-        if (prev.stock - product.quantity < 0) {
+        if (!prev || prev.stock < quantity) {
           throw new CustomAPIError(
-            `Insufficient stock for product ${product.product_details_id}`,
+            `Insufficient stock for product ${product_details_id}`,
             400
           );
         }
+
         await prisma.productDetails.update({
-          where: { id: product.product_details_id },
-          data: { stock: prev.stock - product.quantity },
+          where: { id: product_details_id },
+          data: { stock: prev.stock - quantity },
         });
       })
     );
 
-    // Optionally, you can update cart properties here (e.g., clear cart after successful order)
-    await resetCartToDefault(id, cart);
+    // Update order totals
     const updatedOrder = await prisma.order.findUnique({
       where: { id: order.id },
-      include: { orderProducts: true },
+      include: {
+        user: true,
+        address: true,
+        orderProducts: true,
+      },
+    });
+
+    // Reset cart to default
+    await prisma.cart.update({
+      where: { user_id: id },
+      data: {
+        shipping_cost: null,
+        total_payment: 0,
+        total_weight: 0,
+        total_price: 0,
+        courier: null,
+        address_id: null,
+        bank_account_id: null,
+      },
+      include: {
+        user: true,
+        address: true,
+        bankAccount: true,
+        CartProduct: true,
+      },
     });
     return updatedOrder;
   } catch (error) {
-    throw new CustomAPIError(`Error : ${error.message}`, 400);
+    throw new CustomAPIError(`Error: ${error.message}`, 400);
   }
 };
 
-const fetchAllOrder = async () => {
+const fetchAllOrder = async ({
+  id,
+  startTime,
+  endTime,
+  status,
+  quantity,
+  page,
+  limit,
+  sortBy,
+  sortOrder,
+}) => {
+  const filterObject = {};
+  if (id) {
+    filterObject.id = +id;
+  }
+  if (startTime && endTime) {
+    filterObject.order_date = {
+      gte: new Date(startTime),
+      lte: new Date(endTime),
+    };
+  }
+
+  if (status) {
+    filterObject.status = status;
+  }
+
+  if (quantity) {
+    filterObject.orderProducts = {
+      some: {
+        quantity: quantity,
+      },
+    };
+  }
+  const pageNumber = Number(page) || 1;
+  const take = Number(limit) || 2;
+  const totalItems = await prisma.order.count(); // Replace 'yourModel' with the actual model name
+  const totalPages = Math.ceil(totalItems / limit);
+  const filterSortBy = sortBy || "order_date";
+  const filterSortOrder = sortOrder || "asc";
+
   const orders = await prisma.order.findMany({
+    where: filterObject,
     include: { orderProducts: true },
+    orderBy: {
+      [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
+    },
+    skip: (pageNumber - 1) * take,
+    take: take,
   });
-  return orders;
+  if (!totalPages) {
+    return {
+      orders,
+      prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+      currentPage: pageNumber,
+      nextPage: null,
+      limit: take,
+      totalPages,
+    };
+  }
+  return {
+    orders,
+    prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+    currentPage: pageNumber,
+    nextPage: nextPage || +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+    limit: take,
+    totalPages,
+  };
 };
 
 const updatePaymentReceiptInOrder = async (orderId, paymentReceipt) => {
@@ -182,7 +222,20 @@ const deleteOrderById = async (orderId) => {
   }
 };
 
-const fetchOrderByUserId = async (userId) => {
+const fetchOrderByUserId = async (
+  userId,
+  { status, page, perPage, sortBy, sortOrder }
+) => {
+  const filterObject = {};
+  if (status) {
+    filterObject.status = status;
+  }
+
+  const pageNumber = Number(page) || 1;
+  const take = Number(perPage) || 2;
+  const filterSortBy = sortBy || "order_date";
+  const filterSortOrder = sortOrder || "asc";
+
   const orders = await prisma.order.findMany({
     where: {
       user_id: +userId,
@@ -190,11 +243,22 @@ const fetchOrderByUserId = async (userId) => {
     include: {
       orderProducts: true,
     },
+    orderBy: {
+      [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
+    },
+    skip: (pageNumber - 1) * take,
+    take: take,
   });
   if (orders.length < 0) {
     throw new CustomAPIError(`No Orders found for this user`, 400);
   }
-  return orders;
+  return {
+    orders,
+    prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+    currentPage: pageNumber,
+    nextPage: +pageNumber + 1,
+    perPage,
+  };
 };
 const fetchOrderbyId = async (order_id) => {
   const order = await prisma.order.findUnique({

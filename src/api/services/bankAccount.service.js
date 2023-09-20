@@ -19,75 +19,58 @@ const fetchBankAccount = async (params) => {
 
 const postBankAccount = async (user, payload) => {
   const { id } = user;
+  try {
+    const result = await prisma.bankAccount.create({
+      data: {
+        account_holder: payload.account_holder,
+        bank_name: payload.bank_name,
+        account_number: payload.account_number,
+        admin_id: id,
+      },
+    });
 
-  const existingBankAccount = await prisma.bankAccount.findUnique({
-    where: {
-      account_number: payload.account_number,
-    },
-  });
-
-  if (existingBankAccount) {
-    throw new CustomAPIError("Account number already exist!", 400);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
-
-  const result = await prisma.bankAccount.create({
-    data: {
-      account_holder: payload.account_holder,
-      bank_name: payload.bank_name,
-      account_number: payload.account_number,
-      admin_id: id,
-    },
-  });
-
-  return result;
 };
 
 const putBankAccount = async (params, payload) => {
   const { id } = params;
+  try {
+    const result = await prisma.bankAccount.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        account_holder: payload.account_holder,
+        bank_name: payload.bank_name,
+        account_number: payload.account_number,
+      },
+    });
 
-  const existingBankAccount = await prisma.bankAccount.findUnique({
-    where: {
-      account_number: payload.account_number,
-    },
-  });
-
-  if (existingBankAccount) {
-    throw new CustomAPIError("Account number already exist", 400);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
-
-  const result = await prisma.bankAccount.update({
-    where: {
-      id: +id,
-    },
-    data: {
-      account_holder: payload.account_holder,
-      bank_name: payload.bank_name,
-      account_number: payload.account_number,
-    },
-  });
-
-  return result;
 };
 
 const destroyBankAccount = async (params) => {
   const { id } = params;
-  const bankAccount = await prisma.bankAccount.findUnique({
-    where: {
-      id: +id,
-    },
-  });
+  try {
+    const result = await prisma.bankAccount.delete({
+      where: {
+        id: +id,
+      },
+    });
 
-  if (!bankAccount) {
-    throw new CustomAPIError(`No bank account with id ${id}`, 400);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
-
-  const result = await prisma.bankAccount.delete({
-    where: {
-      id: +id,
-    },
-  });
-
-  return result;
 };
 
 module.exports = {

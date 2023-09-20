@@ -35,50 +35,34 @@ const postUser = async (data) => {
   let { username, first_name, last_name, email, age, photo, password, phone } =
     data;
 
-  // Check if the username or email already exists
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      OR: [{ username: username }, { email: email }],
-    },
-  });
-
-  if (existingUser) {
-    throw new CustomAPIError("Username or email already exists", 400);
+  try {
+    // hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          username,
+          first_name,
+          last_name,
+          email,
+          age,
+          photo,
+          password: hashedPassword, // Use the hashed password here
+          phone,
+        },
+        include: {
+          cart: true,
+          Order: true,
+          reviews: true,
+        },
+      });
+      await tx.cart.create({ data: { user_id: createdUser.id } });
+      return createdUser;
+    });
+  } catch (error) {
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
-
-  // hash the password using bcrypt
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const createdUser = await prisma.user.create({
-    data: {
-      username,
-      first_name,
-      last_name,
-      email,
-      age,
-      photo,
-      password: hashedPassword, // Use the hashed password here
-      phone,
-    },
-    include: {
-      cart: true,
-      Order: true,
-      reviews: true,
-    },
-  });
-
-  await prisma.cart.create({ data: { user_id: createdUser.id } });
-
-  // const userFull = await prisma.user.findUnique({
-  //   where: { id: createdUser.id },
-  //   include: {
-  //     cart: true,
-  //     Order: true,
-  //     reviews: true,
-  //   },
-  // });
-
-  return createdUser;
 };
 
 const getUser = async (data) => {
@@ -159,7 +143,8 @@ const putUser = async (pathParams, params) => {
     });
     return updateUser;
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 
@@ -186,7 +171,8 @@ const destroyUser = async (params) => {
       deletedUser: user,
     };
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 

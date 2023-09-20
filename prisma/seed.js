@@ -603,6 +603,43 @@ async function main() {
   await prisma.productGallery.createMany({
     data: [
       {
+        photo: "https://via.placeholder.com/300", // Placeholder image URL
+        product_id: 1,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 1,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 2,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 2,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 3,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 3,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 4,
+      },
+      {
+        photo: "https://via.placeholder.com/300",
+        product_id: 4,
+      },
+    ],
+  });
+
+  await prisma.productGallery.createMany({
+    data: [
+      {
         photo: "/uploads/Long-Sleeve-T-shirt/black.jpg",
         product_id: 1,
       },
@@ -857,6 +894,62 @@ async function main() {
         admin_id: 2,
       },
     ],
+  });
+  const reviewData = [
+    {
+      product_id: 1,
+      user_id: 1,
+      review_text: "This product is amazing!",
+      rating: 5,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 2,
+      user_id: 2,
+      review_text: "Good quality and comfortable to wear.",
+      rating: 4,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 3,
+      user_id: 3,
+      review_text: "I love this sweater! It's so warm and stylish.",
+      rating: 5,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 4,
+      user_id: 4,
+      review_text: "These jeans are very comfortable and fit well.",
+      rating: 4,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 5,
+      user_id: 5,
+      review_text: "Great sweatpants for lounging around the house.",
+      rating: 4,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 6,
+      user_id: 1, // User ID limited to 5
+      review_text: "Nice shorts for summer!",
+      rating: 4,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      product_id: 1,
+      user_id: 2, // User ID limited to 5
+      review_text:
+        "I'm very happy with this jacket. It's versatile and stylish.",
+      rating: 5,
+      image: "https://via.placeholder.com/150",
+    },
+  ];
+
+  await prisma.review.createMany({
+    data: reviewData,
   });
   console.log("Seed data created successfully");
 }
