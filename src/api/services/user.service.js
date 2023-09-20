@@ -38,27 +38,27 @@ const postUser = async (data) => {
   try {
     // hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const createdUser = await prisma.user.create({
-      data: {
-        username,
-        first_name,
-        last_name,
-        email,
-        age,
-        photo,
-        password: hashedPassword, // Use the hashed password here
-        phone,
-      },
-      include: {
-        cart: true,
-        Order: true,
-        reviews: true,
-      },
+    await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          username,
+          first_name,
+          last_name,
+          email,
+          age,
+          photo,
+          password: hashedPassword, // Use the hashed password here
+          phone,
+        },
+        include: {
+          cart: true,
+          Order: true,
+          reviews: true,
+        },
+      });
+      await tx.cart.create({ data: { user_id: createdUser.id } });
+      return createdUser;
     });
-
-    await prisma.cart.create({ data: { user_id: createdUser.id } });
-    return createdUser;
   } catch (error) {
     console.log(error);
     throw new CustomAPIError(`Error: ${error.message}`, 500);

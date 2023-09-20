@@ -108,7 +108,7 @@ const fetchAllOrder = async ({
   status,
   quantity,
   page,
-  perPage,
+  limit,
   sortBy,
   sortOrder,
 }) => {
@@ -135,9 +135,9 @@ const fetchAllOrder = async ({
     };
   }
   const pageNumber = Number(page) || 1;
-  const take = Number(perPage) || 2;
+  const take = Number(limit) || 2;
   const totalItems = await prisma.order.count(); // Replace 'yourModel' with the actual model name
-  const totalPages = Math.ceil(totalItems / perPage);
+  const totalPages = Math.ceil(totalItems / limit);
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";
 
@@ -150,13 +150,22 @@ const fetchAllOrder = async ({
     skip: (pageNumber - 1) * take,
     take: take,
   });
-
+  if (!totalPages) {
+    return {
+      orders,
+      prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+      currentPage: pageNumber,
+      nextPage: null,
+      limit: take,
+      totalPages,
+    };
+  }
   return {
     orders,
     prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
     currentPage: pageNumber,
-    nextPage: +pageNumber + 1 >= perPage ? null : pageNumber + 1,
-    perPage,
+    nextPage: nextPage || +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+    limit: take,
     totalPages,
   };
 };

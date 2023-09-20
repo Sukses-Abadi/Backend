@@ -182,12 +182,12 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     SKU,
     maxPrice,
     minPrice,
-    perPage,
+    limit,
     page,
     sub_category_id,
     category_id,
     rating,
-    search,
+    q,
   } = query;
 
   const queryObject = {
@@ -199,20 +199,17 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   };
 
   const pageNumber = Number(page) || 1;
-  const limit = Number(perPage) || 2;
+  const take = Number(limit) || 2;
   const totalItems = await prisma.product.count(); // Replace 'yourModel' with the actual model name
 
-  const totalPages = Math.ceil(totalItems / perPage);
+  const totalPages = Math.ceil(totalItems / limit);
 
-  if (search) {
+  if (q) {
     const products = await prisma.product.findMany({
-      skip: (pageNumber - 1) * limit,
-      take: limit,
+      skip: (pageNumber - 1) * take,
+      take: take,
       where: {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { SKU: search },
-        ],
+        OR: [{ name: { contains: q, mode: "insensitive" } }, { SKU: q }],
       },
       include: {
         productGalleries: true,
@@ -258,15 +255,18 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
       products: filteredByRating.length > 0 ? filteredByRating : null,
       prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
       currentPage: pageNumber,
-      nextPage: +pageNumber + 1 >= perPage ? null : pageNumber + 1,
-      perPage: limit,
+      nextPage: +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+      limit: take,
       totalPages,
     };
+    if (!totalPages) {
+      response.nextPage = null;
+    }
     return response;
   }
   const products = await prisma.product.findMany({
-    skip: (pageNumber - 1) * limit,
-    take: perPage,
+    skip: (pageNumber - 1) * take,
+    take: take,
     where: queryObject,
     include: {
       productGalleries: true,
@@ -313,10 +313,13 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     products: filteredByRating.length > 0 ? filteredByRating : null,
     prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
     currentPage: pageNumber,
-    nextPage: +pageNumber + 1 >= perPage ? null : pageNumber + 1,
-    perPage,
+    nextPage: +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+    limit,
     totalPages,
   };
+  if (!totalPages) {
+    response.nextPage = null;
+  }
   return response;
 };
 
