@@ -106,7 +106,6 @@ const fetchAllOrder = async ({
   startTime,
   endTime,
   status,
-  quantity,
   page,
   limit,
   sortBy,
@@ -127,16 +126,11 @@ const fetchAllOrder = async ({
     filterObject.status = status;
   }
 
-  if (quantity) {
-    filterObject.orderProducts = {
-      some: {
-        quantity: quantity,
-      },
-    };
-  }
   const pageNumber = Number(page) || 1;
   const take = Number(limit) || 2;
-  const totalItems = await prisma.order.count(); // Replace 'yourModel' with the actual model name
+  const totalItems = await prisma.order.count({
+    where: filterObject,
+  }); // Replace 'yourModel' with the actual model name
   const totalPages = Math.ceil(totalItems / limit);
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";
