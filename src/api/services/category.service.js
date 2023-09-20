@@ -6,6 +6,7 @@ const findAll = async (params) => {
   const filterOptions = {
     where: {},
     include: {
+      SubCategory: true,
       Product: { include: { productDetails: true, productGalleries: true } },
     },
   };
@@ -30,6 +31,9 @@ const findOne = async (params) => {
     const categories = prisma.category.findUnique({
       where: {
         id: +id,
+      },
+      include: {
+        Product: { include: { productDetails: true, productGalleries: true } },
       },
     });
     return categories;

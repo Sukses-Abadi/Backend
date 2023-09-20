@@ -634,78 +634,72 @@ async function main() {
         photo: "https://via.placeholder.com/300",
         product_id: 4,
       },
-    ],
-  });
-
-  await prisma.productGallery.createMany({
-    data: [
       {
-        photo: "/uploads/Long-Sleeve-T-shirt/black.jpg",
+        photo: "/Long-Sleeve-T-shirt-1.jpg",
         product_id: 1,
       },
       {
-        photo: "/uploads/Long-Sleeve-T-shirt/white.jpg",
+        photo: "/Long-Sleeve-T-shirt-2.jpg",
         product_id: 1,
       },
       {
-        photo: "/uploads/Short-Sleeve-T-shirt/black.jpg",
+        photo: "/Short-Sleeve-T-shirt-1.jpg",
         product_id: 2,
       },
       {
-        photo: "/uploads/Short-Sleeve-T-shirt/white.jpg",
+        photo: "/Short-Sleeve-T-shirt-2.jpg",
         product_id: 2,
       },
       {
-        photo: "/uploads/Sweater/black.jpg",
+        photo: "/Sweater-1.jpg",
         product_id: 3,
       },
       {
-        photo: "/uploads/Sweater/white.jpg",
+        photo: "/Sweater-2.jpg",
         product_id: 3,
       },
       {
-        photo: "/uploads/Jeans/red.jpg",
+        photo: "/Jeans-1.jpg",
         product_id: 4,
       },
       {
-        photo: "/uploads/Jeans/blue.jpg",
+        photo: "/Jeans-2.jpg",
         product_id: 4,
       },
       {
-        photo: "/uploads/Sweatpants/black.jpg",
+        photo: "/Sweatpants-1.jpg",
         product_id: 5,
       },
       {
-        photo: "/uploads/Sweatpants/white.jpg",
+        photo: "/Sweatpants-2.jpg",
         product_id: 5,
       },
       {
-        photo: "/uploads/Shorts/black.jpg",
+        photo: "/Shorts-1.jpg",
         product_id: 6,
       },
       {
-        photo: "/uploads/Shorts/blue.jpg",
+        photo: "/Shorts-2.jpg",
         product_id: 6,
       },
       {
-        photo: "/uploads/Jacket/red.jpg",
+        photo: "/Jacket-1.jpg",
         product_id: 7,
       },
       {
-        photo: "/uploads/Jacket/blue.jpg",
+        photo: "/Jacket-2.jpg",
         product_id: 7,
       },
       {
-        photo: "/uploads/Hoodie/black.jpg",
+        photo: "/Hoodie-1.jpg",
         product_id: 8,
       },
       {
-        photo: "/uploads/Hoodie/green.jpg",
+        photo: "/Hoodie-2.jpg",
         product_id: 8,
       },
     ],
   });
-
   await prisma.user.createMany({
     data: [
       {

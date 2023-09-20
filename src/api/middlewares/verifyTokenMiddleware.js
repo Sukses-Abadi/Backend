@@ -12,7 +12,7 @@ const verifyTokenUser = (req, res, next) => {
   try {
     const decodedToken = verifyToken(token);
     const { id, username } = decodedToken;
-    const CheckUser = prisma.user.findUnique({ where: { id: id } });
+    const CheckUser = prisma.user.findUnique({ where: { username: username } });
     if (!CheckUser) {
       throw new CustomAPIError("Unauthorized", 401);
     }
@@ -35,7 +35,9 @@ const verifyTokenAdmin = (req, res, next) => {
   try {
     const decodedToken = verifyToken(accessToken);
     const { id, username } = decodedToken;
-    const CheckUser = prisma.admin.findUnique({ where: { id: id } });
+    const CheckUser = prisma.admin.findUnique({
+      where: { username: username },
+    });
     if (!CheckUser) {
       throw new CustomAPIError("Unauthorized", 401);
     }
