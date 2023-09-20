@@ -5,7 +5,22 @@ const prisma = new PrismaClient();
 
 const findAll = async (params) => {
   try {
-    const categories = await prisma.subCategory.findMany(params);
+    const filterOptions = {
+      where: {},
+      include: {
+        Product: { include: { productDetails: true, productGalleries: true } },
+      },
+    };
+
+    const { name } = params;
+
+    if (name) {
+      filterOptions.where.name = {
+        contains: name,
+        mode: "insensitive",
+      };
+    }
+    const categories = await prisma.subCategory.findMany(filterOptions);
     return categories;
   } catch (error) {
     console.log(error);

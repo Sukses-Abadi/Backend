@@ -130,7 +130,7 @@ const fetchAllOrder = async ({
   const take = Number(limit) || 2;
   const totalItems = await prisma.order.count({
     where: filterObject,
-  }); // Replace 'yourModel' with the actual model name
+  });
   const totalPages = Math.ceil(totalItems / limit);
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";

@@ -5,8 +5,8 @@ const userRoute = require("./api/routes/user.route");
 const reviewRoute = require("./api/routes/review.route");
 const crudCity = require("./api/routes/city.route");
 const adminRoute = require("./api/routes/cms/cms.admin.route");
-const crudCategory = require("./api/routes/cms/cms.categories.route");
-const crudSubCategory = require("./api/routes/cms/cms.subcategories.route");
+const crudCategoryCMS = require("./api/routes/cms/cms.categories.route");
+const crudSubCategoryCMS = require("./api/routes/cms/cms.subcategories.route");
 const crudProductCMS = require("./api/routes/cms/cms.product.route");
 const crudUserCMS = require("./api/routes/cms/cms.user.route");
 const crudCart = require("./api/routes/cart.route");
@@ -17,6 +17,8 @@ const crudBank = require("./api/routes/bankAccount.route");
 const crudBankCMS = require("./api/routes/cms/cms.bankAccount.route");
 const crudOrder = require("./api/routes/order.route");
 const crudOrderCMS = require("./api/routes/cms/cms.order.route");
+const getAllCategory = require("./api/routes/category.route");
+const getAllSubCategory = require("./api/routes/subCategory.route");
 const {
   verifyTokenAdmin,
 } = require("../src/api/middlewares/verifyTokenMiddleware");
@@ -35,11 +37,13 @@ router.use("/api/city", crudCity);
 router.use("/api/bank-accounts", crudBank);
 router.use("/api/review", reviewRoute);
 router.use("/api/order", crudOrder);
+router.use("/api/category", getAllCategory);
+router.use("/api/subcategory", getAllSubCategory);
 
 router.use(verifyTokenAdmin);
 router.use("/api/cms/bank-accounts", crudBankCMS);
-router.use("/api/cms/category", crudCategory);
-router.use("/api/cms/subcategory", crudSubCategory);
+router.use("/api/cms/category", crudCategoryCMS);
+router.use("/api/cms/subcategory", crudSubCategoryCMS);
 router.use("/api/cms/products", crudProductCMS);
 router.use("/api/cms/users", crudUserCMS);
 router.use("/api/cms/order", crudOrderCMS);
