@@ -603,67 +603,67 @@ async function main() {
   await prisma.productGallery.createMany({
     data: [
       {
-        photo: "/Long-Sleeve-T-shirt-1.jpg",
+        photo: "Long-Sleeve-T-shirt-1.jpg",
         product_id: 1,
       },
       {
-        photo: "/Long-Sleeve-T-shirt-2.jpg",
+        photo: "Long-Sleeve-T-shirt-2.jpg",
         product_id: 1,
       },
       {
-        photo: "/Short-Sleeve-T-shirt-1.jpg",
+        photo: "Short-Sleeve-T-shirt-1.jpg",
         product_id: 2,
       },
       {
-        photo: "/Short-Sleeve-T-shirt-2.jpg",
+        photo: "Short-Sleeve-T-shirt-2.jpg",
         product_id: 2,
       },
       {
-        photo: "/Sweater-1.jpg",
+        photo: "Sweater-1.jpg",
         product_id: 3,
       },
       {
-        photo: "/Sweater-2.jpg",
+        photo: "Sweater-2.jpg",
         product_id: 3,
       },
       {
-        photo: "/Jeans-1.jpg",
+        photo: "Jeans-1.jpg",
         product_id: 4,
       },
       {
-        photo: "/Jeans-2.jpg",
+        photo: "Jeans-2.jpg",
         product_id: 4,
       },
       {
-        photo: "/Sweatpants-1.jpg",
+        photo: "Sweatpants-1.jpg",
         product_id: 5,
       },
       {
-        photo: "/Sweatpants-2.jpg",
+        photo: "Sweatpants-2.jpg",
         product_id: 5,
       },
       {
-        photo: "/Shorts-1.jpg",
+        photo: "Shorts-1.jpg",
         product_id: 6,
       },
       {
-        photo: "/Shorts-2.jpg",
+        photo: "Shorts-2.jpg",
         product_id: 6,
       },
       {
-        photo: "/Jacket-1.jpg",
+        photo: "Jacket-1.jpg",
         product_id: 7,
       },
       {
-        photo: "/Jacket-2.jpg",
+        photo: "Jacket-2.jpg",
         product_id: 7,
       },
       {
-        photo: "/Hoodie-1.jpg",
+        photo: "Hoodie-1.jpg",
         product_id: 8,
       },
       {
-        photo: "/Hoodie-2.jpg",
+        photo: "Hoodie-2.jpg",
         product_id: 8,
       },
     ],
