@@ -54,7 +54,7 @@ const resetCart = async (req, res) => {
   const item = await resetCartToDefault(+req.user.id);
   return res.json({
     status: "success",
-    message: "item deleted successfully",
+    message: "All item on the cart are deleted successfully",
     data: item,
   });
 };

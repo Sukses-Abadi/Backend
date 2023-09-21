@@ -19,6 +19,6 @@ app.use(express.static("uploads"));
  * routes
  */
 app.use(routes);
-app.use(errorHandlerMiddleware);
 app.use(notFound);
+app.use(errorHandlerMiddleware);
 module.exports = app;
