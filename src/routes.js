@@ -19,6 +19,7 @@ const crudOrder = require("./api/routes/order.route");
 const crudOrderCMS = require("./api/routes/cms/cms.order.route");
 const getAllCategory = require("./api/routes/category.route");
 const getAllSubCategory = require("./api/routes/subCategory.route");
+const getProductDetailsBasedOnSize = require("./api/routes/productDetails.routes");
 const {
   verifyTokenAdmin,
 } = require("../src/api/middlewares/verifyTokenMiddleware");
@@ -39,7 +40,7 @@ router.use("/api/review", reviewRoute);
 router.use("/api/order", crudOrder);
 router.use("/api/category", getAllCategory);
 router.use("/api/subcategory", getAllSubCategory);
-
+router.use("/api/product_details", getProductDetailsBasedOnSize);
 router.use(verifyTokenAdmin);
 router.use("/api/cms/bank-accounts", crudBankCMS);
 router.use("/api/cms/category", crudCategoryCMS);

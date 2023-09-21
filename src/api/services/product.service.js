@@ -221,6 +221,8 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
         }
       : queryObject,
     include: {
+      Category: true,
+      SubCategory: true,
       productGalleries: true,
       reviews: rating
         ? {
