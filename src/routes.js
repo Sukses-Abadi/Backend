@@ -24,6 +24,7 @@ const {
   verifyTokenAdmin,
 } = require("../src/api/middlewares/verifyTokenMiddleware");
 const rajaOngkir = require("./api/routes/rajaongkir.route");
+const crudCartProduct = require("./api/routes/cartProduct.route");
 /**
  * api routes
  */
@@ -41,6 +42,8 @@ router.use("/api/order", crudOrder);
 router.use("/api/category", getAllCategory);
 router.use("/api/subcategory", getAllSubCategory);
 router.use("/api/product_details", getProductDetailsBasedOnSize);
+router.use("/api/cartproduct", crudCartProduct);
+
 router.use(verifyTokenAdmin);
 router.use("/api/cms/bank-accounts", crudBankCMS);
 router.use("/api/cms/category", crudCategoryCMS);
