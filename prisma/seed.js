@@ -675,7 +675,6 @@ async function main() {
         first_name: "John",
         last_name: "Doe",
         email: "john.doe@example.com",
-        age: 25,
         password:
           "$2b$10$W3vKECwAD.QGCiSVlknuw.B.iGlOGDXliWtrfFCrtw5obe8ulVM6y",
         phone: "1234567890",
@@ -685,7 +684,6 @@ async function main() {
         first_name: "Alice",
         last_name: "Smith",
         email: "alice.smith@example.com",
-        age: 30,
         password:
           "$2b$10$N9fElMEmnlHb0mDglDeVeeOqsYAEcuXuXTe78jHHanXmyAJVa2fvW",
         phone: "9876543210",
@@ -695,7 +693,6 @@ async function main() {
         first_name: "Ethan",
         last_name: "Johnson",
         email: "ethan.johnson@example.com",
-        age: 28,
         password:
           "$2b$10$gqxD7Q0TA6kGF.T0UMlSiefyLey4LXXXd/fO.aO5sfHoEazlacONK",
         phone: "5551237890",
@@ -705,7 +702,6 @@ async function main() {
         first_name: "Olivia",
         last_name: "Davis",
         email: "olivia.davis@example.com",
-        age: 22,
         password:
           "$2b$10$VdD81jN3H5I6U1JMHrRZ7uiu97.gLSc1fKgLgepv2Qy0yXsRwgnRC",
         phone: "9995551234",
@@ -715,7 +711,6 @@ async function main() {
         first_name: "Sophia",
         last_name: "Miller",
         email: "sophia.miller@example.com",
-        age: 35,
         password:
           "$2b$10$FHkIzh955vuk/YUW2P..fuvHXIyJGlNUSAZ.ehDVroBv9.Roc/z/i",
         phone: "1237894560",

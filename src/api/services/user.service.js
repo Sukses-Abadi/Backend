@@ -19,7 +19,7 @@ const fetchSingleUsersById = async (params) => {
   const user = await prisma.user.findUnique({
     where: { id: +id },
     include: {
-      cart: true,
+      cart: { include: { CartProduct: true } },
       Order: true,
       reviews: true,
     },
@@ -32,10 +32,22 @@ const fetchSingleUsersById = async (params) => {
 };
 
 const postUser = async (data) => {
-  let { username, first_name, last_name, email, age, photo, password, phone } =
-    data;
+  let { username, first_name, last_name, email, photo, password, phone } = data;
 
   try {
+    const existedUserUsername = await prisma.user.findUnique({
+      where: { username: username },
+    });
+    if (existedUserUsername) {
+      throw new CustomAPIError(`Username is taken`, 400);
+    }
+    const existedUserEmail = await prisma.user.findUnique({
+      where: { email: email },
+    });
+    if (existedUserEmail) {
+      throw new CustomAPIError(`Email is registered before`, 400);
+    }
+
     // hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
     await prisma.$transaction(async (tx) => {
@@ -45,7 +57,6 @@ const postUser = async (data) => {
           first_name,
           last_name,
           email,
-          age,
           photo,
           password: hashedPassword, // Use the hashed password here
           phone,
@@ -61,7 +72,7 @@ const postUser = async (data) => {
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(`${error.message}`, 500);
   }
 };
 

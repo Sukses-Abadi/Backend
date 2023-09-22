@@ -12,7 +12,7 @@ const showCart = async (req, res) => {
   const userCart = await fetchCart(+req.user.id);
   return res.json({
     status: "success",
-    message: "item added successfully",
+    message: "This is the Cart",
     data: userCart,
   });
 };

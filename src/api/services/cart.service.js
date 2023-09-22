@@ -4,7 +4,17 @@ const CustomAPIError = require("../middlewares/custom-error");
 const fetchCart = async (user_id) => {
   return prisma.cart.findUnique({
     where: { user_id: user_id },
-    include: { CartProduct: true },
+    include: {
+      address: true,
+      bankAccount: true,
+      CartProduct: {
+        include: {
+          ProductDetails: {
+            include: { product: { include: { productGalleries: true } } },
+          },
+        },
+      },
+    },
   });
 };
 
