@@ -7,6 +7,10 @@ const loginAdmin = async (payload) => {
   const { username, password } = payload;
   try {
     const admin = await prisma.admin.findUnique({ where: { username } });
+    if (!admin) {
+      throw new CustomAPIError("Invalid credentials", 400);
+    }
+
     const passwordMatch = await bcrypt.compare(password, admin.password);
     if (!passwordMatch) {
       throw new CustomAPIError("Invalid credentials", 400);
@@ -16,7 +20,10 @@ const loginAdmin = async (payload) => {
     return token;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -24,6 +31,13 @@ const postAdmin = async (payload) => {
   const { username, password } = payload;
 
   try {
+    if (!username || !password) {
+      throw new CustomAPIError(
+        "Registration failed. Please fill in all the required fields.",
+        400
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await prisma.admin.create({
       data: {
@@ -35,7 +49,10 @@ const postAdmin = async (payload) => {
     return result;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
