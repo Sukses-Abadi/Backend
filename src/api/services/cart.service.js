@@ -34,7 +34,7 @@ const cartLogic = async (payload) => {
       product_details,
       courier,
     } = payload;
-
+    console.log(payload);
     const result = await prisma.$transaction(async (tx) => {
       // Find or create a user's cart
       const userCart = await tx.cart.findUnique({
@@ -86,7 +86,7 @@ const cartLogic = async (payload) => {
 
       // Calculate total_payment
       const total_payment = total_price + (shipping_cost || 0);
-
+      console.log(total_payment, shipping_cost);
       // Update cart details
       await tx.cart.update({
         where: { user_id: id },

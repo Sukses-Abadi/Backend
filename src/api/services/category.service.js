@@ -9,6 +9,9 @@ const findAll = async (params) => {
       SubCategory: true,
       Product: { include: { productDetails: true, productGalleries: true } },
     },
+    orderBy: {
+      id: "asc", // Order by id in ascending order
+    },
   };
 
   const { name } = params;
@@ -75,6 +78,9 @@ const update = async (pathParams, params) => {
       },
       data: {
         name: name,
+      },
+      orderBy: {
+        id: "asc", // Order by id in ascending order
       },
     });
 

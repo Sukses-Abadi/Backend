@@ -1,5 +1,6 @@
 const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
+const { resetCartToDefault } = require("./cart.service");
 const makeOrderFromCart = async (params) => {
   let {
     id,
@@ -13,7 +14,7 @@ const makeOrderFromCart = async (params) => {
     total_price,
     total_payment,
   } = params;
-
+  // console.log(params);
   if (product_order_attributes.length === 0) {
     throw new CustomAPIError("No product is provided", 400);
   }
@@ -37,7 +38,7 @@ const makeOrderFromCart = async (params) => {
 
     await Promise.all(
       product_order_attributes.map(async (productOrder) => {
-        const { id: product_details_id, price, quantity } = productOrder;
+        const { product_details_id, price, quantity } = productOrder;
 
         await prisma.orderProduct.create({
           data: {
@@ -67,35 +68,23 @@ const makeOrderFromCart = async (params) => {
     );
 
     // Update order totals
-    const updatedOrder = await prisma.order.findUnique({
+    resetCartToDefault(id);
+    // Reset cart to default
+    return await prisma.order.findUnique({
       where: { id: order.id },
       include: {
         user: true,
-        address: true,
-        orderProducts: true,
-      },
-    });
-
-    // Reset cart to default
-    await prisma.cart.update({
-      where: { user_id: id },
-      data: {
-        shipping_cost: null,
-        total_payment: 0,
-        total_weight: 0,
-        total_price: 0,
-        courier: null,
-        address_id: null,
-        bank_account_id: null,
-      },
-      include: {
-        user: true,
-        address: true,
+        orderProducts: {
+          include: {
+            ProductDetails: {
+              include: { product: { include: { productGalleries: true } } },
+            },
+          },
+        },
         bankAccount: true,
-        CartProduct: true,
+        address: true,
       },
     });
-    return updatedOrder;
   } catch (error) {
     throw new CustomAPIError(`Error: ${error.message}`, 400);
   }
@@ -127,7 +116,7 @@ const fetchAllOrder = async ({
   }
 
   const pageNumber = Number(page) || 1;
-  const take = Number(limit) || 2;
+  const take = Number(limit) || 50;
   const totalItems = await prisma.order.count({
     where: filterObject,
   });
@@ -137,7 +126,18 @@ const fetchAllOrder = async ({
 
   const orders = await prisma.order.findMany({
     where: filterObject,
-    include: { orderProducts: true },
+    include: {
+      orderProducts: {
+        include: {
+          ProductDetails: {
+            include: { product: { include: { productGalleries: true } } },
+          },
+        },
+      },
+      bankAccount: true,
+
+      address: true,
+    },
     orderBy: {
       [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
     },
@@ -227,9 +227,9 @@ const fetchOrderByUserId = async (
     filterObject.status = status;
   }
   const pageNumber = Number(page) || 1;
-  const take = Number(limit) || 2;
+  const take = Number(limit) || 50;
   const totalItems = await prisma.order.count({
-    where: { OR: [{ user_id: userId }, { filterObject }] },
+    where: { OR: [{ user_id: userId }, filterObject] },
   });
   const totalPages = Math.ceil(totalItems / limit);
   const filterSortBy = sortBy || "order_date";
@@ -240,7 +240,16 @@ const fetchOrderByUserId = async (
       user_id: +userId,
     },
     include: {
-      orderProducts: true,
+      orderProducts: {
+        include: {
+          ProductDetails: {
+            include: { product: { include: { productGalleries: true } } },
+          },
+        },
+      },
+      bankAccount: true,
+
+      address: true,
     },
     orderBy: {
       [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
@@ -274,7 +283,16 @@ const fetchOrderbyId = async (order_id) => {
       id: +order_id,
     },
     include: {
-      orderProducts: true,
+      orderProducts: {
+        include: {
+          ProductDetails: {
+            include: { product: { include: { productGalleries: true } } },
+          },
+        },
+      },
+      bankAccount: true,
+
+      address: true,
     },
   });
   if (!order) {

@@ -12,7 +12,7 @@ const {
 
 const createOrder = async (req, res) => {
   try {
-    // JSON.stringify(req.body);
+    console.log(req.body);
     const payload = {
       id: req.user.id,
       address_id: req.body.address_id,

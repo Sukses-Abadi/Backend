@@ -9,7 +9,7 @@ const fetchAllUsers = async () => {
       cart: { include: { CartProduct: true } },
       Order: true,
       reviews: true,
-      address: true,
+      address: { include: { city: true } },
     },
   });
   return users;
@@ -23,7 +23,7 @@ const fetchSingleUsersById = async (params) => {
       cart: { include: { CartProduct: true } },
       Order: true,
       reviews: true,
-      address: true,
+      address: { include: { city: true } },
     },
   });
 
@@ -67,7 +67,7 @@ const postUser = async (data) => {
           cart: { include: { CartProduct: true } },
           Order: true,
           reviews: true,
-          address: true,
+          address: { include: { city: true } },
         },
       });
       await tx.cart.create({ data: { user_id: createdUser.id } });

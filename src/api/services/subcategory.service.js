@@ -10,6 +10,9 @@ const findAll = async (params) => {
       include: {
         Product: { include: { productDetails: true, productGalleries: true } },
       },
+      orderBy: {
+        id: "asc", // Order by id in ascending order
+      },
     };
 
     const { name } = params;
