@@ -6,9 +6,10 @@ const { generateToken } = require("../../lib/jwt");
 const fetchAllUsers = async () => {
   const users = await prisma.user.findMany({
     include: {
-      cart: true,
+      cart: { include: { CartProduct: true } },
       Order: true,
       reviews: true,
+      address: true,
     },
   });
   return users;
@@ -22,6 +23,7 @@ const fetchSingleUsersById = async (params) => {
       cart: { include: { CartProduct: true } },
       Order: true,
       reviews: true,
+      address: true,
     },
   });
 
@@ -62,9 +64,10 @@ const postUser = async (data) => {
           phone,
         },
         include: {
-          cart: true,
+          cart: { include: { CartProduct: true } },
           Order: true,
           reviews: true,
+          address: true,
         },
       });
       await tx.cart.create({ data: { user_id: createdUser.id } });
