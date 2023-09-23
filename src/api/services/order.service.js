@@ -151,6 +151,7 @@ const fetchAllOrder = async ({
       currentPage: pageNumber,
       nextPage: null,
       limit: take,
+      totalItems,
       totalPages,
     };
   }
@@ -160,6 +161,7 @@ const fetchAllOrder = async ({
     currentPage: pageNumber,
     nextPage: nextPage || +pageNumber + 1 > totalPages ? null : pageNumber + 1,
     limit: take,
+    totalItems,
     totalPages,
   };
 };
@@ -218,15 +220,18 @@ const deleteOrderById = async (orderId) => {
 
 const fetchOrderByUserId = async (
   userId,
-  { status, page, perPage, sortBy, sortOrder }
+  { status, page, limit, sortBy, sortOrder }
 ) => {
   const filterObject = {};
   if (status) {
     filterObject.status = status;
   }
-
   const pageNumber = Number(page) || 1;
-  const take = Number(perPage) || 2;
+  const take = Number(limit) || 2;
+  const totalItems = await prisma.order.count({
+    where: { OR: [{ user_id: userId }, { filterObject }] },
+  });
+  const totalPages = Math.ceil(totalItems / limit);
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";
 
@@ -243,15 +248,24 @@ const fetchOrderByUserId = async (
     skip: (pageNumber - 1) * take,
     take: take,
   });
-  if (orders.length < 0) {
-    throw new CustomAPIError(`No Orders found for this user`, 400);
+
+  if (!totalPages) {
+    return {
+      orders,
+      prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+      currentPage: pageNumber,
+      nextPage: null,
+      totalItems,
+      limit,
+    };
   }
   return {
     orders,
     prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
     currentPage: pageNumber,
-    nextPage: +pageNumber + 1,
-    perPage,
+    nextPage: +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+    totalItems,
+    limit,
   };
 };
 const fetchOrderbyId = async (order_id) => {

@@ -263,6 +263,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     prevPage: pageNumber > 1 ? pageNumber - 1 : null,
     currentPage: pageNumber,
     nextPage: pageNumber < totalPages ? pageNumber + 1 : null,
+    totalItems,
     limit: take,
     totalPages,
   };

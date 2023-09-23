@@ -2,6 +2,8 @@ const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
 
 const fetchCart = async (user_id) => {
+  await cartLogic({ id: user_id });
+
   return prisma.cart.findUnique({
     where: { user_id: user_id },
     include: {
@@ -12,6 +14,9 @@ const fetchCart = async (user_id) => {
           ProductDetails: {
             include: { product: { include: { productGalleries: true } } },
           },
+        },
+        orderBy: {
+          id: "asc", // Order by CartProduct id in ascending order
         },
       },
     },
@@ -100,7 +105,23 @@ const cartLogic = async (payload) => {
       // Fetch and return the updated cart
     });
 
-    return await fetchCart(id);
+    return prisma.cart.findUnique({
+      where: { user_id: id },
+      include: {
+        address: true,
+        bankAccount: true,
+        CartProduct: {
+          include: {
+            ProductDetails: {
+              include: { product: { include: { productGalleries: true } } },
+            },
+          },
+          orderBy: {
+            id: "asc", // Order by CartProduct id in ascending order
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error(error);
     throw new CustomAPIError(error.message, 500);
