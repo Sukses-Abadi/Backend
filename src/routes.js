@@ -28,7 +28,7 @@ const crudCartProduct = require("./api/routes/cartProduct.route");
 /**
  * api routes
  */
-router.post("/api/uploads", upload.array("file", 5), uploadFile);
+router.post("/api/uploads", upload.array("files", 5), uploadFile);
 router.use("/api/rajaongkir", rajaOngkir);
 router.use("/api/cms", adminRoute);
 router.use("/api/products", crudProduct);

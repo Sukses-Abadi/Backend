@@ -23,6 +23,7 @@ router.delete("/:id", verifyTokenUser, async (req, res) => {
     message: "quantity updated successfully",
     data: data,
   });
+  
 });
 
 module.exports = router;
