@@ -25,6 +25,7 @@ const {
 } = require("../src/api/middlewares/verifyTokenMiddleware");
 const rajaOngkir = require("./api/routes/rajaongkir.route");
 const crudCartProduct = require("./api/routes/cartProduct.route");
+const forgetPassword = require("./api/routes/reserPassword");
 /**
  * api routes
  */
@@ -43,6 +44,7 @@ router.use("/api/category", getAllCategory);
 router.use("/api/subcategory", getAllSubCategory);
 router.use("/api/product_details", getProductDetailsBasedOnSize);
 router.use("/api/cartproduct", crudCartProduct);
+router.use("/api/forget-password", forgetPassword);
 
 router.use(verifyTokenAdmin);
 router.use("/api/cms/bank-accounts", crudBankCMS);

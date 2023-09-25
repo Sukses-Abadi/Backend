@@ -13,5 +13,5 @@ router.get("/:id", verifyTokenUser, getOrderbyId);
 router.get("/", verifyTokenUser, getAllOrdersByUserId);
 router.post("/", verifyTokenUser, createOrder);
 router.delete("/", verifyTokenUser, deleteOrder);
-router.put("/:id", verifyTokenUser, uploadReceipt); // frontend  { status: "complete" }
+router.put("/", verifyTokenUser, uploadReceipt); // frontend  { status: "complete" }
 module.exports = router;
