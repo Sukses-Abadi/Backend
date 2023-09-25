@@ -3,9 +3,8 @@ const nodemailer = require("nodemailer");
 const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../../lib/prisma");
+const bcrypt = require(`bcryptjs`);
 
 router.post("/", async (req, res) => {
   const { email } = req.body;
@@ -40,8 +39,8 @@ router.post("/", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "youremail@gmail.com",
-        pass: "yourpassword",
+        user: "suksesabadi.apparel.store@gmail.com",
+        pass: "vpqk mtov pokk dwih",
       },
     });
 
@@ -49,8 +48,8 @@ router.post("/", async (req, res) => {
     const mailOptions = {
       from: "noreply@example.com",
       to: email,
-      subject: "Password Reset,  Sukses Abadi Apparel Store",
-      text: "Click the link to reset your password: http://example.com/reset",
+      subject: `Hello ${user.username} ,Password Reset,  Sukses Abadi Apparel Store`,
+      text: `Your username is ${user.username} . Please Click the link within 1 hour to reset your password: http://localhost:8090/auth/reset/${token}`,
     };
 
     // Send the email
@@ -86,12 +85,12 @@ router.post("/:token", async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
-
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     // Update user's password and clear reset token fields
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        password: newPassword,
+        password: hashedPassword,
         resetPasswordToken: null,
         resetPasswordExpires: null,
       },

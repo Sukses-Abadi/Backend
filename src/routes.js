@@ -25,7 +25,7 @@ const {
 } = require("../src/api/middlewares/verifyTokenMiddleware");
 const rajaOngkir = require("./api/routes/rajaongkir.route");
 const crudCartProduct = require("./api/routes/cartProduct.route");
-const forgetPassword = require("./api/routes/reserPassword");
+const forgetPassword = require("./api/routes/resetPassword");
 /**
  * api routes
  */
