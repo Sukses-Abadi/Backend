@@ -62,6 +62,7 @@ const deleteOrder = async (req, res) => {
 
 const uploadReceipt = async (req, res) => {
   try {
+    console.log(req.body);
     const result = await updatePaymentReceiptInOrder(req.body);
     res.json({
       status: "success",

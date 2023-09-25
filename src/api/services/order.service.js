@@ -167,12 +167,12 @@ const fetchAllOrder = async ({
 };
 
 const updatePaymentReceiptInOrder = async (payload) => {
-  const { order_id, payment_receipt } = payload;
-  console.log();
+  const { order_id, payment_receipt, status } = payload;
+  console.log(payload);
   try {
     const updatedOrder = await prisma.order.update({
       where: { id: order_id },
-      data: { payment_receipt: payment_receipt, status: "received" },
+      data: { payment_receipt: payment_receipt, status: status },
     });
 
     return updatedOrder;

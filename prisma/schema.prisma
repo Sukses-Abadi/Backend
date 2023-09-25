@@ -43,20 +43,22 @@ model Product {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  username   String    @unique
-  first_name String
-  last_name  String
-  email      String    @unique
-  photo      String?
-  password   String
-  address    Address[]
-  phone      String?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
-  cart       Cart?
-  reviews    Review[]
-  Order      Order[]
+  id                   Int       @id @default(autoincrement())
+  username             String    @unique
+  first_name           String
+  last_name            String
+  email                String    @unique
+  photo                String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  password             String
+  address              Address[]
+  phone                String?
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @default(now())
+  cart                 Cart?
+  reviews              Review[]
+  Order                Order[]
 }
 
 model Review {
