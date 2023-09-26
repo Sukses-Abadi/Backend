@@ -123,18 +123,8 @@ const putUser = async (pathParams, params) => {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
 
-    const {
-      username,
-      first_name,
-      last_name,
-      email,
-      age,
-      photo,
-      password,
-      phone,
-    } = params;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { username, first_name, last_name, email, age, photo, phone } =
+      params;
 
     await prisma.user.update({
       where: {
@@ -147,7 +137,7 @@ const putUser = async (pathParams, params) => {
         email: email || user.email,
         age: age || user.age,
         photo: photo || user.photo,
-        password: hashedPassword || user.password,
+
         phone: phone || user.phone,
       },
     });
