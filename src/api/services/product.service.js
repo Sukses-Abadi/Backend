@@ -50,11 +50,13 @@ const postFullProduct = async (data) => {
       SKU,
       description,
       slug,
+      weight = weight || 100,
       keyword,
       category_id,
       sub_category_id,
       product_galleries,
       product_details,
+      discount = discount || null,
     } = data;
 
     slug = slugify(name);
@@ -66,6 +68,8 @@ const postFullProduct = async (data) => {
         description,
         slug,
         keyword,
+        discount,
+        weight,
         category_id,
         sub_category_id,
         productGalleries: { create: product_galleries },
@@ -189,10 +193,14 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     category_id,
     rating,
     q,
+    sortBy,
+    sortOrder,
   } = query;
 
   const pageNumber = Number(page);
   const take = Number(limit);
+  const filterSortBy = sortBy || "created_at";
+  const filterSortOrder = sortOrder || "desc";
 
   const queryObject = {
     id: id && Number(id),
@@ -212,6 +220,9 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
           ],
         }
       : queryObject,
+    orderBy: {
+      [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
+    },
   });
 
   const totalPages = Math.ceil(totalItems / limit) || 1;
@@ -245,6 +256,9 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
           },
         },
       },
+    },
+    orderBy: {
+      [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
     },
   });
 

@@ -116,11 +116,12 @@ const fetchAllOrder = async ({
   }
 
   const pageNumber = Number(page) || 1;
-  const take = Number(limit) || 50;
+  const take = Number(limit) || 2;
   const totalItems = await prisma.order.count({
     where: filterObject,
   });
-  const totalPages = Math.ceil(totalItems / limit);
+  const totalPages = Math.ceil(totalItems / take);
+
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";
 
@@ -135,7 +136,6 @@ const fetchAllOrder = async ({
         },
       },
       bankAccount: true,
-
       address: true,
     },
     orderBy: {
@@ -157,11 +157,11 @@ const fetchAllOrder = async ({
   }
   return {
     orders,
-    prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+    prevPage: pageNumber > 1 ? pageNumber - 1 : null,
     currentPage: pageNumber,
-    nextPage: nextPage || +pageNumber + 1 > totalPages ? null : pageNumber + 1,
-    limit: take,
+    nextPage: pageNumber < totalPages ? pageNumber + 1 : null,
     totalItems,
+    limit: take,
     totalPages,
   };
 };
