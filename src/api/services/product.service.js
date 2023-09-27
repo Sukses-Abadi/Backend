@@ -205,7 +205,11 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   const totalItems = await prisma.product.count({
     where: q
       ? {
-          OR: [{ name: { contains: q, mode: "insensitive" } }, { SKU: q }],
+          OR: [
+            { name: { contains: q, mode: "insensitive" } },
+            { SKU: q },
+            { keyword: { contains: q, mode: "insensitive" } },
+          ],
         }
       : queryObject,
   });
@@ -217,7 +221,11 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     take,
     where: q
       ? {
-          OR: [{ name: { contains: q, mode: "insensitive" } }, { SKU: q }],
+          OR: [
+            { name: { contains: q, mode: "insensitive" } },
+            { SKU: q },
+            { keyword: { contains: q, mode: "insensitive" } },
+          ],
         }
       : queryObject,
     include: {
