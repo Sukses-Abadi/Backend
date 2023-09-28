@@ -4,11 +4,7 @@ const CustomAPIError = require("../middlewares/custom-error");
 const fetchBankAccount = async (params) => {
   if (params) {
     const { id } = params;
-    const result = await prisma.bankAccount.findMany({
-      where: {
-        admin_id: id,
-      },
-    });
+    const result = await prisma.bankAccount.findMany({});
 
     return result;
   }
