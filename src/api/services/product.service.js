@@ -20,8 +20,11 @@ const fetchSingleProductBySlugOrId = async (data) => {
         id: +data, // Convert data to a number
       },
       include: {
-        productDetails: true,
+        Category: true,
+        SubCategory: true,
+        productGalleries: true,
         reviews: true,
+        productDetails: true,
       },
     });
   } else {
@@ -31,8 +34,11 @@ const fetchSingleProductBySlugOrId = async (data) => {
         slug: data,
       },
       include: {
-        productDetails: true,
+        Category: true,
+        SubCategory: true,
         productGalleries: true,
+        reviews: true,
+        productDetails: true,
       },
     });
   }
@@ -215,7 +221,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
       ? {
           OR: [
             { name: { contains: q, mode: "insensitive" } },
-            { SKU: q },
+            { SKU: { contains: q, mode: "insensitive" } },
             { keyword: { contains: q, mode: "insensitive" } },
           ],
         }
