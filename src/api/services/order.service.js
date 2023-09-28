@@ -99,6 +99,7 @@ const fetchAllOrder = async ({
   limit,
   sortBy,
   sortOrder,
+  q,
 }) => {
   const filterObject = {};
   if (id) {
@@ -118,7 +119,11 @@ const fetchAllOrder = async ({
   const pageNumber = Number(page) || 1;
   const take = Number(limit) || 2;
   const totalItems = await prisma.order.count({
-    where: filterObject,
+    where: q
+      ? {
+          OR: [{ id: +q }, {}],
+        }
+      : filterObject,
   });
   const totalPages = Math.ceil(totalItems / take);
 
@@ -126,7 +131,11 @@ const fetchAllOrder = async ({
   const filterSortOrder = sortOrder || "asc";
 
   const orders = await prisma.order.findMany({
-    where: filterObject,
+    where: q
+      ? {
+          OR: [{ id: +q }, {}],
+        }
+      : filterObject,
     include: {
       orderProducts: {
         include: {
