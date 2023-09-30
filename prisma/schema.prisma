@@ -146,6 +146,7 @@ model Order {
   address         Address        @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderProducts   OrderProduct[]
+  review          Boolean        @default(false)
 }
 
 enum Courier {

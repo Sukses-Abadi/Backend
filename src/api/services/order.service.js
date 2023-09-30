@@ -176,12 +176,15 @@ const fetchAllOrder = async ({
 };
 
 const updatePaymentReceiptInOrder = async (payload) => {
-  const { order_id, payment_receipt, status } = payload;
-  console.log(payload);
+  const { order_id, payment_receipt, status, review } = payload;
   try {
     const updatedOrder = await prisma.order.update({
       where: { id: order_id },
-      data: { payment_receipt: payment_receipt, status: status },
+      data: {
+        payment_receipt: payment_receipt,
+        status: status,
+        review: review || false,
+      },
     });
 
     return updatedOrder;
@@ -237,18 +240,23 @@ const fetchOrderByUserId = async (
   if (status) {
     filterObject.status = status;
   }
+
   const pageNumber = Number(page) || 1;
   const take = Number(limit) || 50;
+
   const totalItems = await prisma.order.count({
-    where: { OR: [{ user_id: userId }, filterObject] },
+    where: { user_id: +userId, ...filterObject },
   });
-  const totalPages = Math.ceil(totalItems / limit);
+
+  const totalPages = Math.ceil(totalItems / take); // Use 'take' instead of 'limit'
+
   const filterSortBy = sortBy || "order_date";
   const filterSortOrder = sortOrder || "asc";
 
   const orders = await prisma.order.findMany({
     where: {
       user_id: +userId,
+      ...filterObject, // Spread the filterObject here
     },
     include: {
       orderProducts: {
@@ -259,35 +267,26 @@ const fetchOrderByUserId = async (
         },
       },
       bankAccount: true,
-
       address: true,
     },
     orderBy: {
-      [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
+      [filterSortBy]: filterSortOrder,
     },
     skip: (pageNumber - 1) * take,
     take: take,
   });
 
-  if (!totalPages) {
-    return {
-      orders,
-      prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
-      currentPage: pageNumber,
-      nextPage: null,
-      totalItems,
-      limit,
-    };
-  }
   return {
     orders,
-    prevPage: pageNumber - 1 === 0 ? null : pageNumber - 1,
+    prevPage: pageNumber - 1 > 0 ? pageNumber - 1 : null,
     currentPage: pageNumber,
-    nextPage: +pageNumber + 1 > totalPages ? null : pageNumber + 1,
+    nextPage: pageNumber + 1 <= totalPages ? pageNumber + 1 : null,
     totalItems,
-    limit,
+    limit: take, // Use 'take' instead of 'limit'
+    totalPages,
   };
 };
+
 const fetchOrderbyId = async (order_id) => {
   const order = await prisma.order.findUnique({
     where: {

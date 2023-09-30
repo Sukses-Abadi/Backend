@@ -23,7 +23,7 @@ const fetchSingleProductBySlugOrId = async (data) => {
         Category: true,
         SubCategory: true,
         productGalleries: true,
-        reviews: true,
+        reviews: { include: { user: true } },
         productDetails: true,
       },
     });
@@ -37,7 +37,7 @@ const fetchSingleProductBySlugOrId = async (data) => {
         Category: true,
         SubCategory: true,
         productGalleries: true,
-        reviews: true,
+        reviews: { include: { user: true } },
         productDetails: true,
       },
     });
