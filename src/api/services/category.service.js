@@ -79,9 +79,6 @@ const update = async (pathParams, params) => {
       data: {
         name: name,
       },
-      orderBy: {
-        id: "asc", // Order by id in ascending order
-      },
     });
 
     return categories;
