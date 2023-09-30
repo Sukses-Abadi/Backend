@@ -6,6 +6,10 @@ const {
   putUpdateProduct,
   deleteFullProduct,
   fetchSingleProductBySlugOrId,
+  deleteOneProductDetail,
+  deleteOneProductImage,
+  postProductDetail,
+  postProductImage,
 } = require("../../services/product.service");
 
 const getAllProductsCMS = async (req, res) => {
@@ -60,10 +64,57 @@ const deleteProduct = async (req, res) => {
     data: deletedProduct,
   });
 };
+
+// crud product details
+const createProductDetail = async (req, res) => {
+  const { id } = req.params;
+  const productDetail = await postProductDetail(id, req.body);
+  return res.json({
+    status: "success",
+    message: "product detail is created successfully",
+    data: productDetail,
+  });
+};
+
+const deleteProductDetail = async (req, res) => {
+  const { id } = req.params;
+  const deletedProductDetail = await deleteOneProductDetail(id);
+  return res.json({
+    status: "success",
+    message: "product detail is deleted successfully",
+    data: deletedProductDetail,
+  });
+};
+
+// crud product galleries
+const createProductImage = async (req, res) => {
+  const { id } = req.params;
+  const productImage = await postProductImage(id, req.body);
+  return res.json({
+    status: "success",
+    message: "product image is created successfully",
+    data: productImage,
+  });
+};
+
+const deleteProductImage = async (req, res) => {
+  const { id } = req.params;
+  const deletedProductImage = await deleteOneProductImage(id);
+  return res.json({
+    status: "success",
+    message: "product image is deleted successfully",
+    data: deletedProductImage,
+  });
+};
+
 module.exports = {
   getAllProductsCMS,
   getSingleProductCMS,
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductDetail,
+  deleteProductDetail,
+  createProductImage,
+  deleteProductImage,
 };

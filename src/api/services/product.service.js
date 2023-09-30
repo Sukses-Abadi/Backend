@@ -22,9 +22,18 @@ const fetchSingleProductBySlugOrId = async (data) => {
       include: {
         Category: true,
         SubCategory: true,
-        productGalleries: true,
+
+        productGalleries: {
+          orderBy: {
+            id: "asc",
+          },
+        },
         reviews: { include: { user: true } },
-        productDetails: true,
+        productDetails: {
+          orderBy: {
+            id: "asc",
+          },
+        },
       },
     });
   } else {
@@ -129,6 +138,7 @@ const putUpdateProduct = async (id, data) => {
       slug: slugify(data.name || product.name),
       keyword: data.keyword || product.keyword,
       discount: data.discount || product.discount,
+      weight: data.weight || product.weight,
       category_id: data.category_id || product.category_id,
       sub_category_id: data.sub_category_id || product.sub_category_id,
       productGalleries: {
@@ -299,6 +309,93 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
   return response;
 };
 
+// crud product details
+const postProductDetail = async (productId, data) => {
+  try {
+    let {
+      product_id = +productId,
+      color,
+      size,
+      price = +price || 0,
+      stock = +stock || 0,
+    } = data;
+
+    const productDetail = await prisma.productDetails.create({
+      data: {
+        product_id,
+        color,
+        size,
+        price,
+        stock,
+      },
+    });
+
+    if (!productDetail) {
+      throw new CustomAPIError(`Product detail creation is failed`, 400);
+    }
+    return productDetail;
+  } catch (error) {
+    throw new CustomAPIError(`${error.name} `, 400);
+  }
+};
+
+const deleteOneProductDetail = async (id) => {
+  const productDetail = await prisma.productDetails.findUnique({
+    where: { id: +id },
+  });
+
+  if (!productDetail) {
+    throw new CustomAPIError(`No product detail with id of ${id}`, 400);
+  }
+
+  await prisma.productDetails.delete({
+    where: { id: +id },
+  });
+
+  return {
+    deletedProductDetail: productDetail,
+  };
+};
+
+// crud product galleries
+const postProductImage = async (productId, data) => {
+  try {
+    let { product_id = +productId, photo } = data;
+
+    const productImage = await prisma.productGallery.create({
+      data: {
+        product_id,
+        photo,
+      },
+    });
+
+    if (!productImage) {
+      throw new CustomAPIError(`Product image creation is failed`, 400);
+    }
+    return productImage;
+  } catch (error) {
+    throw new CustomAPIError(`${error.name} `, 400);
+  }
+};
+
+const deleteOneProductImage = async (id) => {
+  const productImage = await prisma.productGallery.findUnique({
+    where: { id: +id },
+  });
+
+  if (!productImage) {
+    throw new CustomAPIError(`No product image with id of ${id}`, 400);
+  }
+
+  await prisma.productGallery.delete({
+    where: { id: +id },
+  });
+
+  return {
+    deletedProductImage: productImage,
+  };
+};
+
 module.exports = {
   fetchAllProducts,
   fetchSingleProductBySlugOrId,
@@ -306,4 +403,8 @@ module.exports = {
   putUpdateProduct,
   deleteFullProduct,
   fetchProductByQueryAndPriceFilter,
+  postProductDetail,
+  deleteOneProductDetail,
+  postProductImage,
+  deleteOneProductImage,
 };
