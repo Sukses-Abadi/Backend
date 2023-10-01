@@ -197,12 +197,14 @@ const deleteFullProduct = async (id) => {
  * @returns {Array} - An array of products fetched from the database based on the provided query and price filter.
  */
 const fetchProductByQueryAndPriceFilter = async (query) => {
-  const {
+  let {
     id,
     name,
     SKU,
     maxPrice,
     minPrice,
+    restockStatus,
+    discountStatus,
     limit = 2,
     page = 1,
     sub_category_id,
@@ -213,6 +215,9 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     sortOrder,
   } = query;
 
+  category_id = category_id?.split(",").map(Number);
+  sub_category_id = sub_category_id?.split(",").map(Number);
+
   const pageNumber = Number(page);
   const take = Number(limit);
   const filterSortBy = sortBy || "created_at";
@@ -222,8 +227,26 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     id: id && Number(id),
     SKU,
     name: name && { contains: name, mode: "insensitive" },
-    sub_category_id: sub_category_id && Number(sub_category_id),
-    category_id: category_id && Number(category_id),
+    discount: discountStatus
+      ? JSON.parse(discountStatus)
+        ? { not: { equals: null } }
+        : { equals: null }
+      : undefined,
+    sub_category_id: sub_category_id && { in: sub_category_id },
+    category_id: category_id && { in: category_id },
+    productDetails: restockStatus
+      ? JSON.parse(restockStatus)
+        ? {
+            some: {
+              stock: 0,
+            },
+          }
+        : {
+            every: {
+              stock: { not: 0 },
+            },
+          }
+      : undefined,
   };
 
   const totalItems = await prisma.product.count({
@@ -250,7 +273,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
       ? {
           OR: [
             { name: { contains: q, mode: "insensitive" } },
-            { SKU: q },
+            { SKU: { contains: q, mode: "insensitive" } },
             { keyword: { contains: q, mode: "insensitive" } },
           ],
         }
