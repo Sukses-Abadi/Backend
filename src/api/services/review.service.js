@@ -33,11 +33,15 @@ const createReview = async (
 };
 
 // Function to get all reviews for a product including user data
-const getAllReviewsForProduct = async (product_id) => {
+const getAllReviewsForProduct = async (product_id, query) => {
   try {
-    // Convert product_id to an integer
     const productId = parseInt(product_id, 10); // Assuming base 10
+    const { limit = 10, page = 1 } = query;
 
+    const pageNumber = Number(page) || 1;
+    const take = Number(limit) || 50;
+    const skip = (Number(pageNumber) - 1) * take;
+    console.log(productId);
     const reviews = await prisma.review.findMany({
       where: {
         product_id: productId, // Use the converted integer
@@ -45,8 +49,28 @@ const getAllReviewsForProduct = async (product_id) => {
       include: {
         user: true, // Include user data
       },
+      take,
+      skip,
     });
-    return reviews;
+
+    const totalItems = await prisma.review.count({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    const totalPages = Math.ceil(totalItems / take);
+    const prevPage = pageNumber > 1 ? pageNumber - 1 : null;
+    const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+
+    return {
+      reviews,
+      currentPage: pageNumber,
+      prevPage,
+      nextPage,
+      totalPages,
+      totalItems,
+    };
   } catch (error) {
     throw new CustomAPIError(
       `[getAllReviewsForProduct] Failed to fetch Reviews for Product: ${error.message}`,

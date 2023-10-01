@@ -36,7 +36,7 @@ const createReviewForProduct = async (req, res) => {
 // Controller function to get all reviews for a product
 const getAllReviewsForProductController = async (req, res, next) => {
   const { product_id } = req.params;
-  const reviews = await getAllReviewsForProduct(product_id);
+  const reviews = await getAllReviewsForProduct(product_id, req.query);
   res
     .status(StatusCodes.OK)
     .json({ message: "Review Fetch successfully", reviews });
