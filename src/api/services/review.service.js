@@ -41,7 +41,6 @@ const getAllReviewsForProduct = async (product_id, query) => {
     const pageNumber = Number(page) || 1;
     const take = Number(limit) || 5;
     const skip = (Number(pageNumber) - 1) * take;
-    console.log(productId);
     const reviews = await prisma.review.findMany({
       where: {
         product_id: productId, // Use the converted integer
@@ -70,6 +69,7 @@ const getAllReviewsForProduct = async (product_id, query) => {
       nextPage,
       totalPages,
       totalItems,
+      limit,
     };
   } catch (error) {
     throw new CustomAPIError(

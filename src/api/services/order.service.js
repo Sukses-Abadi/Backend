@@ -144,6 +144,7 @@ const fetchAllOrder = async ({
           },
         },
       },
+      user: true,
       bankAccount: true,
       address: true,
     },
@@ -266,6 +267,7 @@ const fetchOrderByUserId = async (
           },
         },
       },
+      user: true,
       bankAccount: true,
       address: true,
     },
@@ -301,7 +303,7 @@ const fetchOrderbyId = async (order_id) => {
         },
       },
       bankAccount: true,
-
+      user: true,
       address: true,
     },
   });
