@@ -146,7 +146,7 @@ const fetchAllOrder = async ({
       },
       user: true,
       bankAccount: true,
-      address: true,
+      address: { include: { city: true } },
     },
     orderBy: {
       [filterSortBy]: filterSortOrder, // Dynamic sorting based on the query parameters
@@ -269,7 +269,7 @@ const fetchOrderByUserId = async (
       },
       user: true,
       bankAccount: true,
-      address: true,
+      address: { include: { city: true } },
     },
     orderBy: {
       [filterSortBy]: filterSortOrder,
@@ -304,7 +304,7 @@ const fetchOrderbyId = async (order_id) => {
       },
       bankAccount: true,
       user: true,
-      address: true,
+      address: { include: { city: true } },
     },
   });
   if (!order) {
