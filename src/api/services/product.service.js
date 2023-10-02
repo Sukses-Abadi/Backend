@@ -210,6 +210,7 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     sub_category_id,
     category_id,
     rating,
+    averageRating,
     q,
     sortBy,
     sortOrder,
@@ -217,14 +218,36 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
 
   category_id = category_id?.split(",").map(Number);
   sub_category_id = sub_category_id?.split(",").map(Number);
+  averageRating = averageRating?.split(",").map(Number);
 
   const pageNumber = Number(page);
   const take = Number(limit);
   const filterSortBy = sortBy || "created_at";
   const filterSortOrder = sortOrder || "desc";
 
+  // get product ids from reviews based on average review rating
+  let filteredProductIds;
+
+  if (averageRating) {
+    const groupReviews = await prisma.review.groupBy({
+      by: "product_id",
+      having: {
+        OR: averageRating.map((rating) => ({
+          rating: {
+            _avg: {
+              gte: rating,
+              lt: rating + 1,
+            },
+          },
+        })),
+      },
+    });
+
+    filteredProductIds = groupReviews.map((obj) => obj.product_id);
+  }
+
   const queryObject = {
-    id: id && Number(id),
+    id: filteredProductIds ? { in: filteredProductIds } : id && Number(id),
     SKU,
     name: name && { contains: name, mode: "insensitive" },
     discount: discountStatus
@@ -305,22 +328,17 @@ const fetchProductByQueryAndPriceFilter = async (query) => {
     (product) => product.productDetails.length > 0
   );
 
-  if (rating) {
-    filteredProducts.forEach((product) => {
-      const totalRating = product.reviews.reduce(
-        (acc, review) => acc + review.rating,
-        0
-      );
-      product.averageRating = totalRating / product.reviews.length;
-    });
-  }
-
-  const filteredByRating = rating
-    ? filteredProducts.filter((product) => product.averageRating >= +rating)
-    : filteredProducts;
+  filteredProducts.forEach((product) => {
+    const totalRating = product.reviews
+      .map((review) => review.rating)
+      .reduce((acc, currentRating) => acc + currentRating, 0);
+    product.averageRating = totalRating
+      ? totalRating / product.reviews.length
+      : null;
+  });
 
   const response = {
-    products: filteredByRating.length > 0 ? filteredByRating : null,
+    products: filteredProducts.length > 0 ? filteredProducts : null,
     prevPage: pageNumber > 1 ? pageNumber - 1 : null,
     currentPage: pageNumber,
     nextPage: pageNumber < totalPages ? pageNumber + 1 : null,
