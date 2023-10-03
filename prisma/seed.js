@@ -813,6 +813,12 @@ async function main() {
   await prisma.bankAccount.createMany({
     data: [
       {
+        account_holder: "-",
+        bank_name: "CreditCard",
+        account_number: "-",
+        admin_id: 1,
+      },
+      {
         account_holder: "Admin 1",
         bank_name: "BSI",
         account_number: "1234567890",

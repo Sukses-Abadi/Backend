@@ -26,6 +26,7 @@ const {
 const rajaOngkir = require("./api/routes/rajaongkir.route");
 const crudCartProduct = require("./api/routes/cartProduct.route");
 const forgetPassword = require("./api/routes/resetPassword");
+const stripe = require("./api/routes/stripe");
 
 /**
  * api routes
@@ -46,6 +47,7 @@ router.use("/api/subcategory", getAllSubCategory);
 router.use("/api/product_details", getProductDetailsBasedOnSize);
 router.use("/api/cartproduct", crudCartProduct);
 router.use("/api/forget-password", forgetPassword);
+router.use("/api/create-checkout-session", stripe);
 
 router.use(verifyTokenAdmin);
 router.use("/api/cms/bank-accounts", crudBankCMS);
