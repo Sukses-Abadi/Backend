@@ -437,6 +437,25 @@ const deleteOneProductImage = async (id) => {
   };
 };
 
+// crud product reviews
+const deleteOneProductReview = async (id) => {
+  const productReview = await prisma.review.findUnique({
+    where: { id: +id },
+  });
+
+  if (!productReview) {
+    throw new CustomAPIError(`No product review with id of ${id}`, 400);
+  }
+
+  await prisma.review.delete({
+    where: { id: +id },
+  });
+
+  return {
+    deletedProductReview: productReview,
+  };
+};
+
 module.exports = {
   fetchAllProducts,
   fetchSingleProductBySlugOrId,
@@ -448,4 +467,5 @@ module.exports = {
   deleteOneProductDetail,
   postProductImage,
   deleteOneProductImage,
+  deleteOneProductReview,
 };
