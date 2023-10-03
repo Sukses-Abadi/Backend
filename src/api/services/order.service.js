@@ -13,6 +13,7 @@ const makeOrderFromCart = async (params) => {
     total_weight,
     total_price,
     total_payment,
+    credit_card,
   } = params;
   // console.log(params);
   if (product_order_attributes.length === 0) {
@@ -32,6 +33,7 @@ const makeOrderFromCart = async (params) => {
         bankAccount: { connect: { id: bank_account_id } },
         courier: courier,
         status: "waiting",
+        credit_card,
       },
       include: { orderProducts: true },
     });

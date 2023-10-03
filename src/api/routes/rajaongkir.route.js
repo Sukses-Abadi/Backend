@@ -9,6 +9,7 @@ router.post("/", async (req, res) => {
       weight: req.body.weight,
       courier: req.body.courier,
     };
+    console.log(body);
     const headers = {
       headers: {
         key: "c7dbdb8918f7b450e0af4ed786dc6834",
@@ -19,6 +20,7 @@ router.post("/", async (req, res) => {
       body,
       headers
     );
+    console.log(response);
     let data = [];
     const results = response.data.rajaongkir.results;
     const costs = results.map((result) => result.costs).flat();

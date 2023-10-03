@@ -18,12 +18,13 @@ const createOrder = async (req, res) => {
       address_id: req.body.address_id,
       shipping_method: req.body.shipping_method,
       shipping_cost: req.body.shipping_cost,
-      bank_account_id: req.body.bank_account_id,
+      bank_account_id: req.body.bank_account_id || null,
       courier: req.body.courier,
       product_order_attributes: req.body.product_order_attributes,
       total_payment: req.body.total_payment,
       total_price: req.body.total_price,
       total_weight: req.body.total_weight,
+      credit_card: req.body.credit_card,
     };
     const result = await makeOrderFromCart(payload);
     res.json({
