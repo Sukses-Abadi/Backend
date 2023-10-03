@@ -33,7 +33,6 @@ const getSingleProduct = async (req, res) => {
 };
 
 const getProductByQueryAndPriceFilter = async (req, res) => {
-  console.log(req.query);
   const product = await fetchProductByQueryAndPriceFilter(req.query);
 
   return res.json({

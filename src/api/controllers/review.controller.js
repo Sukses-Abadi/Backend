@@ -4,7 +4,6 @@ const { validateInteger, validateString } = require("../../lib/validateInput");
 const {
   createReview,
   getAllReviewsForProduct,
-  getReviewByIdWithUser,
   updateReviewForProduct,
   deleteReviewForProduct,
 } = require("../services/review.service");
@@ -35,20 +34,14 @@ const createReviewForProduct = async (req, res) => {
 
 // Controller function to get all reviews for a product
 const getAllReviewsForProductController = async (req, res, next) => {
-  const { product_id } = req.params;
-  const reviews = await getAllReviewsForProduct(product_id, req.query);
+  const reviews = await getAllReviewsForProduct(req.query);
   res
     .status(StatusCodes.OK)
-    .json({ message: "Review Fetch successfully", reviews });
-};
-
-// Controller function to get a single review by ID including user data
-const getReviewByIdWithUserController = async (req, res, next) => {
-  const { id } = req.user;
-  const review = await getReviewByIdWithUser(id);
-  res
-    .status(StatusCodes.OK)
-    .json({ message: "Review Fetch by ID successfully", review });
+    .json({
+      status: "success",
+      message: "Review Fetch successfully",
+      data: reviews,
+    });
 };
 
 // Controller function to update a review for a product
@@ -82,7 +75,6 @@ const deleteReviewForProductController = async (req, res, next) => {
 module.exports = {
   createReviewForProduct,
   getAllReviewsForProduct: getAllReviewsForProductController,
-  getReviewByIdWithUser: getReviewByIdWithUserController,
   updateReviewForProduct: updateReviewForProductController,
   deleteReviewForProduct: deleteReviewForProductController,
 };

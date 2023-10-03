@@ -10,8 +10,8 @@ const {
   deleteOneProductImage,
   postProductDetail,
   postProductImage,
-  deleteOneProductReview,
 } = require("../../services/product.service");
+const { deleteReviewForProduct } = require("../../services/review.service");
 
 const getAllProductsCMS = async (req, res) => {
   try {
@@ -111,7 +111,7 @@ const deleteProductImage = async (req, res) => {
 // crud product reviews
 const deleteProductReview = async (req, res) => {
   const { id } = req.params;
-  const deletedProductReview = await deleteOneProductReview(id);
+  const deletedProductReview = await deleteReviewForProduct(id);
   return res.json({
     status: "success",
     message: "product review is deleted successfully",
