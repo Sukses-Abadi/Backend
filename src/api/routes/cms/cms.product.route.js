@@ -9,6 +9,7 @@ const {
   deleteProductImage,
   createProductDetail,
   createProductImage,
+  deleteProductReview,
 } = require("../../controllers/cms/cms.product.controller");
 const {
   getProductByQueryAndPriceFilter,
@@ -29,5 +30,8 @@ router.delete("/details/:id", deleteProductDetail);
 // crud product galleries
 router.post("/:id/galleries", createProductImage);
 router.delete("/galleries/:id", deleteProductImage);
+
+// crud product reviews
+router.delete("/reviews/:id", deleteProductReview);
 
 module.exports = router;

@@ -33,11 +33,11 @@ const createReview = async (
 };
 
 // Function to get all reviews for a product including user data
-const getAllReviewsForProduct = async (product_id, query) => {
+const getAllReviewsForProduct = async (query) => {
   try {
-    const productId = parseInt(product_id, 10); // Assuming base 10
-    const { limit = 10, page = 1 } = query;
+    const { product_id, limit = 10, page = 1 } = query;
 
+    const productId = parseInt(product_id, 10); // Assuming base 10
     const pageNumber = Number(page) || 1;
     const take = Number(limit) || 5;
     const skip = (Number(pageNumber) - 1) * take;
@@ -79,27 +79,6 @@ const getAllReviewsForProduct = async (product_id, query) => {
   }
 };
 
-// Function to get a single review by ID including user data
-const getReviewByIdWithUser = async (id) => {
-  try {
-    // Convert the id to an integer
-    const reviewId = parseInt(id, 10);
-
-    const review = await prisma.review.findMany({
-      where: {
-        user_id: reviewId,
-      },
-    });
-
-    return review;
-  } catch (error) {
-    throw new CustomAPIError(
-      `[getReviewByIdWithUser] Failed to fetch Review by ID: ${error.message}`,
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
-  }
-};
-
 // Function to update a review for a product
 const updateReviewForProduct = async (payload) => {
   const { id, review_text, rating, image } = payload;
@@ -126,11 +105,23 @@ const updateReviewForProduct = async (payload) => {
 // Function to delete a review for a product
 const deleteReviewForProduct = async (id) => {
   try {
+    const review = await prisma.review.findUnique({
+      where: { id: +id },
+    });
+
+    if (!review) {
+      throw new CustomAPIError(`No review with id of ${id}`, 400);
+    }
+
     await prisma.review.delete({
       where: {
         id: +id,
       },
     });
+
+    return {
+      deletedReview: review,
+    };
   } catch (error) {
     throw new CustomAPIError(
       `[deleteReviewForProduct] Failed to delete Review for Product: ${error.message}`,
@@ -142,7 +133,6 @@ const deleteReviewForProduct = async (id) => {
 module.exports = {
   createReview,
   getAllReviewsForProduct, // Export the new function
-  getReviewByIdWithUser,
   updateReviewForProduct,
   deleteReviewForProduct,
 };
