@@ -38,7 +38,13 @@ const getBestSeller = async (req, res) => {
     const N = 3;
     const mostPopularProducts = await prisma.product.findMany({
       orderBy: {
-        counter: "desc", // Order by counter in descending order (most popular first)
+        counter: "desc",
+      },
+      include: {
+        Category: true,
+        SubCategory: true,
+        productGalleries: true,
+        productDetails: true,
       },
       take: N,
     });
