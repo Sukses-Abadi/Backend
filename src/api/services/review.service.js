@@ -35,15 +35,18 @@ const createReview = async (
 // Function to get all reviews for a product including user data
 const getAllReviewsForProduct = async (query) => {
   try {
-    const { product_id, limit = 10, page = 1 } = query;
+    const { product_id, limit = 10, page = 1, rating } = query;
 
     const productId = parseInt(product_id, 10); // Assuming base 10
+    const reviewRating = rating?.split(",").map(Number);
     const pageNumber = Number(page) || 1;
     const take = Number(limit) || 5;
     const skip = (Number(pageNumber) - 1) * take;
+
     const reviews = await prisma.review.findMany({
       where: {
         product_id: productId, // Use the converted integer
+        rating: reviewRating && { in: reviewRating },
       },
       include: {
         user: true, // Include user data
@@ -55,6 +58,7 @@ const getAllReviewsForProduct = async (query) => {
     const totalItems = await prisma.review.count({
       where: {
         product_id: productId,
+        rating: reviewRating && { in: reviewRating },
       },
     });
 
