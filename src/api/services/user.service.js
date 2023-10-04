@@ -118,7 +118,7 @@ const putUser = async (pathParams, params) => {
     const user = await prisma.user.findUnique({
       where: { id: +id },
     });
-
+    console.log(user);
     if (!user) {
       throw new CustomAPIError(`no user with id of ${id}`, 400);
     }
@@ -133,9 +133,10 @@ const putUser = async (pathParams, params) => {
       password,
       phone,
     } = params;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log(params);
+    if (password) {
+      var hashedPassword = await bcrypt.hash(password, 10);
+    }
     await prisma.user.update({
       where: {
         id: +id,

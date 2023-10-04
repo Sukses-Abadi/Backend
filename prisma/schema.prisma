@@ -116,6 +116,7 @@ model BankAccount {
 }
 
 enum BankName {
+  CreditCard
   BSI
   BCA
   BNI
@@ -138,15 +139,16 @@ model Order {
   status          OrderStatus
   tracking_number String?
   address_id      Int
-  bank_account_id Int
+  bank_account_id Int?
   courier         Courier
   created_at      DateTime       @default(now())
   updated_at      DateTime       @default(now())
   user            User           @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   address         Address        @relation(fields: [address_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  bankAccount     BankAccount    @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  bankAccount     BankAccount?   @relation(fields: [bank_account_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderProducts   OrderProduct[]
   review          Boolean        @default(false)
+  credit_card     Boolean        @default(false)
 }
 
 enum Courier {
