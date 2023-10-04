@@ -15,63 +15,63 @@ const makeOrderFromCart = async (params) => {
     total_payment,
     credit_card,
   } = params;
-  // console.log(params);
+
   if (product_order_attributes.length === 0) {
     throw new CustomAPIError("No product is provided", 400);
   }
+
   try {
-    const order = await prisma.order.create({
-      data: {
-        user: { connect: { id } },
-        shipping_cost: shipping_cost,
-        total_price: total_price,
-        total_payment: total_payment,
-        total_weight: total_weight,
-        shipping_method: shipping_method,
-        order_date: new Date(),
-        address: { connect: { id: address_id } },
-        bankAccount: { connect: { id: bank_account_id } },
-        courier: courier,
-        status: "waiting",
-        credit_card,
-      },
-      include: { orderProducts: true },
+    const order = await prisma.$transaction(async (prisma) => {
+      const createdOrder = await prisma.order.create({
+        data: {
+          user: { connect: { id } },
+          shipping_cost: shipping_cost,
+          total_price: total_price,
+          total_payment: total_payment,
+          total_weight: total_weight,
+          shipping_method: shipping_method,
+          order_date: new Date(),
+          address: { connect: { id: address_id } },
+          bankAccount: { connect: { id: bank_account_id } },
+          courier: courier,
+          status: "waiting",
+          credit_card,
+        },
+        include: { orderProducts: true },
+      });
+
+      await Promise.all(
+        product_order_attributes.map(async (productOrder) => {
+          const { product_details_id, price, quantity } = productOrder;
+
+          await prisma.orderProduct.create({
+            data: {
+              product_details_id,
+              order_id: createdOrder.id,
+              quantity,
+              price,
+            },
+          });
+
+          const prev = await prisma.productDetails.findUnique({
+            where: { id: product_details_id },
+          });
+
+          if (!prev || prev.stock < quantity) {
+            throw new CustomAPIError(`Insufficient stock `, 400);
+          }
+
+          await prisma.productDetails.update({
+            where: { id: product_details_id },
+            data: { stock: prev.stock - quantity },
+          });
+        })
+      );
+
+      return createdOrder;
     });
 
-    await Promise.all(
-      product_order_attributes.map(async (productOrder) => {
-        const { product_details_id, price, quantity } = productOrder;
-
-        await prisma.orderProduct.create({
-          data: {
-            product_details_id,
-            order_id: order.id,
-            quantity,
-            price,
-          },
-        });
-
-        const prev = await prisma.productDetails.findUnique({
-          where: { id: product_details_id },
-        });
-
-        if (!prev || prev.stock < quantity) {
-          throw new CustomAPIError(
-            `Insufficient stock for product ${product_details_id}`,
-            400
-          );
-        }
-
-        await prisma.productDetails.update({
-          where: { id: product_details_id },
-          data: { stock: prev.stock - quantity },
-        });
-      })
-    );
-
-    // Update order totals
     resetCartToDefault(id);
-    // Reset cart to default
     return await prisma.order.findUnique({
       where: { id: order.id },
       include: {

@@ -74,6 +74,9 @@ const postFullProduct = async (data) => {
       discount = discount || null,
     } = data;
 
+    if (product_details.length <= 0) {
+      throw new CustomAPIError(`please provide a product details`, 400);
+    }
     slug = slugify(name);
 
     const product = await prisma.product.create({
