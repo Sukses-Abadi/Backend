@@ -140,7 +140,7 @@ const putUpdateProduct = async (id, data) => {
       description: data.description || product.description,
       slug: slugify(data.name || product.name),
       keyword: data.keyword || product.keyword,
-      discount: data.discount || product.discount,
+      discount: data.discount,
       weight: data.weight || product.weight,
       category_id: data.category_id || product.category_id,
       sub_category_id: data.sub_category_id || product.sub_category_id,
