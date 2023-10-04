@@ -40,6 +40,7 @@ model Product {
   Category         Category?        @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   SubCategory      SubCategory      @relation(fields: [sub_category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   reviews          Review[]
+  counter          Int?             @default(1)
 }
 
 model User {

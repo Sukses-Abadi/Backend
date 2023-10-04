@@ -4,6 +4,7 @@ const {
   fetchSingleProductBySlugOrId,
 } = require("../services/product.service");
 const CustomAPIError = require("../middlewares/custom-error");
+const prisma = require("../../lib/prisma");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -32,6 +33,32 @@ const getSingleProduct = async (req, res) => {
   });
 };
 
+const getBestSeller = async (req, res) => {
+  try {
+    const N = 3;
+    const mostPopularProducts = await prisma.product.findMany({
+      orderBy: {
+        counter: "desc",
+      },
+      include: {
+        Category: true,
+        SubCategory: true,
+        productGalleries: true,
+        productDetails: true,
+      },
+      take: N,
+    });
+
+    res.json({
+      status: "success",
+      message: "Product is queried successfully",
+      data: mostPopularProducts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const getProductByQueryAndPriceFilter = async (req, res) => {
   const product = await fetchProductByQueryAndPriceFilter(req.query);
 
@@ -46,4 +73,5 @@ module.exports = {
   getAllProducts,
   getSingleProduct,
   getProductByQueryAndPriceFilter,
+  getBestSeller,
 };
