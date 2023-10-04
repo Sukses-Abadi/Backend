@@ -4,6 +4,7 @@ const {
   fetchSingleProductBySlugOrId,
 } = require("../services/product.service");
 const CustomAPIError = require("../middlewares/custom-error");
+const prisma = require("../../lib/prisma");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -48,6 +49,7 @@ const getBestSeller = async (req, res) => {
       data: mostPopularProducts,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
