@@ -65,6 +65,10 @@ const makeOrderFromCart = async (params) => {
             where: { id: product_details_id },
             data: { stock: prev.stock - quantity },
           });
+          await prisma.product.update({
+            where: { id: prev.product_id },
+            data: { counter: { increment: quantity } },
+          });
         })
       );
 

@@ -32,6 +32,25 @@ const getSingleProduct = async (req, res) => {
   });
 };
 
+const getBestSeller = async (req, res) => {
+  try {
+    const N = 3;
+    const mostPopularProducts = await prisma.product.findMany({
+      orderBy: {
+        counter: "desc", // Order by counter in descending order (most popular first)
+      },
+      take: N,
+    });
+
+    res.json({
+      status: "success",
+      message: "Product is queried successfully",
+      data: mostPopularProducts,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const getProductByQueryAndPriceFilter = async (req, res) => {
   const product = await fetchProductByQueryAndPriceFilter(req.query);
 
@@ -46,4 +65,5 @@ module.exports = {
   getAllProducts,
   getSingleProduct,
   getProductByQueryAndPriceFilter,
+  getBestSeller,
 };
