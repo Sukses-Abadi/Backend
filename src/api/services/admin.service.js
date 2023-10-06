@@ -72,7 +72,7 @@ const putAdmin = async (params, payload) => {
     return result;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 
@@ -88,7 +88,7 @@ const destroyAdmin = async (params) => {
     return result;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error creating category: ${error.message}`, 500);
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 

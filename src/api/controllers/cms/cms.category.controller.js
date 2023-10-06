@@ -4,7 +4,7 @@ const categoryServices = require("../../services/category.service");
 const getAllCategory = async (req, res) => {
   try {
     const categories = await categoryServices.findAll(req.query);
-    if (!categories) {
+    if (categories.length === 0) {
       throw new CustomAPIError(`No Category was found`, 400);
     }
     res.status(200).json({
@@ -13,14 +13,17 @@ const getAllCategory = async (req, res) => {
       data: categories,
     });
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
 const getOneCategory = async (req, res) => {
   try {
     const categories = await categoryServices.findOne(req.params);
-    
+
     res.status(200).json({
       status: "success",
       message: "Get Categories",
@@ -38,11 +41,15 @@ const newCategory = async (req, res) => {
       throw new CustomAPIError(`No Category with id ${req.params.id}`, 400);
     }
     res.status(201).json({
+      status: "success",
       message: "Create New Category Succesfully",
       data: categories,
     });
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(
+      `Error creating category: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -52,14 +59,17 @@ const updateCategory = async (req, res) => {
       req.params,
       req.body
     );
-    
+
     res.status(200).json({
       status: "success",
       message: "Update Category Succesfully",
       data: updatedCategories,
     });
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -72,7 +82,7 @@ const deleteCategory = async (req, res) => {
       data: categories,
     });
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(`Error: ${error.message}`, 500);
   }
 };
 

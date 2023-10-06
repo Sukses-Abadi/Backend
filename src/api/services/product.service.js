@@ -104,7 +104,10 @@ const postFullProduct = async (data) => {
     }
     return product;
   } catch (error) {
-    throw new CustomAPIError(`${error.name} `, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message} `,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -379,7 +382,10 @@ const postProductDetail = async (productId, data) => {
     }
     return productDetail;
   } catch (error) {
-    throw new CustomAPIError(`${error.name} `, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message} `,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -418,7 +424,10 @@ const postProductImage = async (productId, data) => {
     }
     return productImage;
   } catch (error) {
-    throw new CustomAPIError(`${error.name} `, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message} `,
+      error.statusCode || 500
+    );
   }
 };
 

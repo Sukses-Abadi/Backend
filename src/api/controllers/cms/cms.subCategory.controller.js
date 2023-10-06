@@ -4,13 +4,21 @@ const subCategoryServices = require("../../services/subcategory.service");
 const getAllSubCategory = async (req, res) => {
   try {
     const categories = await subCategoryServices.findAll(req.query);
+
+    if (categories.length === 0) {
+      throw new CustomAPIError(`No sub category was found`, 400);
+    }
+
     res.status(200).json({
       status: "success",
       message: "Get All Sub Categories",
       data: categories,
     });
   } catch (error) {
-    throw error;
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
