@@ -198,7 +198,7 @@ const updatePaymentReceiptInOrder = async (payload) => {
   } catch (error) {
     throw new CustomAPIError(
       `Error updating payment receipt in order: ${error.message}`,
-      400
+      error.statusCode || 500
     );
   }
 };
@@ -218,7 +218,7 @@ const updateOrderStatusAndTrackingNumber = async (payload) => {
   } catch (error) {
     throw new CustomAPIError(
       `Error updating order status and tracking number: ${error.message}`,
-      400
+      error.statusCode || 500
     );
   }
 };
@@ -314,7 +314,7 @@ const fetchOrderbyId = async (order_id) => {
     },
   });
   if (!order) {
-    throw new CustomAPIError(`No Order found`, 400);
+    throw new CustomAPIError(`No Order with id ${order_id} was found`, 400);
   }
 
   return order;

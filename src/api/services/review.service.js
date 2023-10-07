@@ -128,8 +128,8 @@ const deleteReviewForProduct = async (id) => {
     };
   } catch (error) {
     throw new CustomAPIError(
-      `[deleteReviewForProduct] Failed to delete Review for Product: ${error.message}`,
-      StatusCodes.INTERNAL_SERVER_ERROR
+      `Error: ${error.message}`,
+      error.statusCode || 500
     );
   }
 };

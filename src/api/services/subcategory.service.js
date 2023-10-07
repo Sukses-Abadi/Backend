@@ -65,7 +65,10 @@ const create = async (params) => {
     return categories;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -92,7 +95,10 @@ const update = async (pathParams, params) => {
     return updatedCategory;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 

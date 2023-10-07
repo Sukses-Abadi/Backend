@@ -39,10 +39,18 @@ const findOne = async (params) => {
         Product: { include: { productDetails: true, productGalleries: true } },
       },
     });
+
+    if (!categories.data) {
+      throw new CustomAPIError(`No Category with id ${id} was found`, 400);
+    }
+
     return categories;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -84,7 +92,7 @@ const update = async (pathParams, params) => {
     return categories;
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(`${error.message}`, error.statusCode || 500);
   }
 };
 

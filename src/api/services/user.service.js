@@ -187,7 +187,10 @@ const destroyUser = async (params) => {
     };
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`Error: ${error.message}`, 500);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 

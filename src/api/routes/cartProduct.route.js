@@ -17,13 +17,15 @@ router.put("/:id", verifyTokenUser, async (req, res) => {
 });
 
 router.delete("/:id", verifyTokenUser, async (req, res) => {
-  const data = prisma.cartProduct.delete({ where: { id: +req.params.id } });
+  console.log(req.params, "<<<<");
+  const data = await prisma.cartProduct.delete({
+    where: { id: +req.params.id },
+  });
   return res.json({
     status: "success",
-    message: "quantity updated successfully",
+    message: "quantity deleted successfully",
     data: data,
   });
-  
 });
 
 module.exports = router;

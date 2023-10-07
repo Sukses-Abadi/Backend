@@ -12,7 +12,6 @@ const {
 
 const createOrder = async (req, res) => {
   try {
-    console.log(req.body);
     const payload = {
       id: req.user.id,
       address_id: req.body.address_id,
@@ -27,14 +26,17 @@ const createOrder = async (req, res) => {
       credit_card: req.body.credit_card,
     };
     const result = await makeOrderFromCart(payload);
-    res.json({
+    res.status(201).json({
       status: "success",
       message: "Order created successfully",
       data: result,
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`${error.message}`, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -72,7 +74,10 @@ const uploadReceipt = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`${error.message}`, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 const updateStatusAndTracking = async (req, res) => {
@@ -90,7 +95,10 @@ const updateStatusAndTracking = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`${error.message}`, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -104,7 +112,10 @@ const getAllOrdersByUserId = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`${error.message}`, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 
@@ -118,7 +129,10 @@ const getOrderbyId = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    throw new CustomAPIError(`${error.message}`, 400);
+    throw new CustomAPIError(
+      `Error: ${error.message}`,
+      error.statusCode || 500
+    );
   }
 };
 module.exports = {
