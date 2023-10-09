@@ -112,6 +112,7 @@ const postFullProduct = async (data) => {
 };
 
 const putUpdateProduct = async (id, data) => {
+  console.log(data);
   const product = await prisma.product.findUnique({
     where: { id: +id },
     include: { productGalleries: true, productDetails: true },
@@ -155,12 +156,12 @@ const putUpdateProduct = async (id, data) => {
       },
       productDetails: {
         updateMany: detailsToUpdate.map((detail) => ({
-          where: { id: detail.id },
+          where: { id: detail?.id },
           data: {
-            color: detail.color,
-            size: detail.size,
-            stock: detail.stock,
-            price: detail.price,
+            color: detail?.color,
+            size: detail?.size,
+            stock: detail?.stock,
+            price: detail?.price,
           },
         })),
       },
