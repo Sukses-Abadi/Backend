@@ -112,7 +112,6 @@ const postFullProduct = async (data) => {
 };
 
 const putUpdateProduct = async (id, data) => {
-  console.log(data);
   const product = await prisma.product.findUnique({
     where: { id: +id },
     include: { productGalleries: true, productDetails: true },
