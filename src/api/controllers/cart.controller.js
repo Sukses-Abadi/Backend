@@ -32,7 +32,7 @@ const updateCart = async (req, res) => {
   const cart = await cartLogic({ ...req.user, ...req.body });
   return res.json({
     status: "success",
-    message: "item added successfully",
+    message: "Item added successfully",
     data: cart,
   });
 };
@@ -45,7 +45,7 @@ const deleteItem = async (req, res) => {
   const item = await deleteCartProduct(payload);
   return res.json({
     status: "success",
-    message: "item deleted successfully",
+    message: "Item deleted successfully",
     data: item,
   });
 };
