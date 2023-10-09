@@ -1,0 +1,4 @@
+- lakukan installasi dependencies
+- pastikan memiliki docker
+- pastikan memiliki docker-compose
+- jalankan perintah `docker-compose up -d`

@@ -1,0 +1,33 @@
+version: '3.1'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  server:
+    build: .
+    environment:
+      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5439/sukses-abadi
+    networks:
+      - app-tier
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    # volumes:
+    #   -"./:/Docker-lessons/scr/app"
+
+
+  db:
+    image: postgres
+    restart: always
+    networks:
+      - app-tier
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sukses-abadi
+      PGPORT: 5439
+    ports:
+      - "5439:5432"
