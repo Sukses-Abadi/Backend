@@ -28,9 +28,7 @@ const crudCartProduct = require("./api/routes/cartProduct.route");
 const forgetPassword = require("./api/routes/resetPassword");
 const stripe = require("./api/routes/stripe");
 
-/**
- * api routes
- */
+// api routes
 router.post("/api/uploads", upload.array("files", 5), uploadFile);
 router.use("/api/rajaongkir", rajaOngkir);
 router.use("/api/cms", adminRoute);
