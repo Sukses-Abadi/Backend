@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
       from: "noreply@example.com",
       to: email,
       subject: `Hello ${user.username} ,Password Reset,  Sukses Abadi Apparel Store`,
-      text: `Your username is ${user.username} . Please Click the link within 1 hour to reset your password: http://localhost:8090/auth/reset/${token}`,
+      text: `Your username is ${user.username} . Please Click the link within 1 hour to reset your password: ${process.env.CLIENT_URL}/auth/reset/${token}`,
     };
 
     // Send the email
