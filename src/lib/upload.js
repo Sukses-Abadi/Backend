@@ -17,12 +17,16 @@ const uploadFile = async (req, res) => {
     const uploadedFiles = [];
     // console.log(files);
     for (const file of files) {
+      const metadata = {
+        contentType: file.mimetype,
+      };
+
       const timestamp = Date.now();
       const name = file.originalname.split(".")[0];
       const type = file.originalname.split(".")[1];
       const fileName = `${name}_${timestamp}.${type}`;
       const storageRef = ref(storage, fileName);
-      const snapshot = await uploadBytes(storageRef, file.buffer);
+      const snapshot = await uploadBytes(storageRef, file.buffer, metadata);
       const downloadURL = await getDownloadURL(snapshot.ref);
       uploadedFiles.push({ photo: downloadURL });
     }
