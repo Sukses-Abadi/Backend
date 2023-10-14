@@ -2,35 +2,31 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const fs = require("fs");
-const axios = require("axios");
 
-const getDataAndWriteToFile = async () => {
+const createCities = async () => {
   try {
-    const response = await axios.get(
-      "https://api.rajaongkir.com/starter/city",
-      {
-        headers: {
-          key: "c7dbdb8918f7b450e0af4ed786dc6834",
+    const citiesData = JSON.parse(fs.readFileSync("cities.json", "utf8"));
+
+    for (const cityData of citiesData) {
+      const { id, name } = cityData;
+
+      await prisma.city.create({
+        data: {
+          id,
+          name,
         },
-      }
-    );
+      });
+    }
 
-    const formattedData = response.data.rajaongkir.results.map((item) => ({
-      id: +item.city_id,
-      name: item.city_name,
-    }));
-
-    fs.writeFile("cities.json", JSON.stringify(formattedData), (err) => {
-      if (err) throw err;
-      console.log("Data written to file");
-    });
+    console.log("Cities created successfully!");
   } catch (error) {
     console.error("Error:", error);
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
-getDataAndWriteToFile();
-
+createCities();
 async function main() {
   const topCategory = await prisma.category.create({
     data: {
