@@ -1,6 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
+const prisma = require("../../lib/prisma");
 const CustomAPIError = require("../middlewares/custom-error");
-const prisma = new PrismaClient();
 
 const findAll = async (params) => {
   const filterOptions = {
