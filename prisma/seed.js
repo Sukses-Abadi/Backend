@@ -21,6 +21,7 @@ async function main() {
       },
     });
   });
+
   const topCategory = await prisma.category.create({
     data: {
       name: "Top",
@@ -603,192 +604,84 @@ async function main() {
   await prisma.productGallery.createMany({
     data: [
       {
-        photo: "Long-Sleeve-T-shirt-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Long-Sleeve-T-shirt-1.jpg?alt=media&token=08cf6582-96ac-48d2-8096-4ea0f1badc53&_gl=1*1tg41jv*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTM1Ni42LjAuMA..",
         product_id: 1,
       },
       {
-        photo: "Long-Sleeve-T-shirt-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Long-Sleeve-T-shirt-2.jpg?alt=media&token=8e452632-2020-4b32-8122-b0d1e8ce1a37&_gl=1*i5n6rg*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTM3MC42MC4wLjA.",
         product_id: 1,
       },
       {
-        photo: "Short-Sleeve-T-shirt-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Short-Sleeve-T-shirt-1.jpg?alt=media&token=8ad38e1b-158c-48b8-90d8-76c8e8d4dcd0&_gl=1*13wryaq*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTM4Ni40NC4wLjA.",
         product_id: 2,
       },
       {
-        photo: "Short-Sleeve-T-shirt-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Short-Sleeve-T-shirt-2.jpg?alt=media&token=3dc697da-8283-48a1-b4e9-16299383c17e&_gl=1*a579ry*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQwNi4yNC4wLjA.",
         product_id: 2,
       },
       {
-        photo: "Sweater-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Sweater-1.jpg?alt=media&token=bce127a1-b64e-4365-815d-5727583e26ee&_gl=1*fsnxq4*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQxNy4xMy4wLjA.",
         product_id: 3,
       },
       {
-        photo: "Sweater-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Sweater-2.jpg?alt=media&token=26f94c65-dbf0-4ec5-b35f-b90f096066a4&_gl=1*1xu9tdq*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQyNi40LjAuMA..",
         product_id: 3,
       },
       {
-        photo: "Jeans-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Jeans-1.jpg?alt=media&token=2911b0b9-a114-423b-878a-ec3af8bb38b1&_gl=1*i7sqo4*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ0Mi42MC4wLjA.",
         product_id: 4,
       },
       {
-        photo: "Jeans-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Jeans-2.jpg?alt=media&token=a1cd76f6-6c64-4c75-82e1-0e3d90a2b46b&_gl=1*myuhne*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ0OS41My4wLjA.",
         product_id: 4,
       },
       {
-        photo: "Sweatpants-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Sweatpants-1.jpg?alt=media&token=ed759e4a-7540-4711-a5a1-cb7689d65b15&_gl=1*tqyoer*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ2Mi40MC4wLjA.",
         product_id: 5,
       },
       {
-        photo: "Sweatpants-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Sweatpants-2.jpg?alt=media&token=ae9e9304-212e-45d9-bec5-2964910d0b45&_gl=1*15daj2s*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ3NC4yOC4wLjA.",
         product_id: 5,
       },
       {
-        photo: "Shorts-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Shorts-1.jpg?alt=media&token=d425cd72-5f18-477f-bb6b-3bae2e0f7415&_gl=1*14c3rye*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ4NS4xNy4wLjA.",
         product_id: 6,
       },
       {
-        photo: "Shorts-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Shorts-2.jpg?alt=media&token=5558b23a-617f-41cf-b61e-5ec955aeb4b5&_gl=1*c065ts*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTQ5My45LjAuMA..",
         product_id: 6,
       },
       {
-        photo: "Jacket-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Jacket-1.jpg?alt=media&token=5ab58c9b-8d93-4736-9b4d-70ca54b1f7e3&_gl=1*wegvsq*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTUwOC42MC4wLjA.",
         product_id: 7,
       },
       {
-        photo: "Jacket-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Jacket-2.jpg?alt=media&token=865713c7-3471-4f41-895d-b6c398d6a85d&_gl=1*1i5xsi0*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTUyMy40NS4wLjA.",
         product_id: 7,
       },
       {
-        photo: "Hoodie-1.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Hoodie-1.jpg?alt=media&token=47c634c3-f1dc-47d3-ac1b-9dc95d29a597&_gl=1*gas7ku*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTUzMS4zNy4wLjA.",
         product_id: 8,
       },
       {
-        photo: "Hoodie-2.jpg",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/sukses-abadi.appspot.com/o/Hoodie-2.jpg?alt=media&token=d4fe77c2-7ca7-425f-8824-d08963f0230b&_gl=1*k3j6mg*_ga*MTEwMTA5MjIyNS4xNjk3MjcwMjQ5*_ga_CW55HF8NVT*MTY5NzI5MTMwMi41LjEuMTY5NzI5MTUzOS4yOS4wLjA.",
         product_id: 8,
-      },
-    ],
-  });
-  await prisma.user.createMany({
-    data: [
-      {
-        username: "user1",
-        first_name: "John",
-        last_name: "Doe",
-        email: "john.doe@example.com",
-        password:
-          "$2b$10$W3vKECwAD.QGCiSVlknuw.B.iGlOGDXliWtrfFCrtw5obe8ulVM6y",
-        phone: "1234567890",
-      },
-      {
-        username: "user2",
-        first_name: "Alice",
-        last_name: "Smith",
-        email: "alice.smith@example.com",
-        password:
-          "$2b$10$N9fElMEmnlHb0mDglDeVeeOqsYAEcuXuXTe78jHHanXmyAJVa2fvW",
-        phone: "9876543210",
-      },
-      {
-        username: "user3",
-        first_name: "Ethan",
-        last_name: "Johnson",
-        email: "ethan.johnson@example.com",
-        password:
-          "$2b$10$gqxD7Q0TA6kGF.T0UMlSiefyLey4LXXXd/fO.aO5sfHoEazlacONK",
-        phone: "5551237890",
-      },
-      {
-        username: "user4",
-        first_name: "Olivia",
-        last_name: "Davis",
-        email: "olivia.davis@example.com",
-        password:
-          "$2b$10$VdD81jN3H5I6U1JMHrRZ7uiu97.gLSc1fKgLgepv2Qy0yXsRwgnRC",
-        phone: "9995551234",
-      },
-      {
-        username: "user5",
-        first_name: "Sophia",
-        last_name: "Miller",
-        email: "sophia.miller@example.com",
-        password:
-          "$2b$10$FHkIzh955vuk/YUW2P..fuvHXIyJGlNUSAZ.ehDVroBv9.Roc/z/i",
-        phone: "1237894560",
-      },
-    ],
-  });
-
-  await prisma.address.createMany({
-    data: [
-      {
-        street: "123 Main St",
-        name: "Home",
-        city_id: 1,
-        zip_code: 12345,
-        user_id: 1,
-      },
-      {
-        street: "456 Elm St",
-        name: "Work",
-        city_id: 2,
-        zip_code: 67890,
-        user_id: 1,
-      },
-      {
-        street: "789 Oak Ave",
-        name: "Home",
-        city_id: 1,
-        zip_code: 54321,
-        user_id: 2,
-      },
-      {
-        street: "101 Pine Rd",
-        name: "Work",
-        city_id: 3,
-        zip_code: 98765,
-        user_id: 2,
-      },
-      {
-        street: "222 Maple Ln",
-        name: "Home",
-        city_id: 2,
-        zip_code: 24680,
-        user_id: 3,
-      },
-      {
-        street: "333 Cedar Blvd",
-        name: "Work",
-        city_id: 1,
-        zip_code: 13579,
-        user_id: 3,
-      },
-      {
-        street: "444 Birch Rd",
-        name: "Home",
-        city_id: 3,
-        zip_code: 86420,
-        user_id: 4,
-      },
-      {
-        street: "555 Redwood Dr",
-        name: "Work",
-        city_id: 2,
-        zip_code: 36912,
-        user_id: 4,
-      },
-      {
-        street: "666 Willow Ave",
-        name: "Home",
-        city_id: 1,
-        zip_code: 75319,
-        user_id: 5,
-      },
-      {
-        street: "777 Spruce Rd",
-        name: "Work",
-        city_id: 3,
-        zip_code: 85246,
-        user_id: 5,
       },
     ],
   });
@@ -856,63 +749,8 @@ async function main() {
       },
     ],
   });
-  const reviewData = [
-    {
-      product_id: 1,
-      user_id: 1,
-      review_text: "This product is amazing!",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 2,
-      user_id: 2,
-      review_text: "Good quality and comfortable to wear.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 3,
-      user_id: 3,
-      review_text: "I love this sweater! It's so warm and stylish.",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 4,
-      user_id: 4,
-      review_text: "These jeans are very comfortable and fit well.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 5,
-      user_id: 5,
-      review_text: "Great sweatpants for lounging around the house.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 6,
-      user_id: 1, // User ID limited to 5
-      review_text: "Nice shorts for summer!",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 1,
-      user_id: 2, // User ID limited to 5
-      review_text:
-        "I'm very happy with this jacket. It's versatile and stylish.",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-  ];
 
-  await prisma.review.createMany({
-    data: reviewData,
-  });
-  console.log("Seed data created successfully");
+  console.log("Seed data created successfully.");
 }
 
 main()
