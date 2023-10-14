@@ -21,6 +21,7 @@ async function main() {
       },
     });
   });
+
   const topCategory = await prisma.category.create({
     data: {
       name: "Top",
@@ -668,130 +669,6 @@ async function main() {
       },
     ],
   });
-  await prisma.user.createMany({
-    data: [
-      {
-        username: "user1",
-        first_name: "John",
-        last_name: "Doe",
-        email: "john.doe@example.com",
-        password:
-          "$2b$10$W3vKECwAD.QGCiSVlknuw.B.iGlOGDXliWtrfFCrtw5obe8ulVM6y",
-        phone: "1234567890",
-      },
-      {
-        username: "user2",
-        first_name: "Alice",
-        last_name: "Smith",
-        email: "alice.smith@example.com",
-        password:
-          "$2b$10$N9fElMEmnlHb0mDglDeVeeOqsYAEcuXuXTe78jHHanXmyAJVa2fvW",
-        phone: "9876543210",
-      },
-      {
-        username: "user3",
-        first_name: "Ethan",
-        last_name: "Johnson",
-        email: "ethan.johnson@example.com",
-        password:
-          "$2b$10$gqxD7Q0TA6kGF.T0UMlSiefyLey4LXXXd/fO.aO5sfHoEazlacONK",
-        phone: "5551237890",
-      },
-      {
-        username: "user4",
-        first_name: "Olivia",
-        last_name: "Davis",
-        email: "olivia.davis@example.com",
-        password:
-          "$2b$10$VdD81jN3H5I6U1JMHrRZ7uiu97.gLSc1fKgLgepv2Qy0yXsRwgnRC",
-        phone: "9995551234",
-      },
-      {
-        username: "user5",
-        first_name: "Sophia",
-        last_name: "Miller",
-        email: "sophia.miller@example.com",
-        password:
-          "$2b$10$FHkIzh955vuk/YUW2P..fuvHXIyJGlNUSAZ.ehDVroBv9.Roc/z/i",
-        phone: "1237894560",
-      },
-    ],
-  });
-
-  await prisma.address.createMany({
-    data: [
-      {
-        street: "123 Main St",
-        name: "Home",
-        city_id: 1,
-        zip_code: 12345,
-        user_id: 1,
-      },
-      {
-        street: "456 Elm St",
-        name: "Work",
-        city_id: 2,
-        zip_code: 67890,
-        user_id: 1,
-      },
-      {
-        street: "789 Oak Ave",
-        name: "Home",
-        city_id: 1,
-        zip_code: 54321,
-        user_id: 2,
-      },
-      {
-        street: "101 Pine Rd",
-        name: "Work",
-        city_id: 3,
-        zip_code: 98765,
-        user_id: 2,
-      },
-      {
-        street: "222 Maple Ln",
-        name: "Home",
-        city_id: 2,
-        zip_code: 24680,
-        user_id: 3,
-      },
-      {
-        street: "333 Cedar Blvd",
-        name: "Work",
-        city_id: 1,
-        zip_code: 13579,
-        user_id: 3,
-      },
-      {
-        street: "444 Birch Rd",
-        name: "Home",
-        city_id: 3,
-        zip_code: 86420,
-        user_id: 4,
-      },
-      {
-        street: "555 Redwood Dr",
-        name: "Work",
-        city_id: 2,
-        zip_code: 36912,
-        user_id: 4,
-      },
-      {
-        street: "666 Willow Ave",
-        name: "Home",
-        city_id: 1,
-        zip_code: 75319,
-        user_id: 5,
-      },
-      {
-        street: "777 Spruce Rd",
-        name: "Work",
-        city_id: 3,
-        zip_code: 85246,
-        user_id: 5,
-      },
-    ],
-  });
 
   await prisma.admin.createMany({
     data: [
@@ -856,62 +733,7 @@ async function main() {
       },
     ],
   });
-  const reviewData = [
-    {
-      product_id: 1,
-      user_id: 1,
-      review_text: "This product is amazing!",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 2,
-      user_id: 2,
-      review_text: "Good quality and comfortable to wear.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 3,
-      user_id: 3,
-      review_text: "I love this sweater! It's so warm and stylish.",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 4,
-      user_id: 4,
-      review_text: "These jeans are very comfortable and fit well.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 5,
-      user_id: 5,
-      review_text: "Great sweatpants for lounging around the house.",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 6,
-      user_id: 1, // User ID limited to 5
-      review_text: "Nice shorts for summer!",
-      rating: 4,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      product_id: 1,
-      user_id: 2, // User ID limited to 5
-      review_text:
-        "I'm very happy with this jacket. It's versatile and stylish.",
-      rating: 5,
-      image: "https://via.placeholder.com/150",
-    },
-  ];
 
-  await prisma.review.createMany({
-    data: reviewData,
-  });
   console.log("Seed data created successfully");
 }
 
