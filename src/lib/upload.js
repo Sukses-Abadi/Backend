@@ -24,7 +24,7 @@ const uploadFile = async (req, res) => {
       const storageRef = ref(storage, fileName);
       const snapshot = await uploadBytes(storageRef, file.buffer);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      uploadedFiles.push({ originalName: file.originalname, downloadURL });
+      uploadedFiles.push({ photo: downloadURL });
     }
 
     res.json(uploadedFiles);
