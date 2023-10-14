@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const createCities = async () => {
   try {
-    const citiesData = JSON.parse(fs.readFileSync("cities.json", "utf8"));
+    const citiesData = JSON.parse(fs.readFileSync("/cities.json", "utf8"));
 
     for (const cityData of citiesData) {
       const { id, name } = cityData;
