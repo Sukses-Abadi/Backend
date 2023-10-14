@@ -21,8 +21,6 @@ const createCities = async () => {
     console.log("Cities created successfully!");
   } catch (error) {
     console.error("Error:", error);
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -760,6 +758,7 @@ async function main() {
 }
 
 main()
+  .then(createCities())
   .catch((e) => {
     console.error(e);
     process.exit(1);
