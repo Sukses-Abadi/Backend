@@ -53,12 +53,15 @@ router.post("/", async (req, res) => {
     };
 
     // Send the email
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+          reject(err);
+        } else {
+          resolve(info);
+        }
+      });
     });
 
     return res.json({ message: "Password reset email sent" });
